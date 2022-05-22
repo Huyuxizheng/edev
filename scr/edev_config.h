@@ -1,8 +1,9 @@
 ﻿#ifndef __EDEV_CONFIG_H__
 #define __EDEV_CONFIG_H__
 
-#define ev_malloc(size) size//malloc(size)
-#define ev_free(p)      //free(p)  
+#include "stdlib.h"
+#define ev_malloc(size) malloc(size)
+#define ev_free(p)      free(p)  
 
 
 #define ev_error(...)  

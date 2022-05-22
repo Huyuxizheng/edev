@@ -8,7 +8,7 @@ typedef struct ev_obj_s ev_obj_s;
 typedef struct ev_type_s ev_type_s;
 
 //方法原型
-typedef uint8_t (*edev_obj_fun_t)(ev_obj_s *obj,void *arg);
+typedef uint8_t (*edev_obj_fun_t)(ev_obj_s *self,void *arg);
 
 //自变量构造方法,成功返回0,vals成员不作为判断依据
 typedef uint8_t (*edev_vals_create_t)(ev_obj_s *obj);
@@ -22,8 +22,18 @@ typedef struct ev_type_s{
     edev_vals_free_t    vals_free;
 
     uint16_t        total;      //方法总数
-    edev_obj_fun_t  *list;       //方法清单
+    const edev_obj_fun_t  *list;       //方法清单
 }ev_type_s;
+//定义list时的快捷方法
+#define EV_TYPE_LIST(type)                  type##_list
+#define EV_TYPE_TOTAL(type)                 sizeof(EV_TYPE_LIST(type))/sizeof(edev_obj_fun_t)
+#define EV_TYPE_FUN(type,EVO_E)             type##_##EVO_E
+//方法定义
+#define EV_TYPE_FUN_DEF(type,EVO_E)         static uint8_t EV_TYPE_FUN(type,EVO_E)(ev_obj_s *self,void *_arg)
+//获得参数到 arg变量
+#define EV_TYPE_FUN_GET_ARG(EVO_E)           EVO_S(EVO_E) *arg = _arg
+#define EV_TYPE_LIST_ADD_FUN(type,EVO_E)    [EVO_E] = EV_TYPE_FUN(type,EVO_E)
+
 
 //设备对象结构
 typedef struct ev_obj_s{
@@ -57,21 +67,37 @@ extern uint8_t _ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg);
 
 //基础选项列表,每一个设备都需要有的选项
 enum{
-    EVO_HELP = 0,    //帮助信息
-    EVO_STARE,       //设备方法的开始
+    EVO_HELP = 0,    //帮助信息,可重定义
+    EVO_POWER,       //默认电源配置,可重定义
     EVO_LINK,        //默认连接下级设备,可重定义
     EVO_SET_CB,      //默认设置回调,可重定义
-};//最多支持65535-EVO_STARE个，没必要考虑更多的情况
+    EVO_STARE,       //设备方法的开始
+};//最多支持65535个，没必要考虑更多的情况
 
 //EVO_HELP 帮助信息 注释或打印
 typedef struct {
     uint16_t op;
 }EVO_S(EVO_HELP);
 
+//--------------------------------
+//电源等级edev power -> evp
+enum{
+    EVP_NONE = 0,    //缺省
+    EVP_HIGH,        //最大功耗
+    EVP_OPEN,        //正常活跃中
+    EVP_LDLE,        //空闲，低功耗
+    EVP_CLOSE,       //完全关闭，断电
+};
+//EVO_LINK 默认电源配置,可重定义
+typedef struct {
+    uint8_t    evp;//电源等级
+}EVO_S(EVO_POWER);
+
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_obj_s *obj;
+    ev_obj_s    *obj;//嵌套其他设备 W25WXX
+    void        *drive;//芯片驱动 GPIO,SPI
 }EVO_S(EVO_LINK);
 
 
@@ -84,13 +110,13 @@ typedef struct {
 
 
 //--------------------------------
-//事件类型
-//事件edev event -> eve
+//事件类型edev event -> eve
 #define EVE_S(EVE_E) EVE_E##_ARG_S
 
 enum{
     EVE_STARE = 0,    //设备事件开始
 };//最多支持65535-EVE_STARE个，没必要考虑更多的情况
+
 
 
 
