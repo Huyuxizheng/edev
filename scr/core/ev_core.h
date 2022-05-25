@@ -7,6 +7,7 @@
 typedef struct ev_obj_s ev_obj_s;
 typedef struct ev_type_s ev_type_s;
 
+//------------------------------
 //方法原型
 typedef uint8_t (*edev_obj_fun_t)(ev_obj_s *self,void *arg);
 
@@ -34,7 +35,6 @@ typedef struct ev_type_s{
 //获得参数到 arg变量
 #define EV_TYPE_FUN_GET_ARG(OP)          EVO_S(OP) *arg = _arg
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
-
 
 //设备对象结构
 typedef struct ev_obj_s{
@@ -98,8 +98,8 @@ typedef struct {
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_obj_s    *obj;//嵌套其他设备 W25WXX
-    ev_dri_t    *drive;//芯片驱动 GPIO,SPI
+    ev_obj_s      *obj;//嵌套其他设备 W25WXX
+    ev_drive_s    *drive;//芯片驱动 GPIO,SPI
 }EVO_S(LINK);
 
 

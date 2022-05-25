@@ -4,6 +4,10 @@
 #include "./edev_config.h"
 #include "./core/ev_core.h"
 
+#include "./dev/led/ev_led.h"
+
+//锻造版驱动
+#define ev_drive_forge(DRI, ...)    _ev_drive_forge(DRI, __VA_ARGS__)
 
 //创建设备
 extern ev_obj_s* ev_obj_create(ev_type_s *type);
