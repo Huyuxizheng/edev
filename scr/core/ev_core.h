@@ -33,7 +33,7 @@ typedef struct ev_type_s{
 //方法定义
 #define EV_TYPE_FUN_DEF(type,OP)        static uint8_t EV_TYPE_FUN(type,OP)(ev_obj_s *self,void *_arg)
 //获得参数到 arg变量
-#define EV_TYPE_FUN_GET_ARG(OP)          EVO_S(OP) *arg = _arg
+#define EV_TYPE_FUN_GET_ARG(OP)          const EVO_S(OP) *arg = _arg
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
 
 //设备对象结构
@@ -87,7 +87,7 @@ enum{
     EVP_NONE = 0,    //缺省
     EVP_HIGH,        //最大功耗
     EVP_OPEN,        //正常活跃中
-    EVP_LDLE,        //空闲，低功耗
+    EVP_IDLE,        //空闲，低功耗
     EVP_CLOSE,       //完全关闭，断电
 };
 //EVO_LINK 默认电源配置,可重定义
