@@ -52,6 +52,29 @@ EV_TYPE_FUN_DEF(ev_led_type,LINK)
     return 1;
 }
 
+EV_TYPE_FUN_DEF(ev_led_type,POWER)
+{
+    EV_TYPE_FUN_GET_ARG(POWER);
+
+    ev_led_vals_s *vals = self->vals;
+
+    if(vals->gpio)
+    {
+        switch(arg->evp)
+        {
+            case EVP_NONE:case EVP_HIGH:case EVP_OPEN:
+                ev_dri_gpio_init(vals->gpio);
+            break;
+            case EVP_IDLE:case EVP_CLOSE:
+                ev_dri_gpio_uninit(vals->gpio);
+            break;
+        }
+
+        return 0;
+    }
+
+    return 0;
+}
 EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
 {
     EV_TYPE_FUN_GET_ARG(LED_SET);
@@ -88,6 +111,7 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET_EN_VAL)
 static const edev_obj_fun_t EV_TYPE_LIST(ev_led_type)[] ={
     EV_TYPE_LIST_ADD_FUN(ev_led_type,HELP),
     EV_TYPE_LIST_ADD_FUN(ev_led_type,LINK),
+    EV_TYPE_LIST_ADD_FUN(ev_led_type,POWER),
     EV_TYPE_LIST_ADD_FUN(ev_led_type,LED_SET),
     EV_TYPE_LIST_ADD_FUN(ev_led_type,LED_TOGLE),
 };
