@@ -14,7 +14,7 @@ typedef struct{
     uint8_t     (*get)(uint32_t group,uint32_t pin);
     //反转电平
     void        (*togle)(uint32_t group,uint32_t pin);
-}EV_DRI_S(GPIO);
+}const EV_DRI_S(GPIO);
 inline void ev_dri_gpio_set(EV_DRI_S(GPIO) *gpio,uint8_t val){
     if(gpio->set)
         gpio->set(gpio->group,gpio->pin,val);

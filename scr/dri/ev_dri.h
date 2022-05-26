@@ -4,7 +4,7 @@
 typedef const void * ev_dri_type;
 
 #define EV_DRI_E(DRI) EV_DRI_##DRI##_E
-#define EV_DRI_S(DRI) const EV_DRI_##DRI##_S
+#define EV_DRI_S(DRI) EV_DRI_##DRI##_S
   
 #define EV_DRI_DEF(DRI, ...)  &(const EV_DRI_S(DRI)[]){{__VA_ARGS__}}
 
