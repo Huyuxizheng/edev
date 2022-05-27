@@ -69,11 +69,13 @@ extern uint8_t _ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg);
 
 //基础选项列表,每一个设备都需要有的选项
 enum{
-    EVO_E(HELP) = 0,    //帮助信息,可重定义
-    EVO_E(POWER),       //默认电源配置,可重定义
-    EVO_E(LINK),        //默认连接下级设备,可重定义
-    EVO_E(SET_CB),      //默认设置回调,可重定义
-    EVO_E(STARE),       //设备方法的开始
+    EVO_E(HELP) = 0,        //帮助信息,可重定义
+    EVO_E(POWER),           //默认电源配置,可重定义
+    EVO_E(LINK),            //默认连接下级设备,可重定义
+    EVO_E(SET_CB),          //默认设置回调,可重定义
+    EVO_E(ADAPT),           //开始自适应
+    EVO_E(SUPPORT),         //检测是否支持设备
+    EVO_E(STARE),           //设备方法的开始
 };//最多支持65535个，没必要考虑更多的情况
 
 //EVO_HELP 帮助信息 注释或打印
@@ -109,6 +111,16 @@ typedef void (*ev_obj_cb_t)(ev_obj_s *obj,uint16_t event,void *arg);
 typedef struct {
     ev_obj_cb_t cb;
 }EVO_S(SET_CB);
+
+//EVO_LINK 默认的连接下级设备
+typedef struct {
+    uint8_t      clean_flag;//是否清理为适配子设备 为真会自动释放未适配的子设备
+}EVO_S(ADAPT);
+
+//EVO_LINK 默认的连接下级设备
+typedef struct {
+    ev_type_s      *type;//需要检测是否支持这个设备，支持返回真
+}EVO_S(SUPPORT);
 
 
 //--------------------------------

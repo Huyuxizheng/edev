@@ -11,6 +11,8 @@
 #define ev_os_lock(lock_p)    
 #define ev_os_unlock(lock_p)
 
+#define ev_sleep(ms)
+
 #define ev_error(...)  
 #define ev_warning(...)        
 #define ev_info(...) 
