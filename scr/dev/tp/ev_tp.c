@@ -1,15 +1,6 @@
-﻿#include "./dev/led/ev_tp.h"
+﻿#include "./dev/tp/ev_tp.h"
 #include "edev_config.h"
-
-#include "./dev/led/ev_led.h"
-#include "edev_config.h"
-
-typedef struct ev_obj_list_s ev_obj_list_s;
-
-typedef struct ev_obj_list_s{
-    ev_obj_list_s  *next;
-    ev_obj_s       *en_val;
-}ev_obj_list_s;
+#include "./core/ev_obj_list.h"
 
 typedef struct{
     ev_obj_s        *obj;
@@ -31,7 +22,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,LINK)
 {
     EV_TYPE_FUN_GET_ARG(LINK);
 
-    ev_led_vals_s *vals = self->vals;
+    ev_tp_vals_s *vals = self->vals;
 
 
     return 1;
@@ -41,7 +32,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,POWER)
 {
     EV_TYPE_FUN_GET_ARG(POWER);
 
-    ev_led_vals_s *vals = self->vals;
+    ev_tp_vals_s *vals = self->vals;
 
 
     return 0;
@@ -49,7 +40,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,POWER)
 EV_TYPE_FUN_DEF(ev_tp_type,TP_GET)
 {
     EV_TYPE_FUN_GET_ARG(TP_GET);
-    ev_led_vals_s *vals = self->vals;
+    ev_tp_vals_s *vals = self->vals;
 
     return 0;
 }

@@ -25,7 +25,7 @@ typedef struct {
 }EVO_S(TP_GET);
 
 
-extern const ev_type_s ev_dri_type;
+extern const ev_type_s ev_tp_type;
 
 
 
