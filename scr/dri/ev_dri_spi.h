@@ -7,18 +7,18 @@ typedef struct{
     //可选的 SPI句柄
     void*       handle;
     //初始化
-    void        (*init)(void* handle,uint32_t pin);
+    void        (*init)(void* handle);
     //设置电平
-    void        (*set)(void* handle,uint32_t pin,uint8_t val);
+    void        (*write)(void* handle);
     //获得电平
-    uint8_t     (*get)(void* handle,uint32_t pin);
+    uint8_t     (*read)(void* handle);
     //获得电平
-    void        (*uninit)(void* handle,uint32_t pin);
+    void        (*uninit)(void* handle);
 }const EV_DRI_S(SPI);
 
 inline void ev_dri_spi_init(EV_DRI_S(SPI) *spi){
     if(spi->init)
-        spi->init(gpio->group,gpio->pin);
+        spi->init(spi->handle);
 }
 
 #endif

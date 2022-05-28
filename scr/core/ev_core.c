@@ -56,7 +56,7 @@ ev_obj_s* ev_obj_create(ev_type_s *type)
     return obj;
 }
 
-uint8_t _ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg)
+uint8_t __ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg)
 {
     ev_obj_assert(obj)
     ev_type_assert(obj)
@@ -150,6 +150,20 @@ uint8_t _ev_obj_fun_security(ev_obj_s *obj, uint16_t op, void *arg)
     return 0;
 }
 
+uint8_t _ev_obj_share_add(ev_obj_s *obj,ev_obj_s *share_obj)
+{
+    ev_obj_assert(obj)
 
+    obj->share--;
 
+    return 0;
+}
 
+uint8_t _ev_obj_share_sub(ev_obj_s *obj,ev_obj_s *share_obj)
+{
+    ev_obj_assert(obj)
+
+    obj->share--;
+
+    return obj->share;
+}

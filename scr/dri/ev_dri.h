@@ -37,6 +37,7 @@ typedef struct{
 
 #include "./dri/ev_dri_gpio.h"
 
+#include "./dri/ev_dri_i2c.h"
 typedef struct{
     uint8_t   no_arg;
 }EV_DRI_S(SPI);

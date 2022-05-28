@@ -13,8 +13,17 @@ typedef struct ev_obj_list_s{
     ev_obj_node_s  *next;
 }ev_obj_list_s;
 
+//??????????OBJ
+extern uint8_t ev_obj_list_check_obj(ev_obj_list_s *list,ev_obj_s    *obj);
+//?????
 extern uint8_t ev_obj_list_add_obj(ev_obj_list_s *list,ev_obj_s    *obj);
+//???????????OBJ
+extern uint8_t ev_obj_list_add_obj_filter(ev_obj_list_s *list,ev_obj_s    *obj);
+//?????OBJ
 extern uint8_t ev_obj_list_del_obj(ev_obj_list_s *list,ev_obj_s    *obj);
+//????
 extern void    ev_obj_list_reset(ev_obj_list_s *list);
+
+
 
 #endif

@@ -41,7 +41,13 @@ typedef struct ev_obj_s{
     void            *vals;      //动态属性
     ev_type_s       *type;   //方法列表
     void            *lock;      //设备锁，可选
+    uint8_t         share;      //上级设备数量
 }ev_obj_s;
+
+//股分增加
+extern uint8_t _ev_obj_share_add(ev_obj_s *obj,ev_obj_s *share_obj);
+//股分减少，返回总股数，为零可以释放
+extern uint8_t _ev_obj_share_sub(ev_obj_s *obj,ev_obj_s *share_obj);
 
 //断言-错误返回1
 #define ev_obj_assert(obj) \
@@ -63,7 +69,8 @@ if(op >= obj->type->total)\
 //选项edev Options -> evo
 #define EVO_E(OP) EVO_##OP##_E
 #define EVO_S(OP) EVO_##OP##_ARG_S
-extern uint8_t _ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg);
+extern uint8_t __ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg);
+#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_S(op)){__VA_ARGS__})
 
 //基础选项
 
@@ -71,7 +78,7 @@ extern uint8_t _ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg);
 enum{
     EVO_E(HELP) = 0,        //帮助信息,可重定义
     EVO_E(POWER),           //默认电源配置,可重定义
-    EVO_E(LINK),            //默认连接下级设备,可重定义
+    EVO_E(LINK),            //默认连接下级设备,可重定义 需要维护下级obj的share属性
     EVO_E(SET_CB),          //默认设置回调,可重定义
     EVO_E(ADAPT),           //开始自适应
     EVO_E(SUPPORT),         //检测是否支持设备
@@ -114,12 +121,12 @@ typedef struct {
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    uint8_t      clean_flag;//是否清理为适配子设备 为真会自动释放未适配的子设备
+    uint8_t      clean_flag;//是否清理为适配子设备 为真会自动释放上级设备为零的未适配子设备
 }EVO_S(ADAPT);
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_type_s      *type;//需要检测是否支持这个设备，支持返回真
+    ev_obj_s      *obj;//需要检测是否支持这个设备，支持返回真
 }EVO_S(SUPPORT);
 
 
@@ -130,7 +137,6 @@ typedef struct {
 enum{
     EVE_STARE = 0,    //设备事件开始
 };//最多支持65535-EVE_STARE个，没必要考虑更多的情况
-
 
 
 
