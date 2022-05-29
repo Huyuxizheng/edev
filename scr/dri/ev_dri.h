@@ -4,7 +4,7 @@
 typedef const void * ev_dri_type;
 
 #define EV_DRI_E(DRI) EV_DRI_##DRI##_E
-#define EV_DRI_S(DRI) EV_DRI_##DRI##_S
+#define EV_DRI_T(DRI) EV_DRI_##DRI##_T
   
 #define EV_DRI_DEF(DRI, ...)  &(const EV_DRI_S(DRI)[]){{__VA_ARGS__}}
 
@@ -23,7 +23,7 @@ typedef uint16_t ev_dri_e;
 typedef struct{
     ev_dri_e       e;//枚举标识符
     ev_dri_type    p;
-}ev_drive_s;
+}ev_drive_t;
 
 //判断类型-错误返回1
 #define ev_dri_e_check(DRI_E,dri) \
@@ -32,7 +32,7 @@ typedef struct{
 
 typedef struct{
     uint8_t   no_arg;
-}EV_DRI_S(BASE);
+}EV_DRI_T(BASE);
 
 
 #include "./dri/ev_dri_gpio.h"
@@ -40,7 +40,7 @@ typedef struct{
 #include "./dri/ev_dri_i2c.h"
 typedef struct{
     uint8_t   no_arg;
-}EV_DRI_S(SPI);
+}EV_DRI_T(SPI);
 
 
 #endif

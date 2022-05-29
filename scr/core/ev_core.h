@@ -4,50 +4,50 @@
 #include "stdint.h"
 #include "./dri/ev_dri.h"
 
-typedef struct ev_obj_s ev_obj_s;
-typedef struct ev_type_s ev_type_s;
+typedef struct ev_obj_t ev_obj_t;
+typedef struct ev_type_t ev_type_t;
 
 //------------------------------
 //方法原型
-typedef uint8_t (*edev_obj_fun_t)(ev_obj_s *self,void *arg);
+typedef uint8_t (*edev_obj_fun_t)(ev_obj_t *self,void *arg);
 
 //自变量构造方法,成功返回0,vals成员不作为判断依据
-typedef uint8_t (*edev_vals_create_t)(ev_obj_s *obj);
+typedef uint8_t (*edev_vals_create_t)(ev_obj_t *obj);
 //自变量释放方法
-typedef void (*edev_vals_free_t)(ev_obj_s *obj);
+typedef void (*edev_vals_free_t)(ev_obj_t *obj);
 
 //设备类型
-typedef struct ev_type_s{
+typedef struct ev_type_t{
     char                *name;
     edev_vals_create_t  vals_create;
     edev_vals_free_t    vals_free;
 
     uint16_t        total;      //方法总数
     const edev_obj_fun_t  *list;       //方法清单
-}ev_type_s;
+}ev_type_t;
 
 //定义list时的快捷方法
 #define EV_TYPE_LIST(type)              type##_list
 #define EV_TYPE_TOTAL(type)             sizeof(EV_TYPE_LIST(type))/sizeof(edev_obj_fun_t)
 #define EV_TYPE_FUN(type,OP)            type##_##OP
 //方法定义
-#define EV_TYPE_FUN_DEF(type,OP)        static uint8_t EV_TYPE_FUN(type,OP)(ev_obj_s *self,void *_arg)
+#define EV_TYPE_FUN_DEF(type,OP)        static uint8_t EV_TYPE_FUN(type,OP)(ev_obj_t *self,void *_arg)
 //获得参数到 arg变量
-#define EV_TYPE_FUN_GET_ARG(OP)          const EVO_S(OP) *arg = _arg
+#define EV_TYPE_FUN_GET_ARG(OP)          const EVO_T(OP) *arg = _arg
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
 
 //设备对象结构
-typedef struct ev_obj_s{
+typedef struct ev_obj_t{
     void            *vals;      //动态属性
-    ev_type_s       *type;   //方法列表
+    ev_type_t       *type;   //方法列表
     void            *lock;      //设备锁，可选
     uint8_t         share;      //上级设备数量
-}ev_obj_s;
+}ev_obj_t;
 
 //股分增加
-extern uint8_t _ev_obj_share_add(ev_obj_s *obj,ev_obj_s *share_obj);
+extern uint8_t _ev_obj_share_add(ev_obj_t *obj,ev_obj_t *share_obj);
 //股分减少，返回总股数，为零可以释放
-extern uint8_t _ev_obj_share_sub(ev_obj_s *obj,ev_obj_s *share_obj);
+extern uint8_t _ev_obj_share_sub(ev_obj_t *obj,ev_obj_t *share_obj);
 
 //断言-错误返回1
 #define ev_obj_assert(obj) \
@@ -68,9 +68,9 @@ if(op >= obj->type->total)\
 //--------------------------------
 //选项edev Options -> evo
 #define EVO_E(OP) EVO_##OP##_E
-#define EVO_S(OP) EVO_##OP##_ARG_S
-extern uint8_t __ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg);
-#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_S(op)){__VA_ARGS__})
+#define EVO_T(OP) EVO_##OP##_ARG_T
+extern uint8_t __ev_obj_fun(ev_obj_t *obj, uint16_t op, void *arg);
+#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){__VA_ARGS__})
 
 //基础选项
 
@@ -88,7 +88,7 @@ enum{
 //EVO_HELP 帮助信息 注释或打印
 typedef struct {
     uint16_t op;
-}EVO_S(HELP);
+}EVO_T(HELP);
 
 //--------------------------------
 //电源等级edev power -> evp
@@ -102,37 +102,37 @@ enum{
 //EVO_LINK 默认电源配置,可重定义
 typedef struct {
     uint8_t    evp;//电源等级
-}EVO_S(POWER);
+}EVO_T(POWER);
 
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_obj_s      *obj;//嵌套其他设备 W25WXX
-    ev_drive_s    *drive;//芯片驱动 GPIO,SPI
-}EVO_S(LINK);
+    ev_obj_t      *obj;//嵌套其他设备 W25WXX
+    ev_drive_t    *drive;//芯片驱动 GPIO,SPI
+}EVO_T(LINK);
 
 
 //EVO_SET_CB 默认的设置回调
-typedef void (*ev_obj_cb_t)(ev_obj_s *obj,uint16_t event,void *arg);
+typedef void (*ev_obj_cb_t)(ev_obj_t *obj,uint16_t event,void *arg);
 
 typedef struct {
     ev_obj_cb_t cb;
-}EVO_S(SET_CB);
+}EVO_T(SET_CB);
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
     uint8_t      clean_flag;//是否清理为适配子设备 为真会自动释放上级设备为零的未适配子设备
-}EVO_S(ADAPT);
+}EVO_T(ADAPT);
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_obj_s      *obj;//需要检测是否支持这个设备，支持返回真
-}EVO_S(SUPPORT);
+    ev_obj_t      *obj;//需要检测是否支持这个设备，支持返回真
+}EVO_T(SUPPORT);
 
 
 //--------------------------------
 //事件类型edev event -> eve
-#define EVE_S(EVE_E) EVE_E##_ARG_S
+#define EVE_T(EVE_E) EVE_E##_ARG_T
 
 enum{
     EVE_STARE = 0,    //设备事件开始

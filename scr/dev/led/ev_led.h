@@ -17,18 +17,18 @@ enum{
 //EVD_LED_SET
 typedef struct {
     uint8_t state;// 1为点亮 0为熄灭
-}EVO_S(LED_SET);
+}EVO_T(LED_SET);
 
 //EVD_LED_TOGGLE
 typedef struct {
     uint8_t no_arg;//无参
-}EVO_S(LED_TOGLE);
+}EVO_T(LED_TOGLE);
 
 //EVD_LED_TOGGLE
 typedef struct {
     uint8_t en_val;//设置点亮的电平值
-}EVO_S(LED_SET_EN_VAL);
+}EVO_T(LED_SET_EN_VAL);
 
-extern const ev_type_s ev_led_type;
+extern const ev_type_t ev_led_type;
 
 #endif

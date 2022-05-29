@@ -3,9 +3,9 @@
 #include "./core/ev_obj_list.h"
 
 typedef struct{
-    ev_obj_s        *obj;
-    ev_obj_list_s   obj_list;
-}ev_tp_vals_s;
+    ev_obj_t        *obj;
+    ev_obj_list_t   obj_list;
+}ev_tp_vals_t;
 
 EV_TYPE_FUN_DEF(ev_tp_type,HELP)
 {
@@ -22,7 +22,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,LINK)
 {
     EV_TYPE_FUN_GET_ARG(LINK);
     if(!arg->obj){return 1;}
-    ev_tp_vals_s *vals = self->vals;
+    ev_tp_vals_t *vals = self->vals;
 
     if(_ev_obj_fun(arg->obj,SUPPORT,self) == 1)
     {//如果对象支持
@@ -40,7 +40,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,POWER)
 {
     EV_TYPE_FUN_GET_ARG(POWER);
 
-    ev_tp_vals_s *vals = self->vals;
+    ev_tp_vals_t *vals = self->vals;
 
     if(!vals->obj){return 1;}//未自适应
 
@@ -50,7 +50,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,TP_GET)
 {
     EV_TYPE_FUN_GET_ARG(TP_GET);
 
-    ev_tp_vals_s *vals = self->vals;
+    ev_tp_vals_t *vals = self->vals;
 
     if(!vals->obj){return 1;}//未自适应
 
@@ -66,13 +66,13 @@ static const edev_obj_fun_t EV_TYPE_LIST(ev_tp_type)[] ={
     EV_TYPE_LIST_ADD_FUN(ev_tp_type,POWER),
     EV_TYPE_LIST_ADD_FUN(ev_tp_type,TP_GET),
 };
-uint8_t ev_tp_type_vals_create(ev_obj_s *obj)
+uint8_t ev_tp_type_vals_create(ev_obj_t *obj)
 {
-    obj->vals = ev_malloc(sizeof(ev_tp_vals_s));
+    obj->vals = ev_malloc(sizeof(ev_tp_vals_t));
     if(obj->vals)
     {
-        ((ev_tp_vals_s *)obj->vals)->obj = 0;
-        ((ev_tp_vals_s *)obj->vals)->obj_list.next = 0;
+        ((ev_tp_vals_t *)obj->vals)->obj = 0;
+        ((ev_tp_vals_t *)obj->vals)->obj_list.next = 0;
         return 0;
     }
     else
@@ -81,7 +81,7 @@ uint8_t ev_tp_type_vals_create(ev_obj_s *obj)
     }
 }
 //自变量释放方法
-void ev_tp_type_vals_free(ev_obj_s *obj)
+void ev_tp_type_vals_free(ev_obj_t *obj)
 {
     if(obj->vals)
     {
@@ -89,7 +89,7 @@ void ev_tp_type_vals_free(ev_obj_s *obj)
     }
 }
 
-const ev_type_s ev_tp_type = {
+const ev_type_t ev_tp_type = {
     .name = "ev_tp_type",
     .vals_create = ev_tp_type_vals_create,
     .vals_free = ev_tp_type_vals_free,

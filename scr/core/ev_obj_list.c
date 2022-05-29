@@ -1,9 +1,9 @@
 #include "./core/ev_obj_list.h"
 #include "edev_config.h"
 
-uint8_t ev_obj_list_add_obj_filter(ev_obj_list_s *list,ev_obj_s    *obj)
+uint8_t ev_obj_list_add_obj_filter(ev_obj_list_t *list,ev_obj_t    *obj)
 {
-    ev_obj_node_s *node = (ev_obj_node_s *)list;
+    ev_obj_node_t *node = (ev_obj_node_t *)list;
     while(node->next)
     {
         if(node->next->obj == obj)
@@ -12,7 +12,7 @@ uint8_t ev_obj_list_add_obj_filter(ev_obj_list_s *list,ev_obj_s    *obj)
         }
         node = node->next;
     }
-    node->next = ev_malloc(sizeof(ev_obj_node_s));
+    node->next = ev_malloc(sizeof(ev_obj_node_t));
     if(!node->next)
     {
         return 1;
@@ -23,14 +23,14 @@ uint8_t ev_obj_list_add_obj_filter(ev_obj_list_s *list,ev_obj_s    *obj)
     return 0;
 }
 
-uint8_t ev_obj_list_add_obj(ev_obj_list_s *list,ev_obj_s    *obj)
+uint8_t ev_obj_list_add_obj(ev_obj_list_t *list,ev_obj_t    *obj)
 {
-    ev_obj_node_s *node = (ev_obj_node_s *)list;
+    ev_obj_node_t *node = (ev_obj_node_t *)list;
     while(node->next)
     {
         node = node->next;
     }
-    node->next = ev_malloc(sizeof(ev_obj_node_s));
+    node->next = ev_malloc(sizeof(ev_obj_node_t));
     if(!node->next)
     {
         return 1;
@@ -41,10 +41,10 @@ uint8_t ev_obj_list_add_obj(ev_obj_list_s *list,ev_obj_s    *obj)
     return 0;
 }
 
-uint8_t ev_obj_list_del_obj(ev_obj_list_s *list,ev_obj_s    *obj)
+uint8_t ev_obj_list_del_obj(ev_obj_list_t *list,ev_obj_t    *obj)
 {
-    ev_obj_node_s *node = (ev_obj_node_s *)list;
-    ev_obj_node_s *temp = 0;
+    ev_obj_node_t *node = (ev_obj_node_t *)list;
+    ev_obj_node_t *temp = 0;
     while((node->next != 0) && (node->next->obj != obj))
     {
         node = node->next;
@@ -59,7 +59,7 @@ uint8_t ev_obj_list_del_obj(ev_obj_list_s *list,ev_obj_s    *obj)
     
     return 0;
 }
-void ev_obj_list_del_all_node(ev_obj_node_s *node)
+void ev_obj_list_del_all_node(ev_obj_node_t *node)
 {
     if(node->next)
     {
@@ -69,7 +69,7 @@ void ev_obj_list_del_all_node(ev_obj_node_s *node)
     ev_free(node);
     return ;
 }
-void ev_obj_list_reset(ev_obj_list_s *list)
+void ev_obj_list_reset(ev_obj_list_t *list)
 {
     if(list->next)
     {
@@ -79,9 +79,9 @@ void ev_obj_list_reset(ev_obj_list_s *list)
     return;
 }
 
-uint8_t ev_obj_list_check_obj(ev_obj_list_s *list,ev_obj_s    *obj)
+uint8_t ev_obj_list_check_obj(ev_obj_list_t *list,ev_obj_t    *obj)
 {
-    ev_obj_node_s *node = (ev_obj_node_s *)list;
+    ev_obj_node_t *node = (ev_obj_node_t *)list;
     while((node->next != 0) && (node->next->obj != obj))
     {
         node = node->next;

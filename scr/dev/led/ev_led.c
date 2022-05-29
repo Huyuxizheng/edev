@@ -2,9 +2,9 @@
 #include "edev_config.h"
 
 typedef struct{
-    EV_DRI_S(GPIO) *gpio;
+    EV_DRI_T(GPIO) *gpio;
     uint8_t         en_val;
-}ev_led_vals_s;
+}ev_led_vals_t;
 
 EV_TYPE_FUN_DEF(ev_led_type,HELP)
 {
@@ -41,7 +41,7 @@ EV_TYPE_FUN_DEF(ev_led_type,LINK)
 {
     EV_TYPE_FUN_GET_ARG(LINK);
 
-    ev_led_vals_s *vals = self->vals;
+    ev_led_vals_t *vals = self->vals;
 
     if(ev_dri_e_check(GPIO,arg->drive) == 0)
     {
@@ -56,7 +56,7 @@ EV_TYPE_FUN_DEF(ev_led_type,POWER)
 {
     EV_TYPE_FUN_GET_ARG(POWER);
 
-    ev_led_vals_s *vals = self->vals;
+    ev_led_vals_t *vals = self->vals;
 
     if(vals->gpio)
     {
@@ -78,7 +78,7 @@ EV_TYPE_FUN_DEF(ev_led_type,POWER)
 EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
 {
     EV_TYPE_FUN_GET_ARG(LED_SET);
-    ev_led_vals_s *vals = self->vals;
+    ev_led_vals_t *vals = self->vals;
     if(vals->gpio)
     {
         ev_dri_gpio_set(vals->gpio,vals->en_val);
@@ -90,7 +90,7 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
 EV_TYPE_FUN_DEF(ev_led_type,LED_TOGLE)
 {
     EV_TYPE_FUN_GET_ARG(LED_TOGLE);
-    ev_led_vals_s *vals = self->vals;
+    ev_led_vals_t *vals = self->vals;
     if(vals->gpio)
     {
         ev_dri_gpio_togle(vals->gpio);
@@ -101,7 +101,7 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_TOGLE)
 EV_TYPE_FUN_DEF(ev_led_type,LED_SET_EN_VAL)
 {
     EV_TYPE_FUN_GET_ARG(LED_SET_EN_VAL);
-    ev_led_vals_s *vals = self->vals;
+    ev_led_vals_t *vals = self->vals;
 
     vals->en_val = arg->en_val;
 
@@ -115,12 +115,12 @@ static const edev_obj_fun_t EV_TYPE_LIST(ev_led_type)[] ={
     EV_TYPE_LIST_ADD_FUN(ev_led_type,LED_SET),
     EV_TYPE_LIST_ADD_FUN(ev_led_type,LED_TOGLE),
 };
-uint8_t ev_led_type_vals_create(ev_obj_s *obj)
+uint8_t ev_led_type_vals_create(ev_obj_t *obj)
 {
-    obj->vals = ev_malloc(sizeof(ev_led_vals_s));
+    obj->vals = ev_malloc(sizeof(ev_led_vals_t));
     if(obj->vals)
     {
-        ((ev_led_vals_s *)obj->vals)->en_val = 0;
+        ((ev_led_vals_t *)obj->vals)->en_val = 0;
         return 0;
     }
     else
@@ -129,7 +129,7 @@ uint8_t ev_led_type_vals_create(ev_obj_s *obj)
     }
 }
 //自变量释放方法
-void ev_led_type_vals_free(ev_obj_s *obj)
+void ev_led_type_vals_free(ev_obj_t *obj)
 {
     if(obj->vals)
     {
@@ -137,7 +137,7 @@ void ev_led_type_vals_free(ev_obj_s *obj)
     }
 }
 
-const ev_type_s ev_led_type = {
+const ev_type_t ev_led_type = {
     .name = "ev_led_type",
     .vals_create = ev_led_type_vals_create,
     .vals_free = ev_led_type_vals_free,

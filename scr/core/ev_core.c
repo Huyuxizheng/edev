@@ -1,7 +1,7 @@
 ﻿#include "edev.h"
 static void* ev_global_lock = 0;
 static uint8_t ev_absolute_global_lock_en = 0;
-void ev_obj_free(ev_obj_s *obj)
+void ev_obj_free(ev_obj_t *obj)
 {
     if(!obj)
     {
@@ -23,9 +23,9 @@ void ev_obj_free(ev_obj_s *obj)
 }
 
 
-ev_obj_s* ev_obj_create(ev_type_s *type)
+ev_obj_t* ev_obj_create(ev_type_t *type)
 {
-    ev_obj_s *obj = ev_malloc(sizeof(ev_obj_s));
+    ev_obj_t *obj = ev_malloc(sizeof(ev_obj_t));
 
     if(!obj)
     {
@@ -56,7 +56,7 @@ ev_obj_s* ev_obj_create(ev_type_s *type)
     return obj;
 }
 
-uint8_t __ev_obj_fun(ev_obj_s *obj, uint16_t op, void *arg)
+uint8_t __ev_obj_fun(ev_obj_t *obj, uint16_t op, void *arg)
 {
     ev_obj_assert(obj)
     ev_type_assert(obj)
@@ -101,7 +101,7 @@ void ev_obj_fun_absolute_security_en(uint8_t en)
 {
     ev_absolute_global_lock_en  = en;
 }
-uint8_t ev_obj_fun_obj_security_en(ev_obj_s *obj,uint8_t en)
+uint8_t ev_obj_fun_obj_security_en(ev_obj_t *obj,uint8_t en)
 {
     if(en)
     {
@@ -124,7 +124,7 @@ uint8_t ev_obj_fun_obj_security_en(ev_obj_s *obj,uint8_t en)
     }
     return 0;
 }
-uint8_t _ev_obj_fun_security(ev_obj_s *obj, uint16_t op, void *arg)
+uint8_t _ev_obj_fun_security(ev_obj_t *obj, uint16_t op, void *arg)
 {
     ev_obj_assert(obj)
     ev_type_assert(obj)
@@ -150,7 +150,7 @@ uint8_t _ev_obj_fun_security(ev_obj_s *obj, uint16_t op, void *arg)
     return 0;
 }
 
-uint8_t _ev_obj_share_add(ev_obj_s *obj,ev_obj_s *share_obj)
+uint8_t _ev_obj_share_add(ev_obj_t *obj,ev_obj_t *share_obj)
 {
     ev_obj_assert(obj)
 
@@ -159,7 +159,7 @@ uint8_t _ev_obj_share_add(ev_obj_s *obj,ev_obj_s *share_obj)
     return 0;
 }
 
-uint8_t _ev_obj_share_sub(ev_obj_s *obj,ev_obj_s *share_obj)
+uint8_t _ev_obj_share_sub(ev_obj_t *obj,ev_obj_t *share_obj)
 {
     ev_obj_assert(obj)
 
