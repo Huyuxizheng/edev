@@ -14,10 +14,10 @@ typedef struct{
     uint8_t     (*read)(void* handle);
     //获得电平
     void        (*uninit)(void* handle);
-}const EV_DRI_S(SPI);
+}const EV_DRI_T(SPI);
 
-inline void ev_dri_spi_init(EV_DRI_S(SPI) *spi){
-    if(spi->init)
+inline void ev_dri_spi_init(EV_DRI_T(SPI) *spi){
+    if(spi&&spi->init)
         spi->init(spi->handle);
 }
 

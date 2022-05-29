@@ -22,24 +22,24 @@ typedef struct{
 
 
 inline void ev_dri_gpio_init(EV_DRI_T(GPIO) *gpio){
-    if(gpio->init)
+    if(gpio&&gpio->init)
         gpio->init(gpio->group,gpio->pin);
 }
 inline void ev_dri_gpio_set(EV_DRI_T(GPIO) *gpio,uint8_t val){
-    if(gpio->set)
+    if(gpio&&gpio->set)
         gpio->set(gpio->group,gpio->pin,val);
 }
 inline uint8_t ev_dri_gpio_get(EV_DRI_T(GPIO) *gpio){
-    if(gpio->get)
+    if(gpio&&gpio->get)
         return gpio->get(gpio->group,gpio->pin);
     return 0;
 }
 inline void ev_dri_gpio_togle(EV_DRI_T(GPIO) *gpio){
-    if(gpio->togle)
+    if(gpio&&gpio->togle)
         gpio->togle(gpio->group,gpio->pin);
 }
 inline void ev_dri_gpio_uninit(EV_DRI_T(GPIO) *gpio){
-    if(gpio->uninit)
+    if(gpio&&gpio->uninit)
         gpio->uninit(gpio->group,gpio->pin);
 }
 

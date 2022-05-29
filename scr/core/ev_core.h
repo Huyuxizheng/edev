@@ -113,10 +113,9 @@ typedef struct {
 
 
 //EVO_SET_CB 默认的设置回调
-typedef void (*ev_obj_cb_t)(ev_obj_t *obj,uint16_t event,void *arg);
-
 typedef struct {
     ev_obj_cb_t cb;
+    void *param;//传给回调
 }EVO_T(SET_CB);
 
 //EVO_LINK 默认的连接下级设备

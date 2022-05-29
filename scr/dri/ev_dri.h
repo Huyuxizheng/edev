@@ -1,6 +1,9 @@
 ﻿#ifndef __EDEV_DRI_H__
 #define __EDEV_DRI_H__
 
+
+typedef void (*ev_obj_cb_t)(void *param,uint16_t event,void *arg);
+
 typedef const void * ev_dri_type;
 
 #define EV_DRI_E(DRI) EV_DRI_##DRI##_E
@@ -14,8 +17,9 @@ typedef const void * ev_dri_type;
 enum{
     EV_DRI_E(BASE) = 1,
     EV_DRI_E(GPIO),
+    EV_DRI_E(GPIO_INT),
     EV_DRI_E(SPI),
-    EV_DRI_E(IIC),
+    EV_DRI_E(I2C),
 };
 
 typedef uint16_t ev_dri_e;
@@ -38,9 +42,9 @@ typedef struct{
 #include "./dri/ev_dri_gpio.h"
 
 #include "./dri/ev_dri_i2c.h"
-typedef struct{
-    uint8_t   no_arg;
-}EV_DRI_T(SPI);
 
+#include "./dri/ev_dri_gpio_int.h"
+
+#include "./dri/ev_dri_spi.h"
 
 #endif
