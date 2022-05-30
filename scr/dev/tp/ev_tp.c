@@ -24,7 +24,7 @@ EV_TYPE_FUN_DEF(ev_tp_type,LINK)
     if(!arg->obj){return 1;}
     ev_tp_vals_t *vals = self->vals;
 
-    if(_ev_obj_fun(arg->obj,SUPPORT,self) == 1)
+    if(_ev_obj_fun(arg->obj,SUPPORT,self) == 0)
     {//如果对象支持
         if(ev_obj_list_add_obj_filter(&(vals->obj_list),arg->obj) == 0)
         {//如果注册成功增加持股
@@ -44,8 +44,60 @@ EV_TYPE_FUN_DEF(ev_tp_type,POWER)
 
     if(!vals->obj){return 1;}//未自适应
 
+    switch(arg->evp)
+    {
+        case EVP_NONE:case EVP_HIGH:case EVP_OPEN:
+        _ev_obj_fun(vals->obj,POWER,arg->evp);
+        _ev_obj_fun(vals->obj,INIT,0);
+        break;
+        case EVP_IDLE:case EVP_CLOSE:
+        _ev_obj_fun(vals->obj,POWER,arg->evp);
+        break;
+    }  
     return 0;
 }
+
+EV_TYPE_FUN_DEF(ev_tp_type,ADAPT)
+{
+    EV_TYPE_FUN_GET_ARG(ADAPT);
+
+    ev_tp_vals_t *vals = self->vals;
+
+    while(vals->obj_list.next)
+    {
+        ev_obj_t      *ic_obj = vals->obj_list.next->obj;
+
+        _ev_obj_fun(ic_obj,POWER,EVP_OPEN);
+        if(_ev_obj_fun(ic_obj,ADAPT,1) == 0)
+        {
+            _ev_obj_fun(ic_obj,POWER,EVP_CLOSE);
+            while(vals->obj_list.next->next)
+            {
+                 ev_obj_t      *free_obj = vals->obj_list.next->next->obj;
+                ev_obj_list_del_obj(&vals->obj_list,free_obj);
+                if(arg->clean_flag)
+                {
+                    ev_obj_free(free_obj);
+                }
+            }
+            vals->obj = ic_obj;
+            return 0;
+        }
+        else
+        {
+            _ev_obj_fun(ic_obj,POWER,EVP_CLOSE);
+
+            ev_obj_list_del_obj(&vals->obj_list,ic_obj);
+            if(arg->clean_flag)
+            {
+                ev_obj_free(ic_obj);
+            }
+        }
+        
+    }
+    return 1;
+}
+
 EV_TYPE_FUN_DEF(ev_tp_type,TP_GET)
 {
     EV_TYPE_FUN_GET_ARG(TP_GET);
@@ -64,6 +116,7 @@ static const edev_obj_fun_t EV_TYPE_LIST(ev_tp_type)[] ={
     EV_TYPE_LIST_ADD_FUN(ev_tp_type,HELP),
     EV_TYPE_LIST_ADD_FUN(ev_tp_type,LINK),
     EV_TYPE_LIST_ADD_FUN(ev_tp_type,POWER),
+    EV_TYPE_LIST_ADD_FUN(ev_tp_type,ADAPT),
     EV_TYPE_LIST_ADD_FUN(ev_tp_type,TP_GET),
 };
 uint8_t ev_tp_type_vals_create(ev_obj_t *obj)

@@ -9,7 +9,7 @@ typedef struct{
     //获得电平
     void        (*init)(void* handle);
     //设置电平
-    uint8_t     (*write)(void* handle,uint8_t addr,uint8_t *dat,uint16_t len);
+    uint8_t     (*write)(void* handle,uint8_t addr,const uint8_t *dat,uint16_t len);
     //获得电平
     uint8_t     (*read)(void* handle,uint8_t addr,uint8_t *dat,uint16_t len);
     //获得电平
@@ -20,7 +20,7 @@ inline void ev_dri_i2c_init(EV_DRI_T(I2C) *i2c){
     if(i2c&&i2c->init)
         i2c->init(i2c->handle);
 }
-inline uint8_t ev_dri_i2c_write(EV_DRI_T(I2C) *i2c,uint8_t addr,uint8_t *dat,uint16_t len){
+inline uint8_t ev_dri_i2c_write(EV_DRI_T(I2C) *i2c,uint8_t addr,const uint8_t *dat,uint16_t len){
     if(i2c&&i2c->write)
         return i2c->write(i2c->handle,addr,dat,len);
     return 0;

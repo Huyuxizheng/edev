@@ -16,6 +16,9 @@ typedef uint8_t (*edev_vals_create_t)(ev_obj_t *obj);
 //自变量释放方法
 typedef void (*edev_vals_free_t)(ev_obj_t *obj);
 
+extern void ev_obj_free(ev_obj_t *obj);
+extern ev_obj_t* ev_obj_create(ev_type_t *type);
+
 //设备类型
 typedef struct ev_type_t{
     char                *name;
@@ -83,6 +86,7 @@ enum{
     EVO_E(ADAPT),           //开始自适应
     EVO_E(SUPPORT),         //检测是否支持设备
     EVO_E(STARE),           //设备方法的开始
+    EVO_E(INIT),            //配置初始化
 };//最多支持65535个，没必要考虑更多的情况
 
 //EVO_HELP 帮助信息 注释或打印
@@ -95,8 +99,8 @@ typedef struct {
 enum{
     EVP_NONE = 0,    //缺省
     EVP_HIGH,        //最大功耗
-    EVP_OPEN,        //正常活跃中
     EVP_IDLE,        //空闲，低功耗
+    EVP_OPEN,        //正常活跃中
     EVP_CLOSE,       //完全关闭，断电
 };
 //EVO_LINK 默认电源配置,可重定义
@@ -121,13 +125,18 @@ typedef struct {
 //EVO_LINK 默认的连接下级设备
 typedef struct {
     uint8_t      clean_flag;//是否清理为适配子设备 为真会自动释放上级设备为零的未适配子设备
-}EVO_T(ADAPT);
+}EVO_T(ADAPT);//自适应成功返回0
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_obj_t      *obj;//需要检测是否支持这个设备，支持返回真
+    ev_obj_t      *obj;//需要检测是否支持这个设备，支持返回0
 }EVO_T(SUPPORT);
 
+
+//INIT 初始化设备
+typedef struct {
+    uint8_t      no_arg;
+}EVO_T(INIT);
 
 //--------------------------------
 //事件类型edev event -> eve
