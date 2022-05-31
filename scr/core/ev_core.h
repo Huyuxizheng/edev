@@ -17,7 +17,7 @@ typedef uint8_t (*edev_vals_create_t)(ev_obj_t *obj);
 typedef void (*edev_vals_free_t)(ev_obj_t *obj);
 
 extern void ev_obj_free(ev_obj_t *obj);
-extern ev_obj_t* ev_obj_create(ev_type_t *type);
+extern ev_obj_t* ev_obj_create(const ev_type_t *type);
 
 //设备类型
 typedef struct ev_type_t{
@@ -42,7 +42,7 @@ typedef struct ev_type_t{
 //设备对象结构
 typedef struct ev_obj_t{
     void            *vals;      //动态属性
-    ev_type_t       *type;   //方法列表
+    const ev_type_t       *type;   //方法列表
     void            *lock;      //设备锁，可选
     uint8_t         share;      //上级设备数量
 }ev_obj_t;
@@ -112,7 +112,7 @@ typedef struct {
 //EVO_LINK 默认的连接下级设备
 typedef struct {
     ev_obj_t      *obj;//嵌套其他设备 W25WXX
-    ev_drive_t    *drive;//芯片驱动 GPIO,SPI
+    const ev_drive_t    *drive;//芯片驱动 GPIO,SPI
 }EVO_T(LINK);
 
 

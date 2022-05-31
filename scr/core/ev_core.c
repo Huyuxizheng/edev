@@ -23,7 +23,7 @@ void ev_obj_free(ev_obj_t *obj)
 }
 
 
-ev_obj_t* ev_obj_create(ev_type_t *type)
+ev_obj_t* ev_obj_create(const ev_type_t *type)
 {
     ev_obj_t *obj = ev_malloc(sizeof(ev_obj_t));
 
@@ -64,36 +64,40 @@ uint8_t __ev_obj_fun(ev_obj_t *obj, uint16_t op, void *arg)
 
     if(obj->type->list[op])
     {
-        if(!ev_absolute_global_lock_en)
-        {
-            if(obj->lock)
+        #ifdef EV_CONFIG_OS_LOCK_EN
+            if(!ev_absolute_global_lock_en)
             {
-                ev_os_lock(obj->lock);
+                if(obj->lock)
+                {
+                    ev_os_lock(obj->lock);
+                }
+                uint8_t ret = obj->type->list[op](obj, arg);
+                if(obj->lock)
+                {
+                    ev_os_unlock(obj->lock);
+                }
+                return ret;
             }
-            uint8_t ret = obj->type->list[op](obj, arg);
-            if(obj->lock)
+            else
             {
-                ev_os_unlock(obj->lock);
+                if(!ev_global_lock)
+                {
+                    ev_global_lock = ev_os_lock_create();
+                }
+                if(ev_global_lock)
+                {
+                    ev_os_lock(ev_global_lock);
+                }
+                uint8_t ret = obj->type->list[op](obj, arg);
+                if(ev_global_lock)
+                {
+                    ev_os_unlock(ev_global_lock);
+                }
+                return ret;
             }
-            return ret;
-        }
-        else
-        {
-            if(!ev_global_lock)
-            {
-                ev_global_lock = ev_os_lock_create();
-            }
-            if(ev_global_lock)
-            {
-                ev_os_lock(ev_global_lock);
-            }
-            uint8_t ret = obj->type->list[op](obj, arg);
-            if(ev_global_lock)
-            {
-                ev_os_unlock(ev_global_lock);
-            }
-            return ret;
-        }
+        #else
+            return obj->type->list[op](obj, arg);
+        #endif
     }
     return 0;
 }
@@ -103,6 +107,7 @@ void ev_obj_fun_absolute_security_en(uint8_t en)
 }
 uint8_t ev_obj_fun_obj_security_en(ev_obj_t *obj,uint8_t en)
 {
+#ifdef EV_CONFIG_OS_LOCK_EN
     if(en)
     {
         if(!obj->lock)
@@ -122,6 +127,7 @@ uint8_t ev_obj_fun_obj_security_en(ev_obj_t *obj,uint8_t en)
             obj->lock = 0;
         }
     }
+#endif
     return 0;
 }
 uint8_t _ev_obj_fun_security(ev_obj_t *obj, uint16_t op, void *arg)
@@ -130,6 +136,7 @@ uint8_t _ev_obj_fun_security(ev_obj_t *obj, uint16_t op, void *arg)
     ev_type_assert(obj)
     ev_op_assert(obj,op)
 
+#ifdef EV_CONFIG_OS_LOCK_EN
     if(obj->type->list[op])
     {
         if(!ev_global_lock)
@@ -148,6 +155,9 @@ uint8_t _ev_obj_fun_security(ev_obj_t *obj, uint16_t op, void *arg)
         return ret;
     }
     return 0;
+#else
+    return __ev_obj_fun(obj,op,arg);
+#endif
 }
 
 uint8_t _ev_obj_share_add(ev_obj_t *obj,ev_obj_t *share_obj)

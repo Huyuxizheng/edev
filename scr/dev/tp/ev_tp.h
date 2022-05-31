@@ -17,7 +17,7 @@ typedef struct{
     uint16_t x;
     uint16_t y;
     uint32_t tick;
-    uint8_t  statie;
+    uint8_t  state;
 }EVO_T(TP_GET_OUT);
 
 typedef struct {

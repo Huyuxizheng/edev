@@ -106,6 +106,8 @@ EV_TYPE_FUN_DEF(ev_tp_type,TP_GET)
 
     if(!vals->obj){return 1;}//未自适应
 
+    _ev_obj_fun(vals->obj,TP_IC_GET,arg->out);
+
     return 0;
 }
 

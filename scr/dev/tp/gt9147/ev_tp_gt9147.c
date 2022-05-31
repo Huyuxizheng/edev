@@ -40,11 +40,8 @@ const uint8_t GT9147_CFG[]=
 #define GT_PID_REG 		(const uint8_t []){0X81,0x40}   	//GT9147产品ID寄存器
 
 #define GT_GSTID_REG 	(const uint8_t []){0X81,0X4E}  	//GT9147当前检测到的触摸情况
-#define GT_TP1_REG 		0X81,0X50  	//第一个触摸点数据地址
-#define GT_TP2_REG 		0X81,0X58		//第二个触摸点数据地址
-#define GT_TP3_REG 		0X81,0X60		//第三个触摸点数据地址
-#define GT_TP4_REG 		0X81,0X68		//第四个触摸点数据地址
-#define GT_TP5_REG 		0X81,0X70		//第五个触摸点数据地址  
+#define GT_TP1_REG 		(const uint8_t []){0X81,0X50}  	//第一个触摸点数据地址
+
 
 
 typedef struct {
@@ -211,7 +208,7 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
 
     return 0;
 }
-const uint8_t GT9147_TPX[10]={GT_TP1_REG,GT_TP2_REG,GT_TP3_REG,GT_TP4_REG,GT_TP5_REG};
+
 EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_IC_GET)
 {
     EV_TYPE_FUN_GET_ARG(TP_GET);
@@ -219,7 +216,35 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_IC_GET)
     ev_tp_gt9147_val_t *vals = self->vals;
 
 
+    uint8_t dat[5] = {0};
+    ev_dri_i2c_write(vals->i2c,GT9147_ADD,GT_GSTID_REG,2);
+    ev_dri_i2c_read(vals->i2c,GT9147_ADD,dat,1);
 
+    if((dat[0]&0X80) == 0)
+    {
+        return 1;  
+    }
+
+    arg->out->tick  = ev_get_tick();
+    if((dat[0]&0X10) == 0)
+    {
+         arg->out->state = 0;
+    }
+    else
+    {
+
+        ev_dri_i2c_write(vals->i2c,GT9147_ADD,GT_TP1_REG,2);
+        ev_dri_i2c_read(vals->i2c,GT9147_ADD,dat,4);
+
+        arg->out->state = 1;
+        arg->out->x = ((uint16_t)dat[1]<<8)|dat[0];
+        arg->out->y = ((uint16_t)dat[3]<<8)|dat[2];
+    }
+
+    dat[0] = GT_GSTID_REG[0];
+    dat[1] = GT_GSTID_REG[1];
+    dat[2] = 0x00;
+    ev_dri_i2c_write(vals->i2c,GT9147_ADD,dat,3);
     return 0;
 }
 

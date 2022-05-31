@@ -11,19 +11,19 @@ enum {
 
 typedef struct{
     //可选的 GPIO组
-    uint32_t    group;
+    void*      group;
     //可选的 GPIO pin脚编号
     uint32_t    pin;
     //获得电平
-    void        (*init)(uint32_t group,uint32_t pin,uint8_t mode);
+    void        (*init)(void* group,uint32_t pin,uint8_t mode);
     //设置电平
-    void        (*set_cb)(uint32_t group,uint32_t pin,ev_obj_cb_t cb,void *param);
+    void        (*set_cb)(void* group,uint32_t pin,ev_obj_cb_t cb,void *param);
     //设置电平
-    void        (*set)(uint32_t group,uint32_t pin,uint8_t val);
+    void        (*set)(void* group,uint32_t pin,uint8_t val);
     //获得电平
-    uint8_t     (*get)(uint32_t group,uint32_t pin);
+    uint8_t     (*get)(void* group,uint32_t pin);
     //获得电平
-    void        (*uninit)(uint32_t group,uint32_t pin);
+    void        (*uninit)(void* group,uint32_t pin);
 }const EV_DRI_T(GPIO_INT);
 
 

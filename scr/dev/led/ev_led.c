@@ -1,4 +1,7 @@
-﻿#include "./dev/led/ev_led.h"
+﻿
+#include "./dev/led/ev_led.h"
+#include "./dri/ev_dri_gpio.h"
+
 #include "edev_config.h"
 
 typedef struct{
@@ -81,7 +84,14 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
     ev_led_vals_t *vals = self->vals;
     if(vals->gpio)
     {
-        ev_dri_gpio_set(vals->gpio,vals->en_val);
+        if(arg->state)
+        {
+            ev_dri_gpio_set(vals->gpio,vals->en_val);
+        }
+        else
+        {
+            ev_dri_gpio_set(vals->gpio,!vals->en_val);
+        }
     }
     return 0;
 }
