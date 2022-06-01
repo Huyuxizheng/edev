@@ -112,7 +112,7 @@ typedef struct {
 //EVO_LINK 默认的连接下级设备
 typedef struct {
     ev_obj_t      *obj;//嵌套其他设备 W25WXX
-    const ev_drive_t    *drive;//芯片驱动 GPIO,SPI
+    ev_drive_t    *drive;//芯片驱动 GPIO,SPI
 }EVO_T(LINK);
 
 
