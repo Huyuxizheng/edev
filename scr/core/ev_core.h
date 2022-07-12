@@ -7,14 +7,12 @@
 typedef struct ev_obj_t ev_obj_t;
 typedef struct ev_type_t ev_type_t;
 
+#define EV_TO_RAM(type,...)  (         type[]){{__VA_ARGS__}}
+#define EV_TO_ROM(type,...)  (const    type[]){{__VA_ARGS__}}
+
 //------------------------------
 //方法原型
 typedef uint8_t (*edev_obj_fun_t)(ev_obj_t *self,void *arg);
-
-//自变量构造方法,成功返回0,vals成员不作为判断依据
-typedef uint8_t (*edev_vals_create_t)(ev_obj_t *obj);
-//自变量释放方法
-typedef void (*edev_vals_free_t)(ev_obj_t *obj);
 
 extern void ev_obj_free(ev_obj_t *obj);
 extern ev_obj_t* ev_obj_create(const ev_type_t *type);
@@ -22,8 +20,6 @@ extern ev_obj_t* ev_obj_create(const ev_type_t *type);
 //设备类型
 typedef struct ev_type_t{
     char                *name;
-    edev_vals_create_t  vals_create;
-    edev_vals_free_t    vals_free;
 
     uint16_t        total;      //方法总数
     const edev_obj_fun_t  *list;       //方法清单
@@ -36,21 +32,32 @@ typedef struct ev_type_t{
 //方法定义
 #define EV_TYPE_FUN_DEF(type,OP)        static uint8_t EV_TYPE_FUN(type,OP)(ev_obj_t *self,void *_arg)
 //获得参数到 arg变量
-#define EV_TYPE_FUN_GET_ARG(OP)          const EVO_T(OP) *arg = _arg
+#define EV_TYPE_FUN_GET_ARG(type,OP)    const EVO_T(OP) *arg = _arg;const EVO_ATTR_T(type) *attr = (const EVO_ATTR_T(type) *)self->attr;
+
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
+
+//基本属性，放在头位置
+typedef struct {
+    void **lock;
+}ev_obj_attr_base_t;
 
 //设备对象结构
 typedef struct ev_obj_t{
-    void            *vals;      //动态属性
-    const ev_type_t       *type;   //方法列表
-    void            *lock;      //设备锁，可选
-    uint8_t         share;      //上级设备数量
+    const char                  *name;      //对象名，用于打印信息
+    const ev_type_t             *type;      //方法列表
+    const ev_obj_attr_base_t    *attr;      //对象属性
 }ev_obj_t;
 
-//股分增加
-extern uint8_t _ev_obj_share_add(ev_obj_t *obj,ev_obj_t *share_obj);
-//股分减少，返回总股数，为零可以释放
-extern uint8_t _ev_obj_share_sub(ev_obj_t *obj,ev_obj_t *share_obj);
+#define EVO_ATTR_BASE_INIT .lock = EV_TO_RAM(void*,0),
+#define EVO_ATTR_INIT(type)  type##_attr_init
+#define EVO_ATTR_T(type)     type##_attr_t
+  
+#define EVO_ATTR_DEF(type, ...)  (const EVO_ATTR_T(type) []){{EVO_ATTR_BASE_INIT EVO_ATTR_INIT(type) __VA_ARGS__}}
+
+#define _ev_obj_forge(type,NAME, ...)  (ev_obj_t []){{.name = NAME,.type = EVO_ATTR_DEF(type, __VA_ARGS__)}}
+
+
+
 
 //断言-错误返回1
 #define ev_obj_assert(obj) \
@@ -59,8 +66,8 @@ if(!obj){ev_warning("%s obj null\r\n",__fun__);return 1;}
 #define ev_type_assert(obj) \
 if(!obj->type){ev_warning("%s type null\r\n",__fun__);return 1;}
 
-#define ev_vals_assert(obj) \
-if(!obj->vals){ev_warning("%s vals null\r\n",__fun__);return 1;}
+#define ev_attr_assert(obj) \
+if(!obj->attr){ev_warning("%s attr null\r\n",__fun__);return 1;}
 
 #define ev_op_assert(obj,op) \
 if(op >= obj->type->total)\

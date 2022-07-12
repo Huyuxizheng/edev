@@ -24,6 +24,4 @@ extern uint8_t ev_obj_list_del_obj(ev_obj_list_t *list,ev_obj_t    *obj);
 //复位列表
 extern void    ev_obj_list_reset(ev_obj_list_t *list);
 
-
-
 #endif

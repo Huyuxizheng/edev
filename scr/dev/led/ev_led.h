@@ -31,4 +31,11 @@ typedef struct {
 
 extern const ev_type_t ev_led_type;
 
+typedef struct{
+    ev_obj_attr_base_t base;
+    EV_DRI_T(GPIO) *gpio;
+    uint8_t         en_val;
+}EVO_ATTR_T(ev_led_type);
+#define ev_led_type_attr_init
+
 #endif
