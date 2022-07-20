@@ -107,4 +107,3 @@ uint8_t _ev_obj_fun_security(ev_obj_t *obj, uint16_t op, void *arg)
 #endif
 }
 
-ev_drive_t *GP = ev_drive_forge(GPIO, .init = 0,);

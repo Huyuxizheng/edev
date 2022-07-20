@@ -14,8 +14,6 @@ typedef struct ev_type_t ev_type_t;
 //方法原型
 typedef uint8_t (*edev_obj_fun_t)(ev_obj_t *self,void *arg);
 
-extern void ev_obj_free(ev_obj_t *obj);
-extern ev_obj_t* ev_obj_create(const ev_type_t *type);
 
 //设备类型
 typedef struct ev_type_t{
@@ -36,25 +34,25 @@ typedef struct ev_type_t{
 
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
 
-//基本属性，放在头位置
+//基本属性，放在头位置 成员名base
 typedef struct {
     void **lock;
+    const char  *name;      //对象名，用于打印信息
 }ev_obj_attr_base_t;
 
 //设备对象结构
 typedef struct ev_obj_t{
-    const char                  *name;      //对象名，用于打印信息
     const ev_type_t             *type;      //方法列表
     const ev_obj_attr_base_t    *attr;      //对象属性
 }ev_obj_t;
 
-#define EVO_ATTR_BASE_INIT .lock = EV_TO_RAM(void*,0),
+#define EVO_ATTR_BASE_INIT   .base.lock = EV_TO_RAM(void*,0),
 #define EVO_ATTR_INIT(type)  type##_attr_init
 #define EVO_ATTR_T(type)     type##_attr_t
   
 #define EVO_ATTR_DEF(type, ...)  (const EVO_ATTR_T(type) []){{EVO_ATTR_BASE_INIT EVO_ATTR_INIT(type) __VA_ARGS__}}
 
-#define _ev_obj_forge(type,NAME, ...)  (ev_obj_t []){{.name = NAME,.type = EVO_ATTR_DEF(type, __VA_ARGS__)}}
+#define _ev_obj_forge(_type, ...)  (ev_obj_t []){{.type = EVO_ATTR_DEF(_type, __VA_ARGS__)}}
 
 
 
