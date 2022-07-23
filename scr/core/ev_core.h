@@ -3,12 +3,14 @@
 
 #include "stdint.h"
 #include "./dri/ev_dri.h"
+#include "./core/ev_pp.h"
 
 typedef struct ev_obj_t ev_obj_t;
 typedef struct ev_type_t ev_type_t;
 
-#define EV_TO_RAM(type,...)  (         type[]){{__VA_ARGS__}}
-#define EV_TO_ROM(type,...)  (const    type[]){{__VA_ARGS__}}
+#define EV_TO_RAM(type,...)  (         type[]){__VA_ARGS__}
+#define EV_TO_ROM(type,...)  (const    type[]){__VA_ARGS__}
+
 
 //------------------------------
 //方法原型
@@ -34,6 +36,11 @@ typedef struct ev_type_t{
 
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
 
+#define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP) ,
+
+#define EV_TYPE_LIST_DEF(type,...) static const edev_obj_fun_t EV_TYPE_LIST(type)[] = {EV_PP_FOR_EACH(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
+
+
 //基本属性，放在头位置 成员名base
 typedef struct {
     void **lock;
@@ -50,9 +57,9 @@ typedef struct ev_obj_t{
 #define EVO_ATTR_INIT(type)  type##_attr_init
 #define EVO_ATTR_T(type)     type##_attr_t
   
-#define EVO_ATTR_DEF(type, ...)  (const EVO_ATTR_T(type) []){{EVO_ATTR_BASE_INIT EVO_ATTR_INIT(type) __VA_ARGS__}}
+#define EVO_ATTR_DEF(type, ...)  (const ev_obj_attr_base_t*)(const EVO_ATTR_T(type) []){{EVO_ATTR_BASE_INIT EVO_ATTR_INIT(type) __VA_ARGS__}}
 
-#define _ev_obj_forge(_type, ...)  (ev_obj_t []){{.type = EVO_ATTR_DEF(_type, __VA_ARGS__)}}
+#define _ev_obj_forge(_type, ...)  (ev_obj_t *)(const ev_obj_t []){{.type = &_type,.attr = EVO_ATTR_DEF(_type, __VA_ARGS__)}}
 
 
 

@@ -83,12 +83,12 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET_EN_VAL)
     return 0;
 }
 
-static const edev_obj_fun_t EV_TYPE_LIST(ev_led_type)[] ={
-    EV_TYPE_LIST_ADD_FUN(ev_led_type,HELP),
-    EV_TYPE_LIST_ADD_FUN(ev_led_type,POWER),
-    EV_TYPE_LIST_ADD_FUN(ev_led_type,LED_SET),
-};
-
+// static const edev_obj_fun_t EV_TYPE_LIST(ev_led_type)[] ={
+//     EV_TYPE_LIST_ADD_FUN(ev_led_type,HELP),
+//     EV_TYPE_LIST_ADD_FUN(ev_led_type,POWER),
+//     EV_TYPE_LIST_ADD_FUN(ev_led_type,LED_SET),
+// };
+EV_TYPE_LIST_DEF(ev_led_type,HELP,POWER,LED_SET);
 const ev_type_t ev_led_type = {
     .name = "ev_led_type",
 
