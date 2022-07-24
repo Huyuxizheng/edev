@@ -8,7 +8,7 @@
 
 #include "./core/ev_core.h"
 
-enum{
+enum{//方法列表
     EVO_E(LED_SET) = EVO_E(STARE),
     EVO_E(LED_TOGLE),
     EVO_E(LED_SET_EN_VAL),
@@ -31,11 +31,13 @@ typedef struct {
 
 extern const ev_type_t ev_led_type;
 
-typedef struct{
-    ev_obj_attr_base_t base;
-    EV_DRI_T(GPIO) *gpio;
-    uint8_t         en_val;
+typedef struct{//属性列表
+    ev_obj_attr_base_t  base;
+    ev_obj_t            *gpio;
+    uint8_t             en_val;
 }EVO_ATTR_T(ev_led_type);
+
+
 #define ev_led_type_attr_init
 
 #endif

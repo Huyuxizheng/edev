@@ -39,6 +39,14 @@ typedef struct ev_type_t{
 #define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP) ,
 
 #define EV_TYPE_LIST_DEF(type,...) static const edev_obj_fun_t EV_TYPE_LIST(type)[] = {EV_PP_FOR_EACH(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
+//为方便调试，不过度封装
+#define EV_TYPE_DEF(type) ( ev_type_t ){\
+    .name = #type,\
+    .total = EV_TYPE_TOTAL(type),\
+    .list  = EV_TYPE_LIST(type),\
+    };\
+
+
 
 
 //基本属性，放在头位置 成员名base
@@ -95,10 +103,10 @@ enum{
     EVO_E(POWER),           //默认电源配置,可重定义
     EVO_E(LINK),            //默认连接下级设备,可重定义 需要维护下级obj的share属性
     EVO_E(SET_CB),          //默认设置回调,可重定义
+    EVO_E(INIT),            //配置初始化
     EVO_E(ADAPT),           //开始自适应
     EVO_E(SUPPORT),         //检测是否支持设备
     EVO_E(STARE),           //设备方法的开始
-    EVO_E(INIT),            //配置初始化
 };//最多支持65535个，没必要考虑更多的情况
 
 //EVO_HELP 帮助信息 注释或打印
