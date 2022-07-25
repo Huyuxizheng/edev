@@ -7,8 +7,8 @@
 typedef struct ev_obj_t ev_obj_t;
 typedef struct ev_type_t ev_type_t;
 
-#define EV_TO_RAM(type,...)  (         type[]){__VA_ARGS__}
-#define EV_TO_ROM(type,...)  (const    type[]){__VA_ARGS__}
+#define EV_TO_RAM(type,...)  (type *)(         type[]){__VA_ARGS__}
+#define EV_TO_ROM(type,...)  (type *)(const    type[]){__VA_ARGS__}
 
 
 //------------------------------

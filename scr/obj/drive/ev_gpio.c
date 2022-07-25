@@ -6,7 +6,7 @@
 
 EV_TYPE_FUN_DEF(ev_gpio_type,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,LINK);
+    EV_TYPE_FUN_GET_ARG(ev_gpio_type,LINK);
 /*
 );                                       
 */

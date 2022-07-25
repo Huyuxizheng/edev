@@ -6,6 +6,7 @@
 
 #include "./obj/led/ev_led.h"
 #include "./obj/tp/ev_tp.h"
+#include "./obj/drive/ev_gpio.h"
 
 //锻造版驱动
 #define ev_drive_forge(DRI, ...)    _ev_drive_forge(DRI, __VA_ARGS__)

@@ -1,6 +1,7 @@
 ﻿
+#include "./core/ev_core.h"
 #include "./obj/led/ev_led.h"
-
+#include "./obj/drive/ev_gpio.h"
 #include "edev_config.h"
 
 
@@ -32,22 +33,14 @@ EV_TYPE_FUN_DEF(ev_led_type,HELP)
 }
 
 
-EV_TYPE_FUN_DEF(ev_led_type,POWER)
+EV_TYPE_FUN_DEF(ev_led_type,INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,POWER);
+    EV_TYPE_FUN_GET_ARG(ev_led_type,INIT);
 
     if(attr->gpio)
     {
-        switch(arg->evp)
-        {
-            case EVP_NONE:case EVP_HIGH:case EVP_OPEN:
-                //ev_dri_gpio_init(attr->gpio);
-            break;
-            case EVP_IDLE:case EVP_CLOSE:
-                //ev_dri_gpio_uninit(attr->gpio);
-            break;
-        }
-
+        
+        _ev_obj_fun(attr->gpio, GPIO_INIT_OUT,0);  
         return 0;
     }
 
@@ -82,6 +75,6 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET_EN_VAL)
     return 0;
 }
 
-EV_TYPE_LIST_DEF(ev_led_type,HELP,POWER,LED_SET);
+EV_TYPE_LIST_DEF(ev_led_type,HELP,INIT,LED_SET);
 
 const ev_type_t ev_led_type = EV_TYPE_DEF(ev_led_type);
