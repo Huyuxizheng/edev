@@ -13,7 +13,7 @@ uint8_t ev_obj_list_add_obj_filter(ev_obj_list_t *list,ev_obj_t    *obj)
         }
         node = node->next;
     }
-    node->next = ev_malloc(sizeof(ev_obj_node_t));
+    node->next = (ev_obj_node_t *)ev_malloc(sizeof(ev_obj_node_t));
     if(!node->next)
     {
         return 1;
@@ -32,7 +32,7 @@ uint8_t ev_obj_list_add_obj(ev_obj_list_t *list,ev_obj_t    *obj)
     {
         node = node->next;
     }
-    node->next = ev_malloc(sizeof(ev_obj_node_t));
+    node->next = (ev_obj_node_t *)ev_malloc(sizeof(ev_obj_node_t));
     if(!node->next)
     {
         return 1;

@@ -42,10 +42,10 @@ EV_TYPE_FUN_DEF(ev_led_type,POWER)
         switch(arg->evp)
         {
             case EVP_NONE:case EVP_HIGH:case EVP_OPEN:
-                ev_dri_gpio_init(attr->gpio);
+                //ev_dri_gpio_init(attr->gpio);
             break;
             case EVP_IDLE:case EVP_CLOSE:
-                ev_dri_gpio_uninit(attr->gpio);
+                //ev_dri_gpio_uninit(attr->gpio);
             break;
         }
 
@@ -61,11 +61,11 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
     {
         if(arg->state)
         {
-            ev_dri_gpio_set(attr->gpio,attr->en_val);
+            //ev_dri_gpio_set(attr->gpio,attr->en_val);
         }
         else
         {
-            ev_dri_gpio_set(attr->gpio,!attr->en_val);
+            //ev_dri_gpio_set(attr->gpio,!attr->en_val);
         }
     }
     return 0;
@@ -77,7 +77,7 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET_EN_VAL)
 
     if(attr->gpio)
     {
-            ev_dri_gpio_togle(attr->gpio);
+            //ev_dri_gpio_togle(attr->gpio);
     }
 
     return 0;

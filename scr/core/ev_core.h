@@ -32,12 +32,21 @@ typedef struct ev_type_t{
 //方法定义
 #define EV_TYPE_FUN_DEF(type,OP)        static uint8_t EV_TYPE_FUN(type,OP)(ev_obj_t *self,void *_arg)
 //获得参数到 arg变量
-#define EV_TYPE_FUN_GET_ARG(type,OP)    const EVO_T(OP) *arg = _arg;const EVO_ATTR_T(type) *attr = (const EVO_ATTR_T(type) *)self->attr;
+#define EV_TYPE_FUN_GET_ARG(type,OP)    const EVO_T(OP) *arg = (EVO_T(OP) *)_arg;const EVO_ATTR_T(type) *attr = (const EVO_ATTR_T(type) *)self->attr;
+
+
+//方法定义接口
+#define _EV_FUN_ARG_DEF(CTX,VAR,IDX)  VAR ;
+#define EV_FUN_DEF(OP,...) \
+typedef struct {\
+EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__)\
+}EVO_T(OP)
+
+
+
 
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
-
-#define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP) ,
-
+#define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP),
 #define EV_TYPE_LIST_DEF(type,...) static const edev_obj_fun_t EV_TYPE_LIST(type)[] = {EV_PP_FOR_EACH(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
 //为方便调试，不过度封装
 #define EV_TYPE_DEF(type) ( ev_type_t ){\
@@ -68,6 +77,9 @@ typedef struct ev_obj_t{
 #define EVO_ATTR_DEF(type, ...)  (const ev_obj_attr_base_t*)(const EVO_ATTR_T(type) []){{EVO_ATTR_BASE_INIT EVO_ATTR_INIT(type) __VA_ARGS__}}
 
 #define _ev_obj_forge(_type, ...)  (ev_obj_t *)(const ev_obj_t []){{.type = &_type,.attr = EVO_ATTR_DEF(_type, __VA_ARGS__)}}
+
+
+
 
 
 
