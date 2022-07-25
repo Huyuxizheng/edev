@@ -1,6 +1,5 @@
 ﻿
-#include "./dev/led/ev_led.h"
-#include "./dri/ev_dri_gpio.h"
+#include "./obj/led/ev_led.h"
 
 #include "edev_config.h"
 

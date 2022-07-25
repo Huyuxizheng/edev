@@ -4,8 +4,8 @@
 #include "./edev_config.h"
 #include "./core/ev_core.h"
 
-#include "./dev/led/ev_led.h"
-#include "./dev/tp/ev_tp.h"
+#include "./obj/led/ev_led.h"
+#include "./obj/tp/ev_tp.h"
 
 //锻造版驱动
 #define ev_drive_forge(DRI, ...)    _ev_drive_forge(DRI, __VA_ARGS__)

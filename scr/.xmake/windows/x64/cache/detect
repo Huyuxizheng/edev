@@ -1,0 +1,55 @@
+{
+    find_program = {
+        ["vswhere.exe"] = [[C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe]],
+        ldc2 = false,
+        ["cl.exe"] = [[D:\R\VS\M\VC\Tools\MSVC\14.29.30037\bin\HostX64\x64\cl.exe]],
+        dmd = false,
+        gdc = false,
+        zig = false,
+        ccache = "ccache",
+        ["ccache arm-none-eabi-gcc"] = "ccache arm-none-eabi-gcc"
+    },
+    ["lib.detect.has_flags"] = {
+        ["windows_x64_ccache arm-none-eabi-gcc_10.3-2021.10_cc_cxflags__-MMD -MF"] = true,
+        ["windows_x64_ccache arm-none-eabi-gcc_10.3-2021.10_cc_cxflags__-fdiagnostics-color=always"] = true
+    },
+    ["detect.tools.gcc.has_flags"] = {
+        ["ccache arm-none-eabi-gcc_10.3-2021.10"] = {
+            ["-no-canonical-prefixes"] = true,
+            ["-Xpreprocessor"] = true,
+            ["-Xassembler"] = true,
+            ["-dumpmachine"] = true,
+            ["-o"] = true,
+            ["-print-multi-os-directory"] = true,
+            ["-print-libgcc-file-name"] = true,
+            ["-print-sysroot-headers-suffix"] = true,
+            ["-x"] = true,
+            ["-v"] = true,
+            ["-c"] = true,
+            ["-pass-exit-codes"] = true,
+            ["-dumpversion"] = true,
+            ["--param"] = true,
+            ["-pipe"] = true,
+            ["-dumpspecs"] = true,
+            ["-Xlinker"] = true,
+            ["-time"] = true,
+            ["-print-multi-directory"] = true,
+            ["-print-sysroot"] = true,
+            ["--help"] = true,
+            ["--target-help"] = true,
+            ["-pie"] = true,
+            ["-print-search-dirs"] = true,
+            ["-B"] = true,
+            ["-print-multi-lib"] = true,
+            ["-E"] = true,
+            ["-shared"] = true,
+            ["-print-multiarch"] = true,
+            ["-S"] = true,
+            ["--version"] = true,
+            ["-save-temps"] = true
+        }
+    },
+    find_programver = {
+        ["ccache arm-none-eabi-gcc"] = "10.3-2021.10"
+    }
+}

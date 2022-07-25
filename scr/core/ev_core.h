@@ -2,7 +2,6 @@
 #define __EDEV_CORE_H__
 
 #include "stdint.h"
-#include "./dri/ev_dri.h"
 #include "./core/ev_pp.h"
 
 typedef struct ev_obj_t ev_obj_t;
@@ -143,12 +142,12 @@ typedef struct {
 
 //EVO_LINK 默认的连接下级设备
 typedef struct {
-    ev_obj_t      *obj;//嵌套其他设备 W25WXX
-    ev_drive_t    *drive;//芯片驱动 GPIO,SPI
+    ev_obj_t      *obj;
 }EVO_T(LINK);
 
 
 //EVO_SET_CB 默认的设置回调
+typedef void (*ev_obj_cb_t)(void *param,uint16_t event,void *arg);
 typedef struct {
     ev_obj_cb_t cb;
     void *param;//传给回调

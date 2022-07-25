@@ -1,0 +1,44 @@
+{
+    msvc_arch_x64_plat_windows = {
+        vs_toolset = "14.29.30037",
+        vs = "2019",
+        vcvars = {
+            VCToolsRedistDir = [[D:\R\VS\M\VC\Redist\MSVC\14.29.30036\]],
+            VS120COMNTOOLS = [[D:\R\VS13\Common7\Tools\]],
+            VCIDEInstallDir = [[D:\R\VS\M\Common7\IDE\VC\]],
+            VCINSTALLDIR = [[D:\R\VS\M\VC\]],
+            LIB = [[D:\R\VS\M\VC\Tools\MSVC\14.29.30037\ATLMFC\lib\x64;D:\R\VS\M\VC\Tools\MSVC\14.29.30037\lib\x64;D:\Windows Kits\10\lib\10.0.19041.0\ucrt\x64;D:\Windows Kits\10\lib\10.0.19041.0\um\x64]],
+            VSCMD_ARG_TGT_ARCH = "x64",
+            WindowsLibPath = [[D:\Windows Kits\10\UnionMetadata\10.0.19041.0;D:\Windows Kits\10\References\10.0.19041.0]],
+            WindowsSdkBinPath = [[D:\Windows Kits\10\bin\]],
+            VSCMD_VER = "16.10.3",
+            WindowsSdkVerBinPath = [[D:\Windows Kits\10\bin\10.0.19041.0\]],
+            ExtensionSdkDir = [[C:\Program Files (x86)\Microsoft SDKs\Windows Kits\10\ExtensionSDKs]],
+            LIBPATH = [[D:\R\VS\M\VC\Tools\MSVC\14.29.30037\ATLMFC\lib\x64;D:\R\VS\M\VC\Tools\MSVC\14.29.30037\lib\x64;D:\R\VS\M\VC\Tools\MSVC\14.29.30037\lib\x86\store\references;D:\Windows Kits\10\UnionMetadata\10.0.19041.0;D:\Windows Kits\10\References\10.0.19041.0;C:\WINDOWS\Microsoft.NET\Framework64\v4.0.30319]],
+            DevEnvdir = [[D:\R\VS\M\Common7\IDE\]],
+            PATH = [[D:\R\VS\M\Common7\IDE\\Extensions\Microsoft\IntelliCode\CLI;D:\R\VS\M\VC\Tools\MSVC\14.29.30037\bin\HostX64\x64;D:\R\VS\M\Common7\IDE\VC\VCPackages;D:\R\VS\M\Common7\IDE\CommonExtensions\Microsoft\TestWindow;D:\R\VS\M\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer;D:\R\VS\M\MSBuild\Current\bin\Roslyn;D:\R\VS\M\Team Tools\Performance Tools\x64;D:\R\VS\M\Team Tools\Performance Tools;D:\R\VS\D\Common\VSPerfCollectionTools\vs2019\\x64;D:\R\VS\D\Common\VSPerfCollectionTools\vs2019\;C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\x64\;D:\R\VS\M\Common7\Tools\devinit;D:\Windows Kits\10\bin\10.0.19041.0\x64;D:\Windows Kits\10\bin\x64;D:\R\VS\M\\MSBuild\Current\Bin;C:\WINDOWS\Microsoft.NET\Framework64\v4.0.30319;D:\R\VS\M\Common7\IDE\;D:\R\VS\M\Common7\Tools\;C:\Users\YF\xmake;D:\R\python37\Scripts\;D:\R\python37\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\TortoiseSVN\bin;C:\Program Files\Pandoc\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;D:\R\platform-tools;D:\R\nodejs\;C:\Program Files\dotnet\;C:\Program Files (x86)\Bluetooth Command Line Tools\bin;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Nordic Semiconductor\nrf-command-line-tools\bin\;D:\R\ccache;D:\R\gcc-arm-none-eabi\10.3-2021.10\arm-none-eabi\bin;D:\R\gcc-arm-none-eabi\10.3-2021.10\bin;D:\R\gitp\bin;D:\R\python37\Scripts;D:\R\gitp\cmd;D:\R\MentorGraphics\PADSVX.2.5\SDD_HOME\CAMCAD;D:\mingw64\bin;D:\mingw64\lib;D:\mingw64\include;C:\Users\YF\AppData\Local\Programs\Python\Python37-32;c:\program files\esafenet\cobra docguard client;C:\Users\YF\AppData\Local\Microsoft\WindowsApps;C:\Users\YF\AppData\Local\Programs\Python\Python37-32\Scripts;C:\Users\YF\AppData\Roaming\Python\Python37\Scripts;D:\R\Microsoft VS Code\bin;C:\Users\YF\AppData\Roaming\npm;D:\R\Neovim\bin;C:\Users\YF\.dotnet\tools;D:\R\PyCharm 2021.3\bin;D:\R\PyCharm Community Edition 2021.3\bin;C:\Users\YF\AppData\Local\atom\bin;D:\R\VS\M\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;D:\R\VS\M\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;D:\R\VS\M\Common7\IDE\VC\Linux\bin\ConnectionManagerExe]],
+            UCRTVersion = "10.0.19041.0",
+            VCToolsInstallDir = [[D:\R\VS\M\VC\Tools\MSVC\14.29.30037\]],
+            VSCMD_ARG_app_plat = "Desktop",
+            VisualStudioVersion = "16.0",
+            WindowsSdkDir = [[D:\Windows Kits\10\]],
+            VCToolsVersion = "14.29.30037",
+            VSINSTALLDIR = [[D:\R\VS\M\]],
+            WindowsSDKVersion = "10.0.19041.0",
+            VSCMD_ARG_HOST_ARCH = "x64",
+            INCLUDE = [[D:\R\VS\M\VC\Tools\MSVC\14.29.30037\ATLMFC\include;D:\R\VS\M\VC\Tools\MSVC\14.29.30037\include;D:\Windows Kits\10\include\10.0.19041.0\ucrt;D:\Windows Kits\10\include\10.0.19041.0\shared;D:\Windows Kits\10\include\10.0.19041.0\um;D:\Windows Kits\10\include\10.0.19041.0\winrt;D:\Windows Kits\10\include\10.0.19041.0\cppwinrt]],
+            VS160COMNTOOLS = [[D:\R\VS\M\Common7\Tools\]],
+            UniversalCRTSdkDir = [[D:\Windows Kits\10\]]
+        },
+        plat = "windows",
+        __global = true,
+        arch = "x64",
+        vs_sdkver = "10.0.19041.0"
+    },
+    tool_target_edev_windows_x64_ld = {
+        program = "ccache arm-none-eabi-gcc"
+    },
+    tool_target_edev_windows_x64_cc = {
+        program = "ccache arm-none-eabi-gcc"
+    }
+}
