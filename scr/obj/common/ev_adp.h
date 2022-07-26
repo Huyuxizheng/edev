@@ -1,5 +1,5 @@
-﻿#ifndef __EDEV_LED_H__
-#define __EDEV_LED_H__
+﻿#ifndef __EDEV_ADP_H__
+#define __EDEV_ADP_H__
 
 /*
 一般的LED操作，可设置点亮，或反转电平
@@ -31,9 +31,9 @@ extern const ev_type_t ev_led_type;
 
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
-    const ev_obj_t            *gpio;
+    ev_obj_t            *gpio;
     uint8_t             en_val;
-}EVO_ATTR_T(ev_led_type);
+}EVO_ATTR_T(ev_adp_type);
 #define ev_led_type_attr_init 
 
 #endif

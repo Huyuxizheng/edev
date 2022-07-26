@@ -35,7 +35,7 @@ EV_FUN_DEF(GPIO_INIT_IN,uint8_t null);
 EV_FUN_DEF(GPIO_INIT_INT,uint8_t null);
 EV_FUN_DEF(GPIO_INT_CB,uint8_t null);
 
-EV_FUN_DEF(GPIO_INIT,uint8_t null);
+EV_FUN_DEF(GPIO_UNINIT,uint8_t null);
 
 extern const ev_type_t ev_gpio_type;
 

@@ -3,7 +3,7 @@ static void* ev_global_lock = 0;
 static uint8_t ev_absolute_global_lock_en = 0;
 
 
-uint8_t __ev_obj_fun(ev_obj_t *obj, uint16_t op, void *arg)
+uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
 {
     ev_obj_assert(obj)
     ev_type_assert(obj)
@@ -52,7 +52,7 @@ void ev_obj_fun_absolute_security_en(uint8_t en)
 {
     ev_absolute_global_lock_en  = en;
 }
-uint8_t ev_obj_fun_obj_security_en(ev_obj_t *obj,uint8_t en)
+uint8_t ev_obj_fun_obj_security_en(const ev_obj_t *obj,uint8_t en)
 {
 #ifdef EV_CONFIG_OS_LOCK_EN
     if(en)
@@ -77,7 +77,7 @@ uint8_t ev_obj_fun_obj_security_en(ev_obj_t *obj,uint8_t en)
 #endif
     return 0;
 }
-uint8_t _ev_obj_fun_security(ev_obj_t *obj, uint16_t op, void *arg)
+uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
 {
     ev_obj_assert(obj)
     ev_type_assert(obj)

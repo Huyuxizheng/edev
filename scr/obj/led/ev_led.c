@@ -7,7 +7,7 @@
 
 EV_TYPE_FUN_DEF(ev_led_type,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,LINK);
+    EV_TYPE_FUN_GET_ARG(ev_led_type,HELP);
 /*
     //创建led 的 gpio驱动
     ev_drive_s *led_gpio = ev_drive_forge(GPIO, 
@@ -78,3 +78,6 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET_EN_VAL)
 EV_TYPE_LIST_DEF(ev_led_type,HELP,INIT,LED_SET);
 
 const ev_type_t ev_led_type = EV_TYPE_DEF(ev_led_type);
+
+const ev_obj_t led_io = _ev_obj_forge(ev_gpio_type,0);
+const ev_obj_t led = _ev_obj_forge(ev_led_type, gpio:&led_io);

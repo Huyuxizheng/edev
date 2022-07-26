@@ -53,3 +53,4 @@ dkms.conf
 scr/.xmake/
 .vscode/
 scr/xmake.lua
+.xmake/
