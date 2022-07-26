@@ -15,26 +15,14 @@ EV_TYPE_FUN_DEF(ev_gpio_type,HELP)
 }
 
 
-// // state IO口要设置的状态
-// EV_FUN_DEF(GPIO_SET,uint8_t val);
-
-// //EVD_LED_TOGGLE
-// EV_FUN_DEF(GPIO_GET,uint8_t null);
-
-
-// EV_FUN_DEF(GPIO_INIT_OUT,uint8_t null);
-
-// EV_FUN_DEF(GPIO_INIT_IN,uint8_t null);
-
-// EV_FUN_DEF(GPIO_INIT_INT,uint8_t null);
-// EV_FUN_DEF(GPIO_INT_CB,uint8_t null);
-
 EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_SET)
 {
     EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_SET);
-/*
-);                                       
-*/
+
+    if(attr->set)
+    {
+        attr->set(attr->group,attr->pin,arg->val);
+    }
 
     return 0;
 }

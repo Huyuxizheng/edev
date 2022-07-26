@@ -11,7 +11,6 @@
 enum{//方法列表
     EVO_E(LED_SET) = EVO_E(STARE),
     EVO_E(LED_TOGLE),
-    EVO_E(LED_SET_EN_VAL),
 };
 
 
@@ -23,15 +22,12 @@ EV_FUN_DEF(LED_SET,uint8_t state);
 //uint8_t no_arg;//无参
 EV_FUN_DEF(LED_TOGLE,uint8_t no_arg);
 
-//EVD_LED_TOGGLE
-//uint8_t en_val;//设置点亮的电平值
-EV_FUN_DEF(LED_SET_EN_VAL,uint8_t en_val,uint8_t state);
 
 extern const ev_type_t ev_led_type;
 
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
-    const ev_obj_t            *gpio;
+    const ev_obj_t      *gpio;
     uint8_t             en_val;
 }EVO_ATTR_T(ev_led_type);
 #define ev_led_type_attr_init 

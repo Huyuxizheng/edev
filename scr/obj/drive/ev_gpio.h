@@ -10,32 +10,31 @@
 
 enum{//方法列表
     EVO_E(GPIO_SET) = EVO_E(STARE),
+    EVO_E(GPIO_TOGLE),
     EVO_E(GPIO_GET),
     EVO_E(GPIO_INIT_OUT),
     EVO_E(GPIO_INIT_OD),
     EVO_E(GPIO_INIT_IN),
     EVO_E(GPIO_INIT_ISR),
     EVO_E(GPIO_ISR_CB),
-    EVO_E(GPIO_UNINIT),
 };
 
 
 
-// state IO口要设置的状态
+//IO口要设置的状态
 EV_FUN_DEF(GPIO_SET,uint8_t val);
 
-//EVD_LED_TOGGLE
-EV_FUN_DEF(GPIO_GET,uint8_t null);
+EV_FUN_DEF(GPIO_TOGLE);
 
+EV_FUN_DEF(GPIO_GET);
 
-EV_FUN_DEF(GPIO_INIT_OUT,uint8_t null);
+EV_FUN_DEF(GPIO_INIT_OUT);
 
-EV_FUN_DEF(GPIO_INIT_IN,uint8_t null);
+EV_FUN_DEF(GPIO_INIT_IN);
 
-EV_FUN_DEF(GPIO_INIT_INT,uint8_t null);
-EV_FUN_DEF(GPIO_INT_CB,uint8_t null);
+EV_FUN_DEF(GPIO_INIT_INT);
+EV_FUN_DEF(GPIO_INT_CB);
 
-EV_FUN_DEF(GPIO_UNINIT,uint8_t null);
 
 extern const ev_type_t ev_gpio_type;
 
@@ -56,6 +55,7 @@ typedef struct{//属性列表
 
     //设置电平
     void        (*set)(uint32_t group,uint32_t pin,uint8_t val);
+    void        (*togle)(uint32_t group,uint32_t pin);
     //获得电平
     uint8_t     (*get)(uint32_t group,uint32_t pin);
 

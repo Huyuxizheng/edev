@@ -38,7 +38,7 @@ typedef struct ev_type_t{
 #define _EV_FUN_ARG_DEF(CTX,VAR,IDX)  VAR ;
 #define EV_FUN_DEF(OP,...) \
 typedef struct {\
-EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__)\
+EV_PP_IF(EV_PP_NARG(__VA_ARGS__), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__),uint8_t nul;)\
 }EVO_T(OP)
 
 
@@ -60,6 +60,7 @@ EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__)\
 //基本属性，放在头位置 成员名base
 typedef struct {
     void **lock;
+    const char  nul;      //对象名，用于打印信息
     const char  *name;      //对象名，用于打印信息
 }ev_obj_attr_base_t;
 
@@ -69,7 +70,7 @@ typedef struct ev_obj_t{
     const ev_obj_attr_base_t    *attr;      //对象属性
 }ev_obj_t;
 
-#define EVO_ATTR_BASE_INIT   .base.lock = EV_TO_RAM(void*,0),
+#define EVO_ATTR_BASE_INIT   .base.nul = 0,
 #define EVO_ATTR_INIT(type)  type##_attr_init
 #define EVO_ATTR_T(type)     type##_attr_t
   
@@ -77,6 +78,7 @@ typedef struct ev_obj_t{
 
 #define _ev_obj_forge(_type, ...)  {.type = &_type,.attr = EVO_ATTR_DEF(_type, __VA_ARGS__)}
 
+#define ev_obj_add_lock   .base.lock = EV_TO_RAM(void*,0),
 
 
 
@@ -104,7 +106,7 @@ if(op >= obj->type->total)\
 #define EVO_E(OP) EVO_##OP##_E
 #define EVO_T(OP) EVO_##OP##_ARG_T
 extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
-#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){__VA_ARGS__})
+#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_IF(EV_PP_NARG(__VA_ARGS__),__VA_ARGS__,0)})
 
 //基础选项
 
@@ -146,12 +148,10 @@ EV_FUN_DEF(SET_CB,ev_obj_cb_t cb,void *param);
 
 
 //INIT 初始化设备
-//uint8_t      no_arg;
-EV_FUN_DEF(INIT,uint8_t      no_arg);
+EV_FUN_DEF(INIT);
 
 //UNINIT 反初始化
-//uint8_t      no_arg;
-EV_FUN_DEF(UNINIT,uint8_t      no_arg);
+EV_FUN_DEF(UNINIT);
 
 //--------------------------------
 //事件类型edev event -> eve
