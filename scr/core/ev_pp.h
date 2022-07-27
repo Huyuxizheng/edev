@@ -5307,7 +5307,9 @@
 
 
 
+#define EV_PP_NANG_D(...) __VA_ARGS__
+#define EV_PP_NANG_0_D(...) 0
 
-
+#define EV_PP_NANG_FILL0(...) EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)),EV_PP_NANG_D,EV_PP_NANG_0_D)(__VA_ARGS__)
 
 #endif

@@ -35,7 +35,7 @@ typedef struct ev_type_t{
 
 
 //方法定义接口
-#define _EV_FUN_ARG_DEF(CTX,VAR,IDX)  VAR ;
+#define _EV_FUN_ARG_DEF(CTX,VAR,IDX)  VAR;
 #define EV_FUN_DEF(OP,...) \
 typedef struct {\
 EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__),uint8_t nul;)\
@@ -46,7 +46,10 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
 
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
 #define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP),
-#define EV_TYPE_LIST_DEF(type,...) static const edev_obj_fun_t EV_TYPE_LIST(type)[] = {EV_PP_FOR_EACH(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
+#define _EV_TYPE_LIST_FILL0(...)   0,0
+#define EV_TYPE_LIST_DEF(type,...) static const edev_obj_fun_t EV_TYPE_LIST(type)[] = {\
+                EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_TYPE_LIST_FILL0)(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
+
 //为方便调试，不过度封装
 #define EV_TYPE_DEF(type) ( ev_type_t ){\
     .name = #type,\
@@ -60,7 +63,7 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
 //基本属性，放在头位置 成员名base
 typedef struct {
     void **lock;
-    const char  nul;      //对象名，用于打印信息
+    char nul;
     const char  *name;      //对象名，用于打印信息
 }ev_obj_attr_base_t;
 
@@ -74,9 +77,9 @@ typedef struct ev_obj_t{
 #define EVO_ATTR_INIT(type)  type##_attr_init
 #define EVO_ATTR_T(type)     type##_attr_t
   
-#define EVO_ATTR_DEF(type, ...)  (const ev_obj_attr_base_t*)(const EVO_ATTR_T(type) []){{EVO_ATTR_BASE_INIT EVO_ATTR_INIT(type) __VA_ARGS__}}
+#define EVO_ATTR_DEF(type, ...)  (const ev_obj_attr_base_t*)(const EVO_ATTR_T(type) []){{EV_PP_NANG_FILL0(__VA_ARGS__)}}
 
-#define _ev_obj_forge(_type, ...)  {.type = &_type,.attr = EVO_ATTR_DEF(_type, __VA_ARGS__)}
+#define _ev_obj_forge(_type, ...)  {.type = &_type,.attr = EVO_ATTR_DEF(_type, EVO_ATTR_BASE_INIT EVO_ATTR_INIT(_type) __VA_ARGS__)}
 
 #define ev_obj_add_lock   .base.lock = EV_TO_RAM(void*,0),
 
@@ -106,7 +109,7 @@ if(op >= obj->type->total)\
 #define EVO_E(OP) EVO_##OP##_E
 #define EVO_T(OP) EVO_##OP##_ARG_T
 extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
-#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_IF(EV_PP_NARG(__VA_ARGS__),__VA_ARGS__,0)})
+#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
 
 //基础选项
 
