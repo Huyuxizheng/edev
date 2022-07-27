@@ -11,12 +11,21 @@
 
 extern const ev_type_t ev_adp_type;
 
+
+#define _EV_ADP_ADD_LIST(CTX,VAR,IDX)  VAR,
+#define _EV_ADP_ADD_LIST_0(...)  0
+
+#define ev_adp_add_list(...) \
+    .list = (const ev_obj_t const* []){ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)),EV_PP_FOR_EACH ,_EV_ADP_ADD_LIST_0)(_EV_ADP_ADD_LIST,0,__VA_ARGS__) },\
+    .list_len = EV_PP_NARG(__VA_ARGS__) ,
+
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
-    ev_obj_t            **obj;
-    ev_obj_t            **list;
+    const ev_obj_t      **obj;
+    const ev_obj_t      **list;
     uint8_t             list_len;
 }EVO_ATTR_T(ev_adp_type);
-#define ev_adp_type_attr_init 
+
+#define ev_adp_type_attr_init .obj = EV_TO_RAM(const ev_obj_t *,{0}),
 
 #endif

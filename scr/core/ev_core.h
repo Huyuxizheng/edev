@@ -99,7 +99,7 @@ if(!obj->type){ev_warning("%s type null\r\n",__fun__);return 1;}
 if(!obj->attr){ev_warning("%s attr null\r\n",__fun__);return 1;}
 
 #define ev_op_assert(obj,op) \
-if(op >= obj->type->total)\
+if((op >= obj->type->total)&&(obj->type->list[EVO_E(RELAY)] == 0))\
 {ev_warning("%s:%s no fun op:%d\r\n",__fun__,obj->type->name,op);return 1;}
 
 
@@ -115,8 +115,8 @@ extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
 
 //基础选项列表,每一个设备都需要有的选项
 enum{
-    EVO_E(HELP) = 0,        //帮助信息,可重定义
-    EVO_E(RELAY),           //当找不到实现时会调用，可向下继续传递或提示错误
+    EVO_E(RELAY) = 0,       //当找不到实现时会调用，可向下继续传递或提示错误
+    EVO_E(HELP),            //帮助信息,可重定义
     EVO_E(POWER),           //默认电源配置,可重定义
     EVO_E(SET_CB),          //默认设置回调,可重定义
     EVO_E(INIT),            //配置初始化

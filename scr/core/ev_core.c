@@ -9,7 +9,7 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
     ev_type_assert(obj)
     ev_op_assert(obj,op)
 
-    if(obj->type->list[op])
+    if(obj->type->list[op] || obj->type->list[EVO_E(RELAY)])
     {
         #ifdef EV_CONFIG_OS_LOCK_EN
             if(!ev_absolute_global_lock_en)
@@ -18,7 +18,15 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 {
                     ev_os_lock(obj->attr->lock);
                 }
-                uint8_t ret = obj->type->list[op](obj, arg);
+                uint8_t ret = 0;
+                if(obj->type->list[op])
+                {
+                    ret = obj->type->list[op](obj, arg);
+                }
+                else if(obj->type->list[EVO_E(RELAY)])
+                {
+                    ret = obj->type->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+                }
                 if(obj->attr->lock)
                 {
                     ev_os_unlock(obj->attr->lock);
@@ -35,7 +43,23 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 {
                     ev_os_lock(ev_global_lock);
                 }
-                uint8_t ret = obj->type->list[op](obj, arg);
+                if(obj->attr->lock)
+                {
+                    ev_os_lock(obj->attr->lock);
+                }
+                uint8_t ret = 0;
+                if(obj->type->list[op])
+                {
+                    ret = obj->type->list[op](obj, arg);
+                }
+                else if(obj->type->list[EVO_E(RELAY)])
+                {
+                    ret = obj->type->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+                }
+                if(obj->attr->lock)
+                {
+                    ev_os_unlock(obj->attr->lock);
+                }
                 if(ev_global_lock)
                 {
                     ev_os_unlock(ev_global_lock);
@@ -43,7 +67,16 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 return ret;
             }
         #else
-            return obj->type->list[op](obj, arg);
+            uint8_t ret = 0;
+            if(obj->type->list[op])
+            {
+                ret = obj->type->list[op](obj, arg);
+            }
+            else if(obj->type->list[EVO_E(RELAY)])
+            {
+                ret = obj->type->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+            }
+            return ret;
         #endif
     }
     return 0;
@@ -84,7 +117,7 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
     ev_op_assert(obj,op)
 
 #ifdef EV_CONFIG_OS_LOCK_EN
-    if(obj->type->list[op])
+    if(obj->type->list[op] || obj->type->list[EVO_E(RELAY)])
     {
         if(!ev_global_lock)
         {
@@ -94,7 +127,15 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
         {
             ev_os_lock(ev_global_lock);
         }
-        uint8_t ret = obj->type->list[op](obj, arg);
+        uint8_t ret = 0;
+        if(obj->type->list[op])
+        {
+            ret = obj->type->list[op](obj, arg);
+        }
+        else if(obj->type->list[EVO_E(RELAY)])
+        {
+            ret = obj->type->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+        }
         if(ev_global_lock)
         {
             ev_os_unlock(ev_global_lock);
