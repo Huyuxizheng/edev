@@ -20,7 +20,6 @@ enum{//方法列表
 };
 
 
-
 //IO口要设置的状态
 EV_FUN_DEF(GPIO_SET,uint8_t val);
 

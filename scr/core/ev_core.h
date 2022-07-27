@@ -38,7 +38,7 @@ typedef struct ev_type_t{
 #define _EV_FUN_ARG_DEF(CTX,VAR,IDX)  VAR ;
 #define EV_FUN_DEF(OP,...) \
 typedef struct {\
-EV_PP_IF(EV_PP_NARG(__VA_ARGS__), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__),uint8_t nul;)\
+EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,OP, __VA_ARGS__),uint8_t nul;)\
 }EVO_T(OP)
 
 
