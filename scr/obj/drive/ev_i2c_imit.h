@@ -3,11 +3,9 @@
 
 
 #include "./core/ev_core.h"
+#include "./obj/drive/ev_i2c.h"
 
 
-
-
-//EVD_LED_SET
 
 
 extern const ev_type_t ev_i2c_imit_type;
