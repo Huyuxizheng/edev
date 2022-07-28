@@ -16,7 +16,7 @@ extern const ev_type_t ev_adp_type;
 #define _EV_ADP_ADD_LIST_0(...)  0
 
 #define ev_adp_add_list(...) \
-    .list = (const ev_obj_t const* []){ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)),EV_PP_FOR_EACH ,_EV_ADP_ADD_LIST_0)(_EV_ADP_ADD_LIST,0,__VA_ARGS__) },\
+    .list = (const ev_obj_t * const []){ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)),EV_PP_FOR_EACH ,_EV_ADP_ADD_LIST_0)(_EV_ADP_ADD_LIST,0,__VA_ARGS__) },\
     .list_len = EV_PP_NARG(__VA_ARGS__) ,
 
 typedef struct{//属性列表

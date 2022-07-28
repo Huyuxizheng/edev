@@ -7,8 +7,8 @@
 typedef struct ev_obj_t ev_obj_t;
 typedef struct ev_type_t ev_type_t;
 
-#define EV_TO_RAM(type,...)  (type *)(         type[]){__VA_ARGS__}
-#define EV_TO_ROM(type,...)  (type *)(const    type[]){__VA_ARGS__}
+#define EV_TO_RAM(type,...)  (type *)(type []){__VA_ARGS__}
+#define EV_TO_ROM(type,...)  (type *)(type const[]){__VA_ARGS__}
 
 
 //------------------------------
@@ -47,7 +47,7 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
 #define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
 #define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP),
 #define _EV_TYPE_LIST_FILL0(...)   0,0
-#define EV_TYPE_LIST_DEF(type,...) static const edev_obj_fun_t EV_TYPE_LIST(type)[] = {\
+#define EV_TYPE_LIST_DEF(type,...) static edev_obj_fun_t const EV_TYPE_LIST(type)[] = {\
                 EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_TYPE_LIST_FILL0)(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
 
 //为方便调试，不过度封装
