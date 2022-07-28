@@ -76,9 +76,9 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_TOGLE)
 }
 
 
-EV_TYPE_LIST_DEF(ev_led_type,HELP,INIT,LED_SET);
+EV_TYPE_LIST_DEF(ev_led_type,HELP,INIT,LED_SET,LED_TOGLE);
 
 const ev_type_t ev_led_type = EV_TYPE_DEF(ev_led_type);
 
-const ev_obj_t led_io = _ev_obj_forge(ev_gpio_type,0);
-const ev_obj_t led = _ev_obj_forge(ev_led_type, gpio:&led_io);
+// const ev_obj_t led_io = _ev_obj_forge(ev_gpio_type,0);
+// const ev_obj_t led = _ev_obj_forge(ev_led_type, gpio:&led_io);

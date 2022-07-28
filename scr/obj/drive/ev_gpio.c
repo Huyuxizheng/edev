@@ -80,7 +80,7 @@ EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT_OUT)
 
 EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT_OD)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT_OUT);
+    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT_OD);
 
     if(attr->init_od)
     {
@@ -114,5 +114,5 @@ EV_TYPE_FUN_DEF(ev_gpio_type,UNINIT)
 }
 
 
-EV_TYPE_LIST_DEF(ev_gpio_type,HELP);
+EV_TYPE_LIST_DEF(ev_gpio_type,HELP,GPIO_SET,GPIO_TOGLE,GPIO_GET,GPIO_INIT_OUT,GPIO_INIT_IN,GPIO_INIT_OD,GPIO_INIT_ISR);
 const ev_type_t ev_gpio_type = EV_TYPE_DEF(ev_gpio_type);

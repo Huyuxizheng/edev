@@ -20,7 +20,7 @@ EV_FUN_DEF(LED_SET,uint8_t state);
 
 //EVD_LED_TOGGLE
 //uint8_t no_arg;//无参
-EV_FUN_DEF(LED_TOGLE,uint8_t no_arg);
+EV_FUN_DEF(LED_TOGLE);
 
 
 extern const ev_type_t ev_led_type;

@@ -36,22 +36,22 @@ typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头    //可选的 GPIO组
 
     //可选的 GPIO pin脚编号
-    uint32_t    group;
+    void*    group;
     uint32_t    pin;
 
     //初始化
-    uint8_t        (*init_out)(uint32_t group,uint32_t pin);
-    uint8_t        (*init_in)(uint32_t group,uint32_t pin);
-    uint8_t        (*init_od)(uint32_t group,uint32_t pin);
-    uint8_t        (*init_isr)(uint32_t group,uint32_t pin,void (*gpio_isr)(void *param),void *param);
+    uint8_t        (*init_out)(void* group,uint32_t pin);
+    uint8_t        (*init_in)(void* group,uint32_t pin);
+    uint8_t        (*init_od)(void* group,uint32_t pin);
+    uint8_t        (*init_isr)(void* group,uint32_t pin,void (*gpio_isr)(void *param),void *param);
     //反初始化
-    void           (*uninit)(uint32_t group,uint32_t pin);
+    void           (*uninit)(void* group,uint32_t pin);
 
     //设置电平
-    void        (*set)(uint32_t group,uint32_t pin,uint8_t val);
-    void        (*togle)(uint32_t group,uint32_t pin);
+    void        (*set)(void* group,uint32_t pin,uint8_t val);
+    void        (*togle)(void* group,uint32_t pin);
     //获得电平
-    uint8_t     (*get)(uint32_t group,uint32_t pin);
+    uint8_t     (*get)(void* group,uint32_t pin);
 
 }EVO_ATTR_T(ev_gpio_type);
 #define ev_gpio_type_attr_init 
