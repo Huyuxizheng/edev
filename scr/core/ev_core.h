@@ -120,6 +120,8 @@ enum{
     EVO_E(POWER),           //默认电源配置,可重定义
     EVO_E(SET_CB),          //默认设置回调,可重定义
     EVO_E(INIT),            //配置初始化
+    EVO_E(WRITE),           //写数据
+    EVO_E(READ),            //读数据
     EVO_E(UNINIT),          //反初始化
     EVO_E(STARE),           //设备方法的开始
 };//最多支持65535个，没必要考虑更多的情况
@@ -152,6 +154,30 @@ EV_FUN_DEF(SET_CB,ev_obj_cb_t cb,void *param);
 
 //INIT 初始化设备
 EV_FUN_DEF(INIT);
+
+typedef struct{
+    uint8_t     *data;
+    uint32_t    size;
+}ev_buf_t;
+typedef uint16_t ev_buf_num_t;
+
+typedef struct{
+    ev_buf_t        *buf;
+    ev_buf_num_t     num;
+}ev_pack_t;
+
+#define _EV_PACKE_TO_BUF(DAT,SIZ)   {.data = DAT , .size = SIZ},
+#define _EV_PACKE_TO_BUF_0(...)     {0}
+
+#define _EV_PACKE_BUF(...) EV_PP_IF(EV_PP_NOT(EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__))), EV_PP_FOR_TOW,_EV_PACKE_TO_BUF_0)(_EV_PACKE_TO_BUF,OP, __VA_ARGS__)
+
+#define _EV_PACKE(...)     {.buf = EV_TO_ROM(ev_buf_t,_EV_PACKE_BUF(__VA_ARGS__)),.num = EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__)}
+
+#define ev_pack(...) EV_TO_ROM(ev_pack_t,_EV_PACKE(__VA_ARGS__))
+
+EV_FUN_DEF(WRITE,ev_pack_t *pack);
+
+EV_FUN_DEF(READ,ev_pack_t *pack);
 
 //UNINIT 反初始化
 EV_FUN_DEF(UNINIT);
