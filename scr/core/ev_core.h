@@ -166,12 +166,12 @@ typedef struct{
     ev_buf_num_t     num;
 }ev_pack_t;
 
-#define _EV_PACKE_TO_BUF(DAT,SIZ)   {.data = DAT , .size = SIZ},
+#define _EV_PACKE_TO_BUF(CTX,DAT,SIZ,IDX)   {.data = DAT , .size = SIZ},
 #define _EV_PACKE_TO_BUF_0(...)     {0}
 
-#define _EV_PACKE_BUF(...) EV_PP_IF(EV_PP_NOT(EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__))), EV_PP_FOR_TOW,_EV_PACKE_TO_BUF_0)(_EV_PACKE_TO_BUF,OP, __VA_ARGS__)
+#define _EV_PACKE_BUF(...) EV_PP_IF(EV_PP_BOOL(EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__))), EV_PP_FOR_TOW,_EV_PACKE_TO_BUF_0)(_EV_PACKE_TO_BUF,0, __VA_ARGS__)
 
-#define _EV_PACKE(...)     {.buf = EV_TO_ROM(ev_buf_t,_EV_PACKE_BUF(__VA_ARGS__)),.num = EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__)}
+#define _EV_PACKE(...)     {.buf = EV_TO_ROM(ev_buf_t,_EV_PACKE_BUF(__VA_ARGS__)),.num = EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__))},
 
 #define ev_pack(...) EV_TO_ROM(ev_pack_t,_EV_PACKE(__VA_ARGS__))
 
