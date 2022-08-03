@@ -14,6 +14,9 @@
 
 
 //调用设备方法
-#define ev_obj_fun(obj, op, ...) _ev_obj_fun(&obj, op,__VA_ARGS__)
+#define ev_obj_fun(obj, op, ...)  _ev_obj_fun(&obj, op,__VA_ARGS__)
+
+//调用多次
+#define ev_obj_funs(obj, op, ...) _ev_obj_funs(&obj, op, __VA_ARGS__) 
 
 #endif

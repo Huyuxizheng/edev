@@ -111,6 +111,28 @@ if((op >= obj->type->total)&&(obj->type->list[EVO_E(RELAY)] == 0))\
 extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
 #define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
 
+
+//debug预留
+// typedef struct{
+//     void            *arg;
+//     uint16_t         num;
+// }ev_pack_t;
+// #define _EV_PACKE_TO_ARGS(CTX,VAR,IDX)   { EV_PP_REMOVE_PARENS(VAR) },
+// #define _EV_PACKE_TO_ARGS_0(...)     {0}
+// #define _EV_PACKE_ARGS(op,...) EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_PACKE_TO_ARGS_0)(_EV_PACKE_TO_ARGS,op, __VA_ARGS__)
+// #define _EV_PACKE_FORGE(op,...)     {.arg = (void *)&(const EVO_T(op) []){_EV_PACKE_ARGS(op,__VA_ARGS__)},.num = EV_PP_NARG(__VA_ARGS__)}
+// #define _EV_PACK(op,...) EV_TO_ROM(ev_pack_t,_EV_PACKE_FORGE(op,__VA_ARGS__))
+
+#define _EV_OBJ_FUN_TO_CALL(...) _ev_obj_fun(__VA_ARGS__)
+#define _EV_OBJ_FUNS_TO_CALL(CTX,VAR,IDX)   EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(EV_PP_REMOVE_PARENS(CTX) , EV_PP_REMOVE_PARENS(VAR))
+#define _EV_OBJ_FUNS_TO_CALL_0(...)    
+
+#define _EV_OBJ_FUNS_I(op,...)  EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_OBJ_FUNS_TO_CALL_0)(_EV_OBJ_FUNS_TO_CALL,op, __VA_ARGS__)
+
+#define __ev_obj_funs(obj, op, ...)   _EV_OBJ_FUNS_I((obj,op),__VA_ARGS__)
+
+#define _ev_obj_funs(obj, op, ...)    __ev_obj_funs(obj, op, __VA_ARGS__)
+
 //基础选项
 
 //基础选项列表,每一个设备都需要有的选项
@@ -155,29 +177,10 @@ EV_FUN_DEF(SET_CB,ev_obj_cb_t cb,void *param);
 //INIT 初始化设备
 EV_FUN_DEF(INIT);
 
-typedef struct{
-    uint8_t     *data;
-    uint32_t    size;
-}ev_buf_t;
-typedef uint16_t ev_buf_num_t;
 
-typedef struct{
-    ev_buf_t        *buf;
-    ev_buf_num_t     num;
-}ev_pack_t;
+EV_FUN_DEF(WRITE,uint8_t *data,uint32_t size);
 
-#define _EV_PACKE_TO_BUF(CTX,DAT,SIZ,IDX)   {.data = DAT , .size = SIZ},
-#define _EV_PACKE_TO_BUF_0(...)     {0}
-
-#define _EV_PACKE_BUF(...) EV_PP_IF(EV_PP_BOOL(EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__))), EV_PP_FOR_TOW,_EV_PACKE_TO_BUF_0)(_EV_PACKE_TO_BUF,0, __VA_ARGS__)
-
-#define _EV_PACKE(...)     {.buf = EV_TO_ROM(ev_buf_t,_EV_PACKE_BUF(__VA_ARGS__)),.num = EV_PP_DIV_2(EV_PP_NARG(__VA_ARGS__))},
-
-#define ev_pack(...) EV_TO_ROM(ev_pack_t,_EV_PACKE(__VA_ARGS__))
-
-EV_FUN_DEF(WRITE,ev_pack_t *pack);
-
-EV_FUN_DEF(READ,ev_pack_t *pack);
+EV_FUN_DEF(READ,uint8_t *data,uint32_t size);
 
 //UNINIT 反初始化
 EV_FUN_DEF(UNINIT);

@@ -1,6 +1,9 @@
 ﻿#ifndef __EDEV_PP_H__
 #define __EDEV_PP_H__
 
+#define EV_PP_REMOVE_PARENS(T) EV_PP_REMOVE_PARENS_IMPL T
+#define EV_PP_REMOVE_PARENS_IMPL(...) __VA_ARGS__
+
 #define EV_PP_CONCAT_IMPL(A, B) A##B
 #define EV_PP_CONCAT(A, B) EV_PP_CONCAT_IMPL(A, B)
 
