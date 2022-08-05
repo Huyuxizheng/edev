@@ -133,6 +133,24 @@ extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
 
 #define _ev_obj_funs(obj, op, ...)    __ev_obj_funs(obj, op, __VA_ARGS__)
 
+
+
+#define _EV_OBJS_FUN_TO_CALL(CTX,VAR,IDX)           EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(VAR,EV_PP_REMOVE_PARENS(CTX))
+#define _EV_OBJS_FUN_TO_CALL_USER(CTX,VAR,IDX)      EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(&##VAR,EV_PP_REMOVE_PARENS(CTX))
+
+#define _EV_OBJS_FUN_I(...)  EV_PP_FOR_EACH_N(__VA_ARGS__)
+
+#define __EV_OBJS_FUN(call,...)    _EV_OBJS_FUN_I( EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))), call,\
+EV_PP_IF( EV_PP_NOT(EV_PP_IS_EMPTY(EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)),__VA_ARGS__)))) ,\
+(EV_PP_GET_N(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))),__VA_ARGS__),EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)),__VA_ARGS__))),\
+(EV_PP_GET_N(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))),__VA_ARGS__))\
+),__VA_ARGS__)
+
+#define __ev_objs_fun(call,...)    EV_PP_IF( EV_PP_BOOL(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)))),__EV_OBJS_FUN(call,__VA_ARGS__),)
+
+#define _ev_objs_fun(obj_list,op,...)    __ev_objs_fun(_EV_OBJS_FUN_TO_CALL,obj_list,op,__VA_ARGS__) 
+#define ev_objs_fun(obj_list,op,...)    __ev_objs_fun(_EV_OBJS_FUN_TO_CALL_USER,obj_list,op,__VA_ARGS__) 
+
 //基础选项
 
 //基础选项列表,每一个设备都需要有的选项
