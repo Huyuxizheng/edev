@@ -14,6 +14,25 @@ EV_TYPE_FUN_DEF(ev_gpio_type,HELP)
     return 0;
 }
 
+EV_TYPE_FUN_DEF(ev_gpio_type,CHECK_OP)
+{
+    EV_TYPE_FUN_GET_ARG(ev_gpio_type,HELP);
+
+    switch(arg->op)
+    {
+        case EVO_E(GPIO_INIT_OUT):
+            if(attr->init_out){return 1;}
+        break;
+        case EVO_E(GPIO_INIT_OD):
+            if(attr->init_od){return 1;}
+        break;
+        case EVO_E(GPIO_INIT_IN):
+            if(attr->init_in){return 1;}
+        break;
+    }
+
+    return 0;
+}
 
 EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_SET)
 {

@@ -26,7 +26,7 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,INIT)
 
     if(attr->sda && attr->scl)
     {
-        _ev_objs_fun(attr->sda,attr->scl,INIT,());
+        _ev_objs_fun(attr->sda,attr->scl,GPIO_INIT_OD,());
         return 0;
     }
 

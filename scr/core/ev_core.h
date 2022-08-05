@@ -167,6 +167,7 @@ EV_PP_IF( EV_PP_NOT(EV_PP_IS_EMPTY(EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_
 enum{
     EVO_E(RELAY) = 0,       //当找不到实现时会调用，可向下继续传递或提示错误
     EVO_E(HELP),            //帮助信息,可重定义
+    EVO_E(CHECK_OP),        //查询功能是否可用
     EVO_E(POWER),           //默认电源配置,可重定义
     EVO_E(SET_CB),          //默认设置回调,可重定义
     EVO_E(INIT),            //配置初始化
@@ -201,6 +202,8 @@ typedef void (*ev_obj_cb_t)(void *param,uint16_t event,void *arg);
 //void *param;//传给回调
 EV_FUN_DEF(SET_CB,ev_obj_cb_t cb,void *param);
 
+//可用返回1
+EV_FUN_DEF(CHECK_OP,uint16_t op);
 
 //INIT 初始化设备
 EV_FUN_DEF(INIT);
