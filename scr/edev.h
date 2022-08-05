@@ -19,5 +19,7 @@
 //调用多次
 #define ev_obj_funs(obj, op, ...)       _ev_obj_funs(&obj, op, __VA_ARGS__) 
 #define ev_objs_fun(obj_list,op,...)    __ev_objs_fun(_EV_OBJS_FUN_TO_CALL_USER,obj_list,op,__VA_ARGS__) 
+#define ev_objs_funs(obj_list,op,arg_list)    __ev_objs_funs(_EV_OBJS_FUNS_TO_CALL_USER,obj_list,op,arg_list)
+#define ev_objs_funs_syn(obj_list,op,arg_list)    __ev_objs_funs_syn(__EV_OBJS_FUNS_SYN_TO_CALL_USER,obj_list,op,arg_list) 
 
 #endif

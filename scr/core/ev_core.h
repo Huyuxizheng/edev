@@ -112,17 +112,6 @@ extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
 #define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
 
 
-//debug预留
-// typedef struct{
-//     void            *arg;
-//     uint16_t         num;
-// }ev_pack_t;
-// #define _EV_PACKE_TO_ARGS(CTX,VAR,IDX)   { EV_PP_REMOVE_PARENS(VAR) },
-// #define _EV_PACKE_TO_ARGS_0(...)     {0}
-// #define _EV_PACKE_ARGS(op,...) EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_PACKE_TO_ARGS_0)(_EV_PACKE_TO_ARGS,op, __VA_ARGS__)
-// #define _EV_PACKE_FORGE(op,...)     {.arg = (void *)&(const EVO_T(op) []){_EV_PACKE_ARGS(op,__VA_ARGS__)},.num = EV_PP_NARG(__VA_ARGS__)}
-// #define _EV_PACK(op,...) EV_TO_ROM(ev_pack_t,_EV_PACKE_FORGE(op,__VA_ARGS__))
-
 #define _EV_OBJ_FUN_TO_CALL(...) _ev_obj_fun(__VA_ARGS__)
 #define _EV_OBJ_FUNS_TO_CALL(CTX,VAR,IDX)   EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(EV_PP_REMOVE_PARENS(CTX) , EV_PP_REMOVE_PARENS(VAR))
 #define _EV_OBJ_FUNS_TO_CALL_0(...)    
@@ -149,7 +138,28 @@ EV_PP_IF( EV_PP_NOT(EV_PP_IS_EMPTY(EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_
 #define __ev_objs_fun(call,...)    EV_PP_IF( EV_PP_BOOL(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)))),__EV_OBJS_FUN(call,__VA_ARGS__),)
 
 #define _ev_objs_fun(obj_list,op,...)    __ev_objs_fun(_EV_OBJS_FUN_TO_CALL,obj_list,op,__VA_ARGS__) 
-#define ev_objs_fun(obj_list,op,...)    __ev_objs_fun(_EV_OBJS_FUN_TO_CALL_USER,obj_list,op,__VA_ARGS__) 
+
+
+
+#define __EV_OBJS_FUNS_TO_CALL(...)                   _ev_obj_funs(__VA_ARGS__)
+#define _EV_OBJS_FUNS_TO_CALL(CTX,VAR,IDX)                   EV_PP_IF(IDX,;,)  __EV_OBJS_FUNS_TO_CALL(VAR,EV_PP_REMOVE_PARENS(CTX))
+
+#define __EV_OBJS_FUNS_TO_CALL_USER(...)              ev_obj_funs(__VA_ARGS__)
+#define _EV_OBJS_FUNS_TO_CALL_USER(CTX,VAR,IDX)               EV_PP_IF(IDX,;,) __EV_OBJS_FUNS_TO_CALL_USER(VAR,EV_PP_REMOVE_PARENS(CTX))
+#define __ev_objs_funs(call,obj_list,op,arg_list)    EV_PP_FOR_EACH_S1_N(EV_PP_NARG(EV_PP_REMOVE_PARENS(obj_list)),call,(op,EV_PP_REMOVE_PARENS(arg_list)),EV_PP_REMOVE_PARENS(obj_list))
+
+#define _ev_objs_funs(obj_list,op,arg_list)    __ev_objs_funs(_EV_OBJS_FUNS_TO_CALL,obj_list,op,arg_list) 
+
+
+
+ #define __EV_OBJS_FUNS_SYN_TO_CALL(...)                   _ev_objs_fun(__VA_ARGS__)
+#define _EV_OBJS_FUNS_SYN_TO_CALL(CTX,VAR,IDX)                   EV_PP_IF(IDX,;,)  __EV_OBJS_FUNS_SYN_TO_CALL(EV_PP_REMOVE_PARENS(CTX),VAR)
+
+#define __EV_OBJS_FUNS_SYN_TO_CALL_USER(...)              ev_objs_fun(__VA_ARGS__)
+#define _EV_OBJS_FUNS_SYN_TO_CALL_USER(CTX,VAR,IDX)               EV_PP_IF(IDX,;,) __EV_OBJS_FUNS_SYN_TO_CALL_USER(EV_PP_REMOVE_PARENS(CTX),VAR)
+#define __ev_objs_funs_syn(call,obj_list,op,arg_list)    EV_PP_FOR_EACH_S1_N(EV_PP_NARG(EV_PP_REMOVE_PARENS(arg_list)),call,(EV_PP_REMOVE_PARENS(obj_list),op),EV_PP_REMOVE_PARENS(arg_list))
+
+#define _ev_objs_funs_syn(obj_list,op,arg_list)    __ev_objs_funs_syn(_EV_OBJS_FUNS_SYN_TO_CALL,obj_list,op,arg_list) 
 
 //基础选项
 
