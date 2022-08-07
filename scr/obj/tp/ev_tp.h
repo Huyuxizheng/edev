@@ -18,30 +18,17 @@ typedef struct{
     uint16_t y;
     uint32_t tick;
     uint8_t  state;
-}EVO_T(TP_GET_OUT);
-
-typedef struct {
-    EVO_T(TP_GET_OUT) *out;
-}EVO_T(TP_GET);
+}ev_tp_get_out;
+EV_FUN_DEF(TP_GET,ev_tp_get_out *out);
 
 
-//支持TP设备的子设备
-enum{
-    //EVO_E(SET_CB),    触摸按下回调
-    //EVO_E(ADAPT),     自适应
-    //EVO_E(SUPPORT),   设备支持检查
-    EVO_E(TP_IC_GET) = EVO_E(STARE),//获得触摸数据
-};
+typedef struct{//属性列表
+    ev_obj_attr_base_t  base;//固定头
+    const ev_obj_t      *ic;
+}EVO_ATTR_T(ev_tp_cap_type);
+#define ev_tp_cap_type_attr_init 
 
-
-typedef struct {
-    EVO_T(TP_GET_OUT) *out;
-}EVO_T(TP_IC_GET);
-
-extern const ev_type_t ev_tp_type;
-
-
-
+extern const ev_type_t ev_tp_cap_type;
 
 
 #endif
