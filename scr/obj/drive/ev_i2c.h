@@ -13,12 +13,12 @@ enum{//独有方法列表
 };
 
 
-EV_FUN_DEF(I2C_WRITE,uint8_t addr,uint8_t *data,uint32_t size,uint8_t no_stop);
+EV_FUN_DEF(I2C_WRITE,uint8_t addr,const uint8_t *data,uint32_t size,uint8_t no_stop);
 
 EV_FUN_DEF(I2C_READ,uint8_t addr,uint8_t *data,uint32_t size,uint8_t no_stop);
 
 
-EV_FUN_DEF(I2C_MEM_WRITE,uint8_t addr,uint16_t mem_addr,uint16_t mem_addr_size,uint8_t *data,uint32_t size);
+EV_FUN_DEF(I2C_MEM_WRITE,uint8_t addr,uint16_t mem_addr,uint16_t mem_addr_size,const uint8_t *data,uint32_t size);
 
 EV_FUN_DEF(I2C_MEM_READ,uint8_t addr,uint16_t mem_addr,uint16_t mem_addr_size,uint8_t *data,uint32_t size);
 
@@ -34,7 +34,7 @@ typedef struct{//属性列表
     //获得电平
     uint8_t     (*init)(void* handle);
     //设置电平
-    uint8_t     (*write)(void* handle,uint8_t addr,uint8_t *dat,uint16_t len,uint8_t no_stop);
+    uint8_t     (*write)(void* handle,uint8_t addr,const uint8_t *dat,uint16_t len,uint8_t no_stop);
     //获得电平
     uint8_t     (*read)(void* handle,uint8_t addr,uint8_t *dat,uint16_t len,uint8_t no_stop);
     //获得电平

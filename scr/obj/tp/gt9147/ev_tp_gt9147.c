@@ -1,5 +1,7 @@
-﻿#include "./dev/tp/ev_tp.h"
-#include "./dev/tp/gt9147/ev_tp_gt9147.h"
+﻿#include "./obj/tp/ev_tp.h"
+#include "./obj/tp/gt9147/ev_tp_gt9147.h"
+#include "./obj/drive/ev_gpio.h"
+#include "./obj/drive/ev_i2c.h"
 #include "edev_config.h"
 
 //GT9147配置参数表
@@ -33,26 +35,20 @@ const uint8_t GT9147_CFG[]=
 
 
 //GT9147 寄存器定义 
-#define GT_CTRL_REG 	(const uint8_t []){0X80,0x40 }  	//GT9147控制寄存器
-#define GT_CFGS_REG 	(const uint8_t []){0X80,0x47}   	//GT9147配置起始地址寄存器
-#define GT_CHECK_REG 	(const uint8_t []){0X80,0xFF}   	//GT9147校验和寄存器
-#define GT_PID_REG 		(const uint8_t []){0X81,0x40}   	//GT9147产品ID寄存器
+#define GT_CTRL_REG 	0X8040   	//GT9147控制寄存器
+#define GT_CFGS_REG 	0X8047   	//GT9147配置起始地址寄存器
+#define GT_CHECK_REG 	0X80FF   	//GT9147校验和寄存器
 
-#define GT_GSTID_REG 	(const uint8_t []){0X81,0X4E}  	//GT9147当前检测到的触摸情况
-#define GT_TP1_REG 		(const uint8_t []){0X81,0X50}  	//第一个触摸点数据地址
+#define GT_PID_REG 		0X8140   	//GT9147产品ID寄存器
+#define GT_GSTID_REG 	0X814E  	//GT9147当前检测到的触摸情况
+#define GT_TP1_REG 		0X8150  	//第一个触摸点数据地址
 
 
-
-typedef struct {
-    EV_DRI_T(GPIO) *reset;
-    EV_DRI_T(GPIO_INT)  *gpio_int;
-    EV_DRI_T(I2C)  *i2c;
-}ev_tp_gt9147_attr_t;
 
 
 EV_TYPE_FUN_DEF(ev_tp_gt9147_type,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(HELP);
+    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,HELP);
 /*zhon
                                    
 */
@@ -60,91 +56,33 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,HELP)
     return 0;
 }
 
-
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,LINK)
+EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
 {
-    EV_TYPE_FUN_GET_ARG(LINK);
-    if(!arg->drive){return 1;}
-    ev_tp_gt9147_attr_t *attr = self->attr;
+    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,INIT);
 
-    switch(arg->drive->e)
-    {
-        case EV_DRI_E(GPIO):
-            attr->reset = arg->drive->p;
-        break;
-        case EV_DRI_E(I2C):
-            attr->i2c = arg->drive->p;
-        break;
-        case EV_DRI_E(GPIO_INT):
-            attr->gpio_int = arg->drive->p;
-        break;
-    }
+    uint8_t dat[6] = {0};
 
-    return 1;
-}
+    _ev_obj_fun(attr->i2c,INIT);
+    _ev_obj_fun(attr->rst_io,GPIO_INIT_OUT);
 
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,POWER)
-{
-    EV_TYPE_FUN_GET_ARG(POWER);
+    _ev_obj_fun(attr->rst_io,GPIO_SET,1);
+    ev_sleep(5);
+    _ev_obj_fun(attr->rst_io,GPIO_SET,0);
+    ev_sleep(1);
+    _ev_obj_fun(attr->rst_io,GPIO_SET,1);
+    ev_sleep(5);
+    _ev_obj_fun(attr->isr_io,GPIO_INIT_ISR);
+    ev_sleep(100);
 
-    ev_tp_gt9147_attr_t *attr = self->attr;
 
-    switch(arg->evp)
-    {
-        case EVP_NONE:case EVP_HIGH:case EVP_OPEN:
-            ev_dri_i2c_init(attr->i2c);
-            ev_dri_gpio_int_init(attr->gpio_int,EV_DRI_GPIO_INT_OUT_MODE);
-            ev_dri_gpio_init(attr->reset);
+    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_PID_REG,2,dat,4);
 
-            ev_dri_gpio_int_set(attr->gpio_int,0);
-            ev_dri_gpio_set(attr->reset,0);
-            ev_sleep(5);
-            ev_dri_gpio_int_set(attr->gpio_int,1);
-            ev_sleep(1);
-            ev_dri_gpio_set(attr->reset,1);
-            ev_sleep(5);
-            ev_dri_gpio_int_init(attr->gpio_int,EV_DRI_GPIO_INT_INTERRUPT_MODE);
-            ev_sleep(100);
-
-        break;
-        case EVP_IDLE:case EVP_CLOSE:
-            ev_dri_i2c_uninit(attr->i2c);
-            ev_dri_gpio_int_uninit(attr->gpio_int);
-            ev_dri_gpio_uninit(attr->reset);
-        break;
-    }
-
-    return 0;
-}
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,SET_CB)
-{
-    EV_TYPE_FUN_GET_ARG(SET_CB);
-
-    ev_tp_gt9147_attr_t *attr = self->attr;
-
-    if(arg->cb)
-    {
-        ev_dri_gpio_int_set_cb(attr->gpio_int,arg->cb,arg->param);
-    }
-    return 0;
-}
-
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,ADAPT)
-{
-    EV_TYPE_FUN_GET_ARG(ADAPT);
-
-    ev_tp_gt9147_attr_t *attr = self->attr;
-    uint8_t id[6] = {0};
-
-    ev_dri_i2c_write(attr->i2c,GT9147_ADD,GT_CTRL_REG,2);
-
-    ev_dri_i2c_read(attr->i2c,GT9147_ADD,id,4);
     if(
         (
-            (id[0] != '9') &&
-            (id[1] != '1') &&
-            (id[2] != '4') &&
-            (id[3] != '7') 
+            (dat[0] != '9') &&
+            (dat[1] != '1') &&
+            (dat[2] != '4') &&
+            (dat[3] != '7') 
         )
     )
     {
@@ -153,71 +91,38 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,ADAPT)
     }
 
     ev_info("gt9147 id:%s \r\n",id);
-    return 0;
-}
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,SUPPORT)
-{
-    EV_TYPE_FUN_GET_ARG(SUPPORT);
-
-    ev_tp_gt9147_attr_t *attr = self->attr;
 
 
-    if(arg->obj->type == &ev_tp_type)
-    {
-            return 0;
-    }
+    dat[0] = 0x02;
+    _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//软件复位
 
+    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_CFGS_REG,2,dat,1);
 
-    return 1;
-}
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
-{
-    EV_TYPE_FUN_GET_ARG(TP_GET);
-
-    ev_tp_gt9147_attr_t *attr = self->attr;
-
-    uint8_t dat[5] = {0};
-
-    dat[0] = GT_CTRL_REG[0];
-    dat[1] = GT_CTRL_REG[1];
-    dat[2] = 0x02;
-    ev_dri_i2c_write(attr->i2c,GT9147_ADD,dat,3);//软件复位
-    ev_dri_i2c_write(attr->i2c,GT9147_ADD,GT_CFGS_REG,2);//软件复位
-    ev_dri_i2c_read(attr->i2c,GT9147_ADD,dat,1);
     if(dat[0]<0X60)//默认版本比较低,需要更新flash配置
     {
         uint8_t buf[2] = {0,1};
         for(int i=2;i<sizeof(GT9147_CFG);i++)buf[0]+=GT9147_CFG[i];
         buf[0]=(~buf[0])+1;
 
-	    ev_dri_i2c_write(attr->i2c,GT9147_ADD,GT9147_CFG,sizeof(GT9147_CFG));//发送寄存器配置
+        _ev_obj_fun(attr->i2c,I2C_WRITE,GT9147_ADD,GT9147_CFG,sizeof(GT9147_CFG));//发送寄存器配置
 
-        dat[0] = GT_CHECK_REG[0];
-        dat[1] = GT_CHECK_REG[1];
-        dat[2] = buf[0];
-        dat[3] = buf[1];
-        ev_dri_i2c_write(attr->i2c,GT9147_ADD,dat,4);
+        _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CHECK_REG,2,buf,2);
     }
     ev_sleep(10);
 
-    dat[0] = GT_CTRL_REG[0];
-    dat[1] = GT_CTRL_REG[1];
-    dat[2] = 0x00;
-    ev_dri_i2c_write(attr->i2c,GT9147_ADD,dat,3);//复位
+    dat[0] = 0x00;
+    _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//复位结束
 
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_IC_GET)
+EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_GET)
 {
-    EV_TYPE_FUN_GET_ARG(TP_GET);
+    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,TP_GET);
 
-    ev_tp_gt9147_attr_t *attr = self->attr;
-
-
-    uint8_t dat[5] = {0};
-    ev_dri_i2c_write(attr->i2c,GT9147_ADD,GT_GSTID_REG,2);
-    ev_dri_i2c_read(attr->i2c,GT9147_ADD,dat,1);
+    uint8_t dat[6] = {0};
+    
+    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_GSTID_REG,2,dat,1);
 
     if((dat[0]&0X80) == 0)
     {
@@ -232,22 +137,28 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_IC_GET)
     else
     {
 
-        ev_dri_i2c_write(attr->i2c,GT9147_ADD,GT_TP1_REG,2);
-        ev_dri_i2c_read(attr->i2c,GT9147_ADD,dat,4);
+        _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_TP1_REG,2,dat,4);
 
         arg->out->state = 1;
         arg->out->x = ((uint16_t)dat[1]<<8)|dat[0];
         arg->out->y = ((uint16_t)dat[3]<<8)|dat[2];
     }
 
-    dat[0] = GT_GSTID_REG[0];
-    dat[1] = GT_GSTID_REG[1];
-    dat[2] = 0x00;
-    ev_dri_i2c_write(attr->i2c,GT9147_ADD,dat,3);
+    dat[0] = 0x00;
+    _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_GSTID_REG,2,dat,1);
+
     return 0;
 }
 
+EV_TYPE_FUN_DEF(ev_tp_gt9147_type,UNINIT)
+{
+    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,UNINIT);
 
+    _ev_objs_fun(attr->i2c,attr->rst_io,attr->isr_io,UNINIT,());
+
+
+    return 0;
+}
 
 EV_TYPE_LIST_DEF(ev_tp_gt9147_type,HELP,INIT,TP_GET,UNINIT);
 
