@@ -9,10 +9,10 @@
 #include "./core/ev_core.h"
 
 enum{//独有方法列表
+    EVO_E(GPIO_INIT_OUT) = EVO_E(INIT),
     EVO_E(GPIO_SET) = EVO_E(STARE),
     EVO_E(GPIO_TOGLE),
     EVO_E(GPIO_GET),
-    EVO_E(GPIO_INIT_OUT),
     EVO_E(GPIO_INIT_OD),
     EVO_E(GPIO_INIT_IN),
     EVO_E(GPIO_INIT_ISR),

@@ -20,13 +20,13 @@ EV_TYPE_FUN_DEF(ev_i2c_type,HELP)
 }
 
 
-EV_TYPE_FUN_DEF(ev_i2c_type,INIT)
+EV_TYPE_FUN_DEF(ev_i2c_type,I2C_INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_type,INIT);
+    EV_TYPE_FUN_GET_ARG(ev_i2c_type,I2C_INIT);
 
     if(attr->init)
     {
-        attr->init(attr->handle);
+        attr->init(attr->handle,arg->speed);
     }
 
     return 0;
@@ -88,6 +88,6 @@ EV_TYPE_FUN_DEF(ev_i2c_type,UNINIT)
 
     return 0;
 }
-EV_TYPE_LIST_DEF(ev_i2c_type,HELP,INIT,I2C_WRITE,I2C_READ,I2C_MEM_WRITE,I2C_MEM_READ,UNINIT);
+EV_TYPE_LIST_DEF(ev_i2c_type,HELP,I2C_INIT,I2C_WRITE,I2C_READ,I2C_MEM_WRITE,I2C_MEM_READ,UNINIT);
 
 const ev_type_t ev_i2c_type = EV_TYPE_DEF(ev_i2c_type);
