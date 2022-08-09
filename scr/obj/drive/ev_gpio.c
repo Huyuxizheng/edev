@@ -14,26 +14,6 @@ EV_TYPE_FUN_DEF(ev_gpio_type,HELP)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_gpio_type,CHECK_OP)
-{
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,HELP);
-
-    switch(arg->op)
-    {
-        case EVO_E(GPIO_INIT_OUT):
-            if(attr->init_out){return 1;}
-        break;
-        case EVO_E(GPIO_INIT_OD):
-            if(attr->init_od){return 1;}
-        break;
-        case EVO_E(GPIO_INIT_IN):
-            if(attr->init_in){return 1;}
-        break;
-    }
-
-    return 0;
-}
-
 EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_SET)
 {
     EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_SET);
@@ -73,53 +53,33 @@ EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_GET)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT_IN)
+EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT_IN);
+    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT);
 
-    if(attr->init_in)
+    switch(arg->mode)
     {
-        return attr->init_in(attr->group,attr->pin);
+        case EV_GPIO_MODE_OUT:
+            if(attr->init_out){return attr->init_out(attr->group,attr->pin);}
+        break;
+        case EV_GPIO_MODE_IN:
+            if(attr->init_in){return attr->init_in(attr->group,attr->pin);}
+        break;
+        case EV_GPIO_MODE_OD:
+            if(attr->init_od){return attr->init_od(attr->group,attr->pin);}
+        break;
+        case EV_GPIO_MODE_ISR_UP:case EV_GPIO_MODE_ISR_DOWN:
+            if(attr->init_isr){return attr->init_isr(attr->group,attr->pin,0,0);}
+        break;
     }
-
+    if(attr->init)
+    {
+        return attr->init(attr->group,attr->pin,arg->mode,0,0);
+    }
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT_OUT)
-{
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT_OUT);
 
-    if(attr->init_out)
-    {
-        return attr->init_out(attr->group,attr->pin);
-    }
-
-    return 0;
-}
-
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT_OD)
-{
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT_OD);
-
-    if(attr->init_od)
-    {
-        return attr->init_od(attr->group,attr->pin);
-    }
-
-    return 0;
-}
-
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT_ISR)
-{
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT_ISR);
-
-    if(attr->init_isr)
-    {
-        return attr->init_isr(attr->group,attr->pin,arg->gpio_isr,arg->param);
-    }
-
-    return 0;
-}
 EV_TYPE_FUN_DEF(ev_gpio_type,UNINIT)
 {
     EV_TYPE_FUN_GET_ARG(ev_gpio_type,UNINIT);
@@ -133,5 +93,5 @@ EV_TYPE_FUN_DEF(ev_gpio_type,UNINIT)
 }
 
 
-EV_TYPE_LIST_DEF(ev_gpio_type,HELP,GPIO_SET,GPIO_TOGLE,GPIO_GET,GPIO_INIT_OUT,GPIO_INIT_IN,GPIO_INIT_OD,GPIO_INIT_ISR);
+EV_TYPE_LIST_DEF(ev_gpio_type,HELP,GPIO_SET,GPIO_TOGLE,GPIO_GET,GPIO_INIT,UNINIT);
 const ev_type_t ev_gpio_type = EV_TYPE_DEF(ev_gpio_type);

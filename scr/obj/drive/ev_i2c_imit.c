@@ -113,7 +113,7 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_INIT)
 
     if(attr->sda && attr->scl)
     {
-        _ev_objs_fun(attr->sda,attr->scl,GPIO_INIT_OD,());
+        _ev_objs_fun(attr->sda,attr->scl,GPIO_INIT,(EV_GPIO_MODE_OD));
         _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(1));
         if(arg->speed > 2000)
         {

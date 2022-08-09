@@ -63,15 +63,16 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
     uint8_t dat[6] = {0};
 
     _ev_obj_fun(attr->i2c,INIT);
-    _ev_obj_fun(attr->rst_io,GPIO_INIT_OUT);
+    _ev_objs_fun(attr->rst_io,attr->isr_io,GPIO_INIT,(EV_GPIO_MODE_OUT));
 
-    _ev_obj_fun(attr->rst_io,GPIO_SET,1);
-    ev_sleep(5);
+    _ev_obj_fun(attr->isr_io,GPIO_SET,0);
     _ev_obj_fun(attr->rst_io,GPIO_SET,0);
+    ev_sleep(5);
+    _ev_obj_fun(attr->isr_io,GPIO_SET,1);
     ev_sleep(1);
     _ev_obj_fun(attr->rst_io,GPIO_SET,1);
     ev_sleep(5);
-    _ev_obj_fun(attr->isr_io,GPIO_INIT_ISR);
+    _ev_obj_fun(attr->isr_io,GPIO_INIT,EV_GPIO_MODE_ISR_UP);
     ev_sleep(100);
 
 
