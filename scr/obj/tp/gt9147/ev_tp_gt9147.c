@@ -62,7 +62,7 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
 
     uint8_t dat[6] = {0};
 
-    _ev_obj_fun(attr->i2c,INIT);
+    _ev_obj_fun(attr->i2c,I2C_INIT,400);//400KHZ
     _ev_objs_fun(attr->rst_io,attr->isr_io,GPIO_INIT,(EV_GPIO_MODE_OUT));
 
     _ev_obj_fun(attr->isr_io,GPIO_SET,0);

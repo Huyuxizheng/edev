@@ -14,7 +14,7 @@ enum{//独有方法列表
 };
 
 
-EV_FUN_DEF(I2C_INIT,uint32_t speed);
+EV_FUN_DEF(I2C_INIT,uint32_t speed_k);
 
 EV_FUN_DEF(I2C_WRITE,uint8_t addr,const uint8_t *data,uint32_t size,uint8_t no_stop);
 
@@ -35,7 +35,7 @@ typedef struct{//属性列表
     //可选的 I2C句柄
     void*       handle;
     //获得电平
-    uint8_t     (*init)(void* handle,uint32_t max_speed);
+    uint8_t     (*init)(void* handle,uint32_t max_speed_k);
     //设置电平
     uint8_t     (*write)(void* handle,uint8_t addr,const uint8_t *dat,uint16_t len,uint8_t no_stop);
     //获得电平

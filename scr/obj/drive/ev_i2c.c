@@ -26,7 +26,7 @@ EV_TYPE_FUN_DEF(ev_i2c_type,I2C_INIT)
 
     if(attr->init)
     {
-        attr->init(attr->handle,arg->speed);
+        attr->init(attr->handle,arg->speed_k);
     }
 
     return 0;
