@@ -16,6 +16,7 @@
 #endif
 
 
+#define ev_sleep_us(us) 
 #define ev_sleep(ms)        
 #define ev_get_tick()       0
 
