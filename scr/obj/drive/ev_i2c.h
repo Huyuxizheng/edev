@@ -6,8 +6,8 @@
 
 
 enum{//独有方法列表
-    EVO_E(I2C_INIT) = EVO_E(INIT),
-    EVO_E(I2C_WRITE) = EVO_E(STARE),
+    EVO_E(I2C_INIT) = EVO_E(START),
+    EVO_E(I2C_WRITE),
     EVO_E(I2C_READ),
     EVO_E(I2C_MEM_WRITE),
     EVO_E(I2C_MEM_READ)

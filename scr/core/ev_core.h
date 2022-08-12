@@ -174,7 +174,7 @@ enum{
     EVO_E(WRITE),           //写数据
     EVO_E(READ),            //读数据
     EVO_E(UNINIT),          //反初始化
-    EVO_E(STARE),           //设备方法的开始
+    EVO_E(START),           //设备方法的开始
 };//最多支持65535个，没必要考虑更多的情况
 
 //EVO_HELP 帮助信息 注释或打印

@@ -15,7 +15,7 @@ typedef uint8_t ev_gpio_mode_e;
 
 enum{//独有方法列表
     EVO_E(GPIO_INIT) = EVO_E(INIT),
-    EVO_E(GPIO_SET) = EVO_E(STARE),
+    EVO_E(GPIO_SET) = EVO_E(START),
     EVO_E(GPIO_TOGLE),
     EVO_E(GPIO_GET)
 };

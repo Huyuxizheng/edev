@@ -9,7 +9,7 @@
 #include "./core/ev_core.h"
 
 enum{
-    EVO_E(TP_GET) = EVO_E(STARE),
+    EVO_E(TP_GET) = EVO_E(START),
 };
 
 //EVD_TP_GET

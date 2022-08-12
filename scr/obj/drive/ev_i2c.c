@@ -79,7 +79,7 @@ EV_TYPE_FUN_DEF(ev_i2c_type,I2C_MEM_READ)
 
 EV_TYPE_FUN_DEF(ev_i2c_type,UNINIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_type,INIT);
+    EV_TYPE_FUN_GET_ARG(ev_i2c_type,UNINIT);
 
     if(attr->uninit)
     {

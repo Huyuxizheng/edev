@@ -9,7 +9,7 @@
 #include "./core/ev_core.h"
 
 enum{//方法列表
-    EVO_E(LED_SET) = EVO_E(STARE),
+    EVO_E(LED_SET) = EVO_E(START),
     EVO_E(LED_TOGLE),
 };
 
