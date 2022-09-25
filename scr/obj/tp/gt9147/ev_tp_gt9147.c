@@ -127,7 +127,6 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_GET)
 
     if((dat[0]&0X80) == 0)
     {
-         arg->out->state = 0;
         return 1;  
     }
 
