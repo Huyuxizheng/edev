@@ -30,7 +30,7 @@ static void _ev_iic_imit_stop(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
 static void _ev_iic_imit_send_ack(const EVO_ATTR_T(ev_i2c_imit_type) *attr,uint8_t ack)
 { 
     _ev_obj_fun(attr->scl,GPIO_SET,0);
-    _ev_obj_fun(attr->sda,GPIO_SET,ack);
+    _ev_obj_fun(attr->sda,GPIO_SET,!ack);
 
     ev_sleep_us(*(attr->t));
     _ev_obj_fun(attr->scl,GPIO_SET,1);
@@ -72,7 +72,6 @@ static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_type) *attr,uint
             {_ev_obj_fun(attr->sda,GPIO_SET,1);}
         else 
         	{_ev_obj_fun(attr->sda,GPIO_SET,0);}
-        ev_sleep_us(*(attr->t));
         _ev_obj_fun(attr->scl,GPIO_SET,1);
         dat <<= 1;				//从最高位开始传输数据
         ev_sleep_us(*(attr->t));
@@ -87,7 +86,7 @@ static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
     _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
     for(uint8_t i = 0; i < 8; i++)
     {
-        _ev_obj_fun(attr->scl,GPIO_SET,0);
+        _ev_obj_fun(attr->scl,GPIO_SET,1);
         ev_sleep_us(*(attr->t));
         dat <<= 1;
         dat |= (!!_ev_obj_fun(attr->sda,GPIO_GET));
@@ -139,7 +138,7 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_WRITE)
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
     _ev_iic_imit_read_ack(attr);
-    for(uint32_t i; i < arg->size; i++)
+    for(uint32_t i = 0; i < arg->size; i++)
     {
         _ev_iic_imit_send_byte(attr,arg->data[i]);
         _ev_iic_imit_read_ack(attr);
@@ -155,7 +154,7 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_READ)
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr | 0x01);
     _ev_iic_imit_read_ack(attr);
-    for(uint32_t i; i < arg->size; )
+    for(uint32_t i = 0; i < arg->size; )
     {
         arg->data[i] = _ev_iic_imit_read_byte(attr);
         i++;
@@ -180,7 +179,7 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_MEM_WRITE)
     _ev_iic_imit_send_byte(attr,arg->mem_addr&0xff);
     _ev_iic_imit_read_ack(attr);
 
-    for(uint32_t i; i < arg->size; i++)
+    for(uint32_t i = 0; i < arg->size; i++)
     {
         _ev_iic_imit_send_byte(attr,arg->data[i]);
         _ev_iic_imit_read_ack(attr);
@@ -208,7 +207,7 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_MEM_READ)
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr | 0x01);
     _ev_iic_imit_read_ack(attr);
-    for(uint32_t i; i < arg->size; )
+    for(uint32_t i = 0; i < arg->size; )
     {
         arg->data[i] = _ev_iic_imit_read_byte(attr);
         i++;

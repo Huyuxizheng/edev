@@ -5,8 +5,12 @@
 #include "./core/ev_core.h"
 
 #include "./obj/led/ev_led.h"
+
 #include "./obj/tp/ev_tp.h"
+#include "./obj/tp/gt9147/ev_tp_gt9147.h"
+
 #include "./obj/drive/ev_gpio.h"
+#include "./obj/drive/ev_i2c_imit.h"
 
 //锻造版驱动
 #define ev_drive_forge(DRI, ...)    _ev_drive_forge(DRI, __VA_ARGS__)
