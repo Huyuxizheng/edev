@@ -28,7 +28,7 @@ EV_FUN_DEF(SPI_READ,uint8_t *data,uint32_t size);
 
 
 
-extern const ev_type_t ev_spi_type;
+extern const ev_model_t ev_spi_m;
 
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
@@ -44,8 +44,8 @@ typedef struct{//属性列表
     //获得电平
     void        (*uninit)(void* handle);
 
-}EVO_ATTR_T(ev_spi_type);
-#define ev_spi_type_attr_init 
+}EVO_ATTR_T(ev_spi_m);
+#define ev_spi_model_attr_init 
 
 #endif
 

@@ -27,7 +27,7 @@ EV_FUN_DEF(I2C_MEM_READ,uint8_t addr,uint16_t mem_addr,uint16_t mem_addr_size,ui
 
 
 
-extern const ev_type_t ev_i2c_type;
+extern const ev_model_t ev_i2c_m;
 
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
@@ -43,7 +43,7 @@ typedef struct{//属性列表
     //获得电平
     void        (*uninit)(void* handle);
 
-}EVO_ATTR_T(ev_i2c_type);
-#define ev_i2c_type_attr_init 
+}EVO_ATTR_T(ev_i2c_m);
+#define ev_i2c_model_attr_init 
 
 #endif

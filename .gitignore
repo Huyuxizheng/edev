@@ -54,3 +54,4 @@ scr/.xmake/
 .vscode/
 scr/xmake.lua
 .xmake/
+scr/edev_config.h

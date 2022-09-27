@@ -4,9 +4,9 @@
 #include "edev_config.h"
 
 
-EV_TYPE_FUN_DEF(ev_gpio_type,HELP)
+EV_MODEL_FUN_DEF(ev_gpio_m,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_gpio_m,HELP);
 /*
                                       
 */
@@ -14,9 +14,9 @@ EV_TYPE_FUN_DEF(ev_gpio_type,HELP)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_SET)
+EV_MODEL_FUN_DEF(ev_gpio_m,GPIO_SET)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_SET);
+    EV_MODEL_FUN_GET_ARG(ev_gpio_m,GPIO_SET);
 
     if(attr->set)
     {
@@ -26,9 +26,9 @@ EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_SET)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_TOGLE)
+EV_MODEL_FUN_DEF(ev_gpio_m,GPIO_TOGLE)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_TOGLE);
+    EV_MODEL_FUN_GET_ARG(ev_gpio_m,GPIO_TOGLE);
 
     if(attr->togle)
     {
@@ -41,9 +41,9 @@ EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_TOGLE)
 
     return 0;
 }
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_GET)
+EV_MODEL_FUN_DEF(ev_gpio_m,GPIO_GET)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_GET);
+    EV_MODEL_FUN_GET_ARG(ev_gpio_m,GPIO_GET);
 
     if(attr->get)
     {
@@ -53,9 +53,9 @@ EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_GET)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT)
+EV_MODEL_FUN_DEF(ev_gpio_m,GPIO_INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,GPIO_INIT);
+    EV_MODEL_FUN_GET_ARG(ev_gpio_m,GPIO_INIT);
 
     switch(arg->mode)
     {
@@ -80,9 +80,9 @@ EV_TYPE_FUN_DEF(ev_gpio_type,GPIO_INIT)
 }
 
 
-EV_TYPE_FUN_DEF(ev_gpio_type,UNINIT)
+EV_MODEL_FUN_DEF(ev_gpio_m,UNINIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_gpio_type,UNINIT);
+    EV_MODEL_FUN_GET_ARG(ev_gpio_m,UNINIT);
 
     if(attr->uninit)
     {
@@ -93,5 +93,5 @@ EV_TYPE_FUN_DEF(ev_gpio_type,UNINIT)
 }
 
 
-EV_TYPE_LIST_DEF(ev_gpio_type,HELP,GPIO_SET,GPIO_TOGLE,GPIO_GET,GPIO_INIT,UNINIT);
-const ev_type_t ev_gpio_type = EV_TYPE_DEF(ev_gpio_type);
+EV_MODEL_LIST_DEF(ev_gpio_m,HELP,GPIO_SET,GPIO_TOGLE,GPIO_GET,GPIO_INIT,UNINIT);
+const ev_model_t ev_gpio_m = EV_MODEL_DEF(ev_gpio_m);

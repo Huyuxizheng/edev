@@ -46,9 +46,9 @@ const uint8_t GT9147_CFG[]=
 
 
 
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,HELP)
+EV_MODEL_FUN_DEF(ev_tp_gt9147_m,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_tp_gt9147_m,HELP);
 /*zhon
                                    
 */
@@ -56,9 +56,9 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,HELP)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
+EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,INIT);
+    EV_MODEL_FUN_GET_ARG(ev_tp_gt9147_m,INIT);
 
     uint8_t dat[6] = {0};
 
@@ -117,9 +117,9 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,INIT)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_GET)
+EV_MODEL_FUN_DEF(ev_tp_gt9147_m,TP_GET)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,TP_GET);
+    EV_MODEL_FUN_GET_ARG(ev_tp_gt9147_m,TP_GET);
 
     uint8_t dat[6] = {0};
     
@@ -151,9 +151,9 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,TP_GET)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_tp_gt9147_type,UNINIT)
+EV_MODEL_FUN_DEF(ev_tp_gt9147_m,UNINIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_gt9147_type,UNINIT);
+    EV_MODEL_FUN_GET_ARG(ev_tp_gt9147_m,UNINIT);
 
     _ev_objs_fun(attr->i2c,attr->rst_io,attr->isr_io,UNINIT,());
 
@@ -161,8 +161,8 @@ EV_TYPE_FUN_DEF(ev_tp_gt9147_type,UNINIT)
     return 0;
 }
 
-EV_TYPE_LIST_DEF(ev_tp_gt9147_type,HELP,INIT,TP_GET,UNINIT);
+EV_MODEL_LIST_DEF(ev_tp_gt9147_m,HELP,INIT,TP_GET,UNINIT);
 
-const ev_type_t ev_tp_gt9147_type = EV_TYPE_DEF(ev_tp_gt9147_type);
+const ev_model_t ev_tp_gt9147_m = EV_MODEL_DEF(ev_tp_gt9147_m);
 
 

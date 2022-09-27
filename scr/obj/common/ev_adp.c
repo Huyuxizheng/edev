@@ -3,9 +3,9 @@
 #include "./obj/common/ev_adp.h"
 #include "edev_config.h"
 
-EV_TYPE_FUN_DEF(ev_adp_type,RELAY)
+EV_MODEL_FUN_DEF(ev_adp_m,RELAY)
 {
-    EV_TYPE_FUN_GET_ARG(ev_adp_type,RELAY);
+    EV_MODEL_FUN_GET_ARG(ev_adp_m,RELAY);
 
     if(attr->obj && (*attr->obj))
     {
@@ -14,12 +14,12 @@ EV_TYPE_FUN_DEF(ev_adp_type,RELAY)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_adp_type,HELP)
+EV_MODEL_FUN_DEF(ev_adp_m,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_adp_type,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_adp_m,HELP);
 /*
 
-    const ev_obj_t adp = _ev_obj_forge(ev_adp_type,
+    const ev_obj_t adp = _ev_obj_forge(ev_adp_m,
                                          ev_adp_add_list(&obj1,&obj2 ...) 
                                          );
 */
@@ -27,9 +27,9 @@ EV_TYPE_FUN_DEF(ev_adp_type,HELP)
 }
 
 
-EV_TYPE_FUN_DEF(ev_adp_type,INIT)
+EV_MODEL_FUN_DEF(ev_adp_m,INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_adp_type,INIT);
+    EV_MODEL_FUN_GET_ARG(ev_adp_m,INIT);
 
     for(int i = 0; i < attr->list_len; i++)
     {
@@ -46,9 +46,9 @@ EV_TYPE_FUN_DEF(ev_adp_type,INIT)
     return 1;
 }
 
-EV_TYPE_FUN_DEF(ev_adp_type,UNINIT)
+EV_MODEL_FUN_DEF(ev_adp_m,UNINIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_adp_type,UNINIT);
+    EV_MODEL_FUN_GET_ARG(ev_adp_m,UNINIT);
 
     if(attr->obj && (*attr->obj))
     {
@@ -59,5 +59,5 @@ EV_TYPE_FUN_DEF(ev_adp_type,UNINIT)
     return 1;
 }
 
-EV_TYPE_LIST_DEF(ev_adp_type,RELAY,HELP,INIT);
-const ev_type_t ev_adp_type = EV_TYPE_DEF(ev_adp_type);
+EV_MODEL_LIST_DEF(ev_adp_m,RELAY,HELP,INIT);
+const ev_model_t ev_adp_m = EV_MODEL_DEF(ev_adp_m);

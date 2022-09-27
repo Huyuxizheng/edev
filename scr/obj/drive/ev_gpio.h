@@ -29,7 +29,7 @@ EV_FUN_DEF(GPIO_INIT,ev_gpio_mode_e mode);
 
 
 
-extern const ev_type_t ev_gpio_type;
+extern const ev_model_t ev_gpio_m;
 
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头    //可选的 GPIO组
@@ -54,7 +54,7 @@ typedef struct{//属性列表
     //获得电平
     uint8_t     (*get)(void* group,uint32_t pin);
 
-}EVO_ATTR_T(ev_gpio_type);
-#define ev_gpio_type_attr_init 
+}EVO_ATTR_T(ev_gpio_m);
+#define ev_gpio_model_attr_init 
 
 #endif

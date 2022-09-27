@@ -2,9 +2,9 @@
 #include "edev_config.h"
 
 
-EV_TYPE_FUN_DEF(ev_tp_cap_type,HELP)
+EV_MODEL_FUN_DEF(ev_tp_cap_m,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_cap_type,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_tp_cap_m,HELP);
 /*
                                    
 */
@@ -13,9 +13,9 @@ EV_TYPE_FUN_DEF(ev_tp_cap_type,HELP)
 }
 
 
-EV_TYPE_FUN_DEF(ev_tp_cap_type,INIT)
+EV_MODEL_FUN_DEF(ev_tp_cap_m,INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_cap_type,INIT);
+    EV_MODEL_FUN_GET_ARG(ev_tp_cap_m,INIT);
 
 
     if(attr->ic)
@@ -27,9 +27,9 @@ EV_TYPE_FUN_DEF(ev_tp_cap_type,INIT)
 }
 
 
-EV_TYPE_FUN_DEF(ev_tp_cap_type,TP_GET)
+EV_MODEL_FUN_DEF(ev_tp_cap_m,TP_GET)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_cap_type,TP_GET);
+    EV_MODEL_FUN_GET_ARG(ev_tp_cap_m,TP_GET);
 
 
     if(attr->ic)
@@ -41,9 +41,9 @@ EV_TYPE_FUN_DEF(ev_tp_cap_type,TP_GET)
 }
 
 
-EV_TYPE_FUN_DEF(ev_tp_cap_type,UNINIT)
+EV_MODEL_FUN_DEF(ev_tp_cap_m,UNINIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_tp_cap_type,UNINIT);
+    EV_MODEL_FUN_GET_ARG(ev_tp_cap_m,UNINIT);
 
     if(attr->ic)
     {
@@ -54,9 +54,9 @@ EV_TYPE_FUN_DEF(ev_tp_cap_type,UNINIT)
 }
 
 
-EV_TYPE_LIST_DEF(ev_tp_cap_type,HELP,INIT,TP_GET,UNINIT);
+EV_MODEL_LIST_DEF(ev_tp_cap_m,HELP,INIT,TP_GET,UNINIT);
 
-const ev_type_t ev_tp_cap_type = EV_TYPE_DEF(ev_tp_cap_type);
+const ev_model_t ev_tp_cap_m = EV_MODEL_DEF(ev_tp_cap_m);
 
 
 

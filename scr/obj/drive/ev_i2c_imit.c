@@ -5,7 +5,7 @@
 #include "edev_config.h"
 
 
-static void _ev_iic_imit_start(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
+static void _ev_iic_imit_start(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 {
     _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(1));
     ev_sleep_us(*(attr->t));
@@ -16,7 +16,7 @@ static void _ev_iic_imit_start(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
     ev_sleep_us(*(attr->t));
 } 
 
-static void _ev_iic_imit_stop(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
+static void _ev_iic_imit_stop(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 {
     _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(0));
     ev_sleep_us(*(attr->t));
@@ -27,7 +27,7 @@ static void _ev_iic_imit_stop(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
     ev_sleep_us(*(attr->t));
 } 
 
-static void _ev_iic_imit_send_ack(const EVO_ATTR_T(ev_i2c_imit_type) *attr,uint8_t ack)
+static void _ev_iic_imit_send_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t ack)
 { 
     _ev_obj_fun(attr->scl,GPIO_SET,0);
     _ev_obj_fun(attr->sda,GPIO_SET,!ack);
@@ -41,7 +41,7 @@ static void _ev_iic_imit_send_ack(const EVO_ATTR_T(ev_i2c_imit_type) *attr,uint8
     ev_sleep_us(*(attr->t));
 } 
 
-static uint8_t _ev_iic_imit_read_ack(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
+static uint8_t _ev_iic_imit_read_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 { 
     uint8_t ack = 0;
     _ev_obj_fun(attr->sda,GPIO_SET,1);
@@ -62,7 +62,7 @@ static uint8_t _ev_iic_imit_read_ack(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
     return ack;
 } 
 
-static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_type) *attr,uint8_t dat)
+static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t dat)
 { 
     for(uint8_t i = 0; i < 8; i++)
     {
@@ -80,7 +80,7 @@ static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_type) *attr,uint
     _ev_obj_fun(attr->sda,GPIO_SET,1);
 } 
 
-static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
+static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 { 
     uint8_t dat;
     _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
@@ -98,12 +98,12 @@ static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_type) *attr)
     return dat;
 } 
 
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,HELP)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,HELP);
 /*
  
-    ev_obj_s *i2c_imit = ev_obj_forge(ev_i2c_imit_type, 
+    ev_obj_s *i2c_imit = ev_obj_forge(ev_i2c_imit_m, 
                                             .sda_io = &gpio_1,
                                             .scl_io = &gpio_2,
                                         );
@@ -113,9 +113,9 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,HELP)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_INIT)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,I2C_INIT);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_INIT);
 
     if(attr->sda && attr->scl)
     {
@@ -131,9 +131,9 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_INIT)
 
     return 1;
 }
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_WRITE)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_WRITE)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,I2C_WRITE);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_WRITE);
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
@@ -147,9 +147,9 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_WRITE)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_READ)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_READ)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,I2C_READ);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_READ);
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr | 0x01);
@@ -164,9 +164,9 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_READ)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_MEM_WRITE)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_MEM_WRITE)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,I2C_MEM_WRITE);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_MEM_WRITE);
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
@@ -189,9 +189,9 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_MEM_WRITE)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_MEM_READ)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_MEM_READ)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,I2C_MEM_READ);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_MEM_READ);
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
@@ -218,16 +218,16 @@ EV_TYPE_FUN_DEF(ev_i2c_imit_type,I2C_MEM_READ)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_i2c_imit_type,UNINIT)
+EV_MODEL_FUN_DEF(ev_i2c_imit_m,UNINIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_i2c_imit_type,INIT);
+    EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,INIT);
 
     _ev_objs_fun(attr->sda,attr->scl,UNINIT,());
 
     return 0;
 }
 
-EV_TYPE_LIST_DEF(ev_i2c_imit_type,HELP,I2C_INIT,I2C_WRITE,I2C_READ,I2C_MEM_WRITE,I2C_MEM_READ,UNINIT);
+EV_MODEL_LIST_DEF(ev_i2c_imit_m,HELP,I2C_INIT,I2C_WRITE,I2C_READ,I2C_MEM_WRITE,I2C_MEM_READ,UNINIT);
 
-const ev_type_t ev_i2c_imit_type = EV_TYPE_DEF(ev_i2c_imit_type);
+const ev_model_t ev_i2c_imit_m = EV_MODEL_DEF(ev_i2c_imit_m);
 

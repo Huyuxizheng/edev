@@ -5,7 +5,7 @@
 #include "./core/ev_pp.h"
 
 typedef struct ev_obj_t ev_obj_t;
-typedef struct ev_type_t ev_type_t;
+typedef struct ev_model_t ev_model_t;
 
 #define EV_TO_RAM(type,...)  (type *)(type []){__VA_ARGS__}
 #define EV_TO_ROM(type,...)  (type *)(type const[]){__VA_ARGS__}
@@ -17,21 +17,21 @@ typedef uint8_t (*edev_obj_fun_t)(const ev_obj_t *self,void *arg);
 
 
 //设备类型
-typedef struct ev_type_t{
+typedef struct ev_model_t{
     char                *name;
 
     uint16_t        total;      //方法总数
     const edev_obj_fun_t  *list;       //方法清单
-}ev_type_t;
+}ev_model_t;
 
 //定义list时的快捷方法
-#define EV_TYPE_LIST(type)              type##_list
-#define EV_TYPE_TOTAL(type)             sizeof(EV_TYPE_LIST(type))/sizeof(edev_obj_fun_t)
-#define EV_TYPE_FUN(type,OP)            type##_##OP
+#define EV_MODEL_LIST(model)              model##_list
+#define EV_MODEL_TOTAL(model)             sizeof(EV_MODEL_LIST(model))/sizeof(edev_obj_fun_t)
+#define EV_MODEL_FUN(model,OP)            model##_##OP
 //方法定义
-#define EV_TYPE_FUN_DEF(type,OP)        static uint8_t EV_TYPE_FUN(type,OP)(const ev_obj_t *self,void *_arg)
+#define EV_MODEL_FUN_DEF(model,OP)        static uint8_t EV_MODEL_FUN(model,OP)(const ev_obj_t *self,void *_arg)
 //获得参数到 arg变量
-#define EV_TYPE_FUN_GET_ARG(type,OP)    const EVO_T(OP) *arg = (EVO_T(OP) *)_arg;const EVO_ATTR_T(type) *attr = (const EVO_ATTR_T(type) *)self->attr;
+#define EV_MODEL_FUN_GET_ARG(model,OP)    const EVO_T(OP) *arg = (EVO_T(OP) *)_arg;const EVO_ATTR_T(model) *attr = (const EVO_ATTR_T(model) *)self->attr;
 
 
 //方法定义接口
@@ -44,17 +44,17 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
 
 
 
-#define EV_TYPE_LIST_ADD_FUN(type,OP)    [EVO_E(OP)] = EV_TYPE_FUN(type,OP)
-#define _EV_TYPE_LIST_ADD_FUN(type,OP,N)    EV_TYPE_LIST_ADD_FUN(type,OP),
-#define _EV_TYPE_LIST_FILL0(...)   0,0
-#define EV_TYPE_LIST_DEF(type,...) static edev_obj_fun_t const EV_TYPE_LIST(type)[] = {\
-                EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_TYPE_LIST_FILL0)(_EV_TYPE_LIST_ADD_FUN,type, __VA_ARGS__)}
+#define EV_MODEL_LIST_ADD_FUN(model,OP)    [EVO_E(OP)] = EV_MODEL_FUN(model,OP)
+#define _EV_MODEL_LIST_ADD_FUN(model,OP,N)    EV_MODEL_LIST_ADD_FUN(model,OP),
+#define _EV_MODEL_LIST_FILL0(...)   0,0
+#define EV_MODEL_LIST_DEF(model,...) static edev_obj_fun_t const EV_MODEL_LIST(model)[] = {\
+                EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_MODEL_LIST_FILL0)(_EV_MODEL_LIST_ADD_FUN,model, __VA_ARGS__)}
 
 //为方便调试，不过度封装
-#define EV_TYPE_DEF(type) ( ev_type_t ){\
-    .name = #type,\
-    .total = EV_TYPE_TOTAL(type),\
-    .list  = EV_TYPE_LIST(type),\
+#define EV_MODEL_DEF(model) ( ev_model_t ){\
+    .name = #model,\
+    .total = EV_MODEL_TOTAL(model),\
+    .list  = EV_MODEL_LIST(model),\
     };\
 
 
@@ -69,17 +69,17 @@ typedef struct {
 
 //设备对象结构
 typedef struct ev_obj_t{
-    const ev_type_t             *type;      //方法列表
+    const ev_model_t             *model;      //方法列表
     const ev_obj_attr_base_t    *attr;      //对象属性
 }ev_obj_t;
 
 #define EVO_ATTR_BASE_INIT   .base.nul = 0,
-#define EVO_ATTR_INIT(type)  type##_attr_init
-#define EVO_ATTR_T(type)     type##_attr_t
+#define EVO_ATTR_INIT(model)  model##_attr_init
+#define EVO_ATTR_T(model)     model##_attr_t
   
-#define EVO_ATTR_DEF(type, ...)  (const ev_obj_attr_base_t*)(const EVO_ATTR_T(type) []){{EV_PP_NANG_FILL0(__VA_ARGS__)}}
+#define EVO_ATTR_DEF(model, ...)  (const ev_obj_attr_base_t*)(const EVO_ATTR_T(model) []){{EV_PP_NANG_FILL0(__VA_ARGS__)}}
 
-#define _ev_obj_forge(_type, ...)  {.type = &_type,.attr = EVO_ATTR_DEF(_type, EVO_ATTR_BASE_INIT EVO_ATTR_INIT(_type) __VA_ARGS__)}
+#define _ev_obj_forge(_model, ...)  {.model = &_model,.attr = EVO_ATTR_DEF(_model, EVO_ATTR_BASE_INIT EVO_ATTR_INIT(_model) __VA_ARGS__)}
 
 #define ev_obj_add_lock   .base.lock = EV_TO_RAM(void*,0),
 
@@ -92,15 +92,15 @@ typedef struct ev_obj_t{
 #define ev_obj_assert(obj) \
 if(!obj){ev_warning("%s obj null\r\n",__fun__);return 1;}
 
-#define ev_type_assert(obj) \
-if(!obj->type){ev_warning("%s type null\r\n",__fun__);return 1;}
+#define ev_model_assert(obj) \
+if(!obj->model){ev_warning("%s model null\r\n",__fun__);return 1;}
 
 #define ev_attr_assert(obj) \
 if(!obj->attr){ev_warning("%s attr null\r\n",__fun__);return 1;}
 
 #define ev_op_assert(obj,op) \
-if((op >= obj->type->total)&&(obj->type->list[EVO_E(RELAY)] == 0))\
-{ev_warning("%s:%s no fun op:%d\r\n",__fun__,obj->type->name,op);return 1;}
+if((op >= obj->model->total)&&(obj->model->list[EVO_E(RELAY)] == 0))\
+{ev_warning("%s:%s no fun op:%d\r\n",__fun__,obj->model->name,op);return 1;}
 
 
 

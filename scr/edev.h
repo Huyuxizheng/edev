@@ -14,7 +14,7 @@
 
 //锻造版驱动
 #define ev_drive_forge(DRI, ...)    _ev_drive_forge(DRI, __VA_ARGS__)
-#define ev_obj_forge(type, ...)    _ev_obj_forge(type, __VA_ARGS__)
+#define ev_obj_forge(model, ...)    _ev_obj_forge(model, __VA_ARGS__)
 
 
 //调用设备方法

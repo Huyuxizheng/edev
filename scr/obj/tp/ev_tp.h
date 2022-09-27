@@ -25,10 +25,10 @@ EV_FUN_DEF(TP_GET,ev_tp_get_out *out);
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
     const ev_obj_t      *ic;
-}EVO_ATTR_T(ev_tp_cap_type);
-#define ev_tp_cap_type_attr_init 
+}EVO_ATTR_T(ev_tp_cap_m);
+#define ev_tp_cap_model_attr_init 
 
-extern const ev_type_t ev_tp_cap_type;
+extern const ev_model_t ev_tp_cap_m;
 
 
 #endif

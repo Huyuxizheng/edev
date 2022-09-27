@@ -9,7 +9,7 @@
 #include "./core/ev_core.h"
 
 
-extern const ev_type_t ev_adp_type;
+extern const ev_model_t ev_adp_m;
 
 
 #define _EV_ADP_ADD_LIST(CTX,VAR,IDX)  VAR,
@@ -24,8 +24,8 @@ typedef struct{//属性列表
     const ev_obj_t      **obj;
     const ev_obj_t      **list;
     uint8_t             list_len;
-}EVO_ATTR_T(ev_adp_type);
+}EVO_ATTR_T(ev_adp_m);
 
-#define ev_adp_type_attr_init .obj = EV_TO_RAM(const ev_obj_t *,0),
+#define ev_adp_model_attr_init .obj = EV_TO_RAM(const ev_obj_t *,0),
 
 #endif

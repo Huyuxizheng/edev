@@ -5,9 +5,9 @@
 #include "edev_config.h"
 
 
-EV_TYPE_FUN_DEF(ev_led_type,HELP)
+EV_MODEL_FUN_DEF(ev_led_m,HELP)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_led_m,HELP);
 /*
     //创建led 的 gpio驱动
     ev_drive_s *led_gpio = ev_obj_forge(GPIO, 
@@ -17,7 +17,7 @@ EV_TYPE_FUN_DEF(ev_led_type,HELP)
                                             .togle = gpio_togle,
                                         );
     //创建LED设备
-    ev_obj_s *led_dev = ev_obj_forge(ev_led_type,
+    ev_obj_s *led_dev = ev_obj_forge(ev_led_m,
                                         .gpio = led_gpio,   //LED设备增加gpio驱动
                                         .en_val = 1,        //设置LED引脚高电平为点亮
                                         );
@@ -33,9 +33,9 @@ EV_TYPE_FUN_DEF(ev_led_type,HELP)
 }
 
 
-EV_TYPE_FUN_DEF(ev_led_type,INIT)
+EV_MODEL_FUN_DEF(ev_led_m,INIT)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,INIT);
+    EV_MODEL_FUN_GET_ARG(ev_led_m,INIT);
 
     if(attr->gpio)
     {
@@ -47,9 +47,9 @@ EV_TYPE_FUN_DEF(ev_led_type,INIT)
     return 0;
 }
 
-EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
+EV_MODEL_FUN_DEF(ev_led_m,LED_SET)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,LED_SET);
+    EV_MODEL_FUN_GET_ARG(ev_led_m,LED_SET);
     if(attr->gpio)
     {
         if(arg->state)
@@ -65,9 +65,9 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_SET)
 }
 
 
-EV_TYPE_FUN_DEF(ev_led_type,LED_TOGLE)
+EV_MODEL_FUN_DEF(ev_led_m,LED_TOGLE)
 {
-    EV_TYPE_FUN_GET_ARG(ev_led_type,LED_TOGLE);
+    EV_MODEL_FUN_GET_ARG(ev_led_m,LED_TOGLE);
     if(attr->gpio)
     {
          _ev_obj_fun(attr->gpio, GPIO_TOGLE);
@@ -76,6 +76,6 @@ EV_TYPE_FUN_DEF(ev_led_type,LED_TOGLE)
 }
 
 
-EV_TYPE_LIST_DEF(ev_led_type,HELP,INIT,LED_SET,LED_TOGLE);
+EV_MODEL_LIST_DEF(ev_led_m,HELP,INIT,LED_SET,LED_TOGLE);
 
-const ev_type_t ev_led_type = EV_TYPE_DEF(ev_led_type);
+const ev_model_t ev_led_m = EV_MODEL_DEF(ev_led_m);

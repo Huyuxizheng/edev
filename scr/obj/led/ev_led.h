@@ -23,13 +23,13 @@ EV_FUN_DEF(LED_SET,uint8_t state);
 EV_FUN_DEF(LED_TOGLE);
 
 
-extern const ev_type_t ev_led_type;
+extern const ev_model_t ev_led_m;
 
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
     const ev_obj_t      *gpio;
     uint8_t             en_val;
-}EVO_ATTR_T(ev_led_type);
-#define ev_led_type_attr_init 
+}EVO_ATTR_T(ev_led_m);
+#define ev_led_model_attr_init 
 
 #endif
