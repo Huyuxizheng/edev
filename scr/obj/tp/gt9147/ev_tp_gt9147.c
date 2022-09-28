@@ -8,8 +8,6 @@
 //第一个字节为版本号(0X60),必须保证新的版本号大于等于GT9147内部
 const uint8_t GT9147_CFG[]=
 { 
-    0X80,0x47,//寄存器地址
-
 	0X60,0XE0,0X01,0X20,0X03,0X05,0X35,0X00,0X02,0X08,
 	0X1E,0X08,0X50,0X3C,0X0F,0X05,0X00,0X00,0XFF,0X67,
 	0X50,0X00,0X00,0X18,0X1A,0X1E,0X14,0X89,0X28,0X0A,
@@ -65,7 +63,7 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
     _ev_obj_fun(attr->i2c,I2C_INIT,400);//400KHZ
     _ev_objs_fun(attr->rst_io,attr->isr_io,GPIO_INIT,(EV_GPIO_MODE_OUT));
 
-    _ev_obj_fun(attr->isr_io,GPIO_SET,1);
+    _ev_obj_fun(attr->isr_io,GPIO_SET,0);
     _ev_obj_fun(attr->rst_io,GPIO_SET,0);
     ev_sleep(5);
     _ev_obj_fun(attr->isr_io,GPIO_SET,1);
@@ -80,9 +78,9 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
 
     if(
         (
-            (dat[0] != '9') &&
-            (dat[1] != '1') &&
-            (dat[2] != '4') &&
+            (dat[0] != '9') ||
+            (dat[1] != '1') ||
+            (dat[2] != '4') ||
             (dat[3] != '7') 
         )
     )
@@ -91,21 +89,21 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
         return 1;
     }
 
-    ev_info("gt9147 id:%s \r\n",id);
+    ev_info("gt9147 id:%s \r\n",dat);
 
 
     dat[0] = 0x02;
     _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//软件复位
 
-    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_CFGS_REG,2,dat,1);
+    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_CFGS_REG,2,dat,5);
 
     if(dat[0]<0X60)//默认版本比较低,需要更新flash配置
     {
-        uint8_t buf[2] = {0,1};
-        for(int i=2;i<sizeof(GT9147_CFG);i++)buf[0]+=GT9147_CFG[i];
+        uint8_t buf[2] = {0,0};
+        for(int i=0;i<sizeof(GT9147_CFG);i++)buf[0]+=GT9147_CFG[i];
         buf[0]=(~buf[0])+1;
 
-        _ev_obj_fun(attr->i2c,I2C_WRITE,GT9147_ADD,GT9147_CFG,sizeof(GT9147_CFG));//发送寄存器配置
+        _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CFGS_REG,2,GT9147_CFG,sizeof(GT9147_CFG));//发送寄存器配置
 
         _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CHECK_REG,2,buf,2);
     }

@@ -38,13 +38,12 @@ static void _ev_iic_imit_send_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t 
 
     _ev_obj_fun(attr->scl,GPIO_SET,0);
     _ev_obj_fun(attr->sda,GPIO_SET,1);
-    ev_sleep_us(*(attr->t));
 } 
 
 static uint8_t _ev_iic_imit_read_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 { 
     uint8_t ack = 0;
-    _ev_obj_fun(attr->sda,GPIO_SET,1);
+    //_ev_obj_fun(attr->sda,GPIO_SET,1);
 
     _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
 
@@ -55,7 +54,6 @@ static uint8_t _ev_iic_imit_read_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
     ack = _ev_obj_fun(attr->sda,GPIO_GET);
 
     _ev_obj_fun(attr->scl,GPIO_SET,0);
-    ev_sleep_us(*(attr->t));
 
     _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_OUT);
     _ev_obj_fun(attr->sda,GPIO_SET,1);
@@ -77,7 +75,7 @@ static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t
         ev_sleep_us(*(attr->t));
     }
     _ev_obj_fun(attr->scl,GPIO_SET,0);
-    _ev_obj_fun(attr->sda,GPIO_SET,1);
+    //_ev_obj_fun(attr->sda,GPIO_SET,1);
 } 
 
 static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
