@@ -9,7 +9,7 @@ typedef struct{//属性列表
     const ev_obj_t      *rst_io;
     const ev_obj_t      *isr_io;
 }EVO_ATTR_T(ev_tp_gt9147_m);
-#define ev_tp_gt9147_model_attr_init 
+#define ev_tp_gt9147_m_attr_init 
 
 extern const ev_model_t ev_tp_gt9147_m;
 

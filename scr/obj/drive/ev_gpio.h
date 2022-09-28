@@ -55,6 +55,6 @@ typedef struct{//属性列表
     uint8_t     (*get)(void* group,uint32_t pin);
 
 }EVO_ATTR_T(ev_gpio_m);
-#define ev_gpio_model_attr_init 
+#define ev_gpio_m_attr_init 
 
 #endif

@@ -45,7 +45,7 @@ typedef struct{//属性列表
     void        (*uninit)(void* handle);
 
 }EVO_ATTR_T(ev_spi_m);
-#define ev_spi_model_attr_init 
+#define ev_spi_m_attr_init 
 
 #endif
 

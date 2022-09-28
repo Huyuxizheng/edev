@@ -14,6 +14,6 @@ typedef struct{//属性列表
     const ev_obj_t*  sda;
     const ev_obj_t*  scl;
 }EVO_ATTR_T(ev_i2c_imit_m);
-#define ev_i2c_imit_model_attr_init .t = EV_TO_RAM(uint8_t,5),
+#define ev_i2c_imit_m_attr_init .t = EV_TO_RAM(uint8_t,5),
 
 #endif

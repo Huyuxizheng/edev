@@ -26,6 +26,6 @@ typedef struct{//属性列表
     uint8_t             list_len;
 }EVO_ATTR_T(ev_adp_m);
 
-#define ev_adp_model_attr_init .obj = EV_TO_RAM(const ev_obj_t *,0),
+#define ev_adp_m_attr_init .obj = EV_TO_RAM(const ev_obj_t *,0),
 
 #endif

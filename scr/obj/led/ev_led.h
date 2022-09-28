@@ -30,6 +30,6 @@ typedef struct{//属性列表
     const ev_obj_t      *gpio;
     uint8_t             en_val;
 }EVO_ATTR_T(ev_led_m);
-#define ev_led_model_attr_init 
+#define ev_led_m_attr_init 
 
 #endif

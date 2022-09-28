@@ -44,6 +44,6 @@ typedef struct{//属性列表
     void        (*uninit)(void* handle);
 
 }EVO_ATTR_T(ev_i2c_m);
-#define ev_i2c_model_attr_init 
+#define ev_i2c_m_attr_init 
 
 #endif
