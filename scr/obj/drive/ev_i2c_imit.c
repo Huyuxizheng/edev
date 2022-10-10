@@ -119,9 +119,9 @@ EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_INIT)
     {
         _ev_objs_fun(attr->sda,attr->scl,GPIO_INIT,(EV_GPIO_MODE_OUT));
         _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(1));
-        if(arg->speed_k > 2)
+        if(arg->max_khz > 2)
         {
-            *(attr->t) = (5000/arg->speed_k + 9)/10;
+            *(attr->t) = (5000/arg->max_khz + 9)/10;
 
         }
         return 0;

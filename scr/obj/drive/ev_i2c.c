@@ -26,7 +26,7 @@ EV_MODEL_FUN_DEF(ev_i2c_m,I2C_INIT)
 
     if(attr->init)
     {
-        attr->init(attr->handle,arg->speed_k);
+        attr->init(attr->handle,arg->max_khz);
     }
 
     return 0;
