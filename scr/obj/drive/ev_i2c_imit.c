@@ -132,26 +132,28 @@ EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_INIT)
 EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_WRITE)
 {
     EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_WRITE);
+    uint8_t ret = 0;
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
     for(uint32_t i = 0; i < arg->size; i++)
     {
         _ev_iic_imit_send_byte(attr,arg->data[i]);
-        _ev_iic_imit_read_ack(attr);
+        ret |= _ev_iic_imit_read_ack(attr);
     }
     _ev_iic_imit_stop(attr);
-    return 0;
+    return ret;
 }
 
 EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_READ)
 {
     EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_READ);
+    uint8_t ret = 0;
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr | 0x01);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
     for(uint32_t i = 0; i < arg->size; )
     {
         arg->data[i] = _ev_iic_imit_read_byte(attr);
@@ -159,52 +161,54 @@ EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_READ)
         _ev_iic_imit_send_ack(attr,(i<arg->size)?1:0);
     }
     _ev_iic_imit_stop(attr);
-    return 0;
+    return ret;
 }
 
 EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_MEM_WRITE)
 {
     EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_MEM_WRITE);
+    uint8_t ret = 0;
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
     if(arg->mem_addr_size >= 2)
     {
         _ev_iic_imit_send_byte(attr,arg->mem_addr>>8);
-        _ev_iic_imit_read_ack(attr);
+        ret |= _ev_iic_imit_read_ack(attr);
     }
     _ev_iic_imit_send_byte(attr,arg->mem_addr&0xff);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
 
     for(uint32_t i = 0; i < arg->size; i++)
     {
         _ev_iic_imit_send_byte(attr,arg->data[i]);
-        _ev_iic_imit_read_ack(attr);
+        ret |= _ev_iic_imit_read_ack(attr);
     }
     _ev_iic_imit_stop(attr);
 
-    return 0;
+    return ret;
 }
 
 EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_MEM_READ)
 {
     EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,I2C_MEM_READ);
+    uint8_t ret = 0;
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr & 0xfe);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
     if(arg->mem_addr_size >= 2)
     {
         _ev_iic_imit_send_byte(attr,arg->mem_addr>>8);
-        _ev_iic_imit_read_ack(attr);
+        ret |= _ev_iic_imit_read_ack(attr);
     }
     _ev_iic_imit_send_byte(attr,arg->mem_addr&0xff);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
 
     _ev_iic_imit_start(attr);
     _ev_iic_imit_send_byte(attr,arg->addr | 0x01);
-    _ev_iic_imit_read_ack(attr);
+    ret |= _ev_iic_imit_read_ack(attr);
     for(uint32_t i = 0; i < arg->size; )
     {
         arg->data[i] = _ev_iic_imit_read_byte(attr);
@@ -213,7 +217,7 @@ EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_MEM_READ)
     }
     _ev_iic_imit_stop(attr);
 
-    return 0;
+    return ret;
 }
 
 EV_MODEL_FUN_DEF(ev_i2c_imit_m,UNINIT)
