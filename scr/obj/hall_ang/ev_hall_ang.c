@@ -1,4 +1,4 @@
-#include "./obj/hall_ang/hall_ang.h"
+#include "./obj/hall_ang/ev_hall_ang.h"
 #include "edev_config.h"
 
 
@@ -34,7 +34,7 @@ EV_MODEL_FUN_DEF(ev_hall_ang_m,HALL_ANG_GET)
 
     if(attr->ic)
     {
-        return _ev_obj_fun(attr->ic,HALL_ANG_GET,arg->out);   
+        return _ev_obj_fun(attr->ic,HALL_ANG_GET,arg->angle);   
     }
 
     return 1;

@@ -9,11 +9,8 @@ enum{
     EVO_E(HALL_ANG_GET) = EVO_E(START),
 };
 
-//EVD_TP_GET
-typedef struct{
-    float angle;
-}ev_hall_ang_get_out;
-EV_FUN_DEF(HALL_ANG_GET,ev_hall_ang_get_out *out);
+//HALL_ANG_GET
+EV_FUN_DEF(HALL_ANG_GET,float *angle);
 
 
 typedef struct{//属性列表
