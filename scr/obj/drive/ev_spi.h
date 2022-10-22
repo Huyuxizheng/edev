@@ -20,7 +20,7 @@ enum{
 };
 typedef uint8_t ev_spi_mode_e;
 
-EV_FUN_DEF(SPI_INIT,ev_spi_mode_e mode,uint32_t speed_M);
+EV_FUN_DEF(SPI_INIT,ev_spi_mode_e mode,uint32_t max_Mhz);
 
 EV_FUN_DEF(SPI_WRITE,const uint8_t *data,uint32_t size);
 
@@ -33,19 +33,19 @@ extern const ev_model_t ev_spi_m;
 typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
 
-    //可选的 句柄
-    void*       handle;
+    //句柄 内部变量
+    void*       *handle;
     //获得电平
-    uint8_t     (*init)(void* handle,ev_spi_mode_e mode,uint32_t max_speed_M);
+    uint8_t     (*init)(void* *handle,ev_spi_mode_e mode,uint32_t max_Mhz);
     //设置电平
-    uint8_t     (*write)(void* handle,const uint8_t *dat,uint16_t len);
+    uint8_t     (*write)(void* *handle,const uint8_t *dat,uint16_t len);
     //获得电平
-    uint8_t     (*read)(void* handle,uint8_t *dat,uint16_t len);
+    uint8_t     (*read)(void* *handle,uint8_t *dat,uint16_t len);
     //获得电平
-    void        (*uninit)(void* handle);
+    void        (*uninit)(void* *handle);
 
 }EVO_ATTR_T(ev_spi_m);
-#define ev_spi_m_attr_init 
+#define ev_spi_m_attr_init  .handle = EV_TO_RAM(void*,0),
 
 #endif
 

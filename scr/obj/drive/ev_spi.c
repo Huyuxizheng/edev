@@ -18,7 +18,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_INIT)
 
     if(attr->init)
     {
-        attr->init(attr->handle,arg->mode,arg->speed_M);
+        attr->init(attr->handle,arg->mode,arg->max_Mhz);
     }
 
     return 0;
