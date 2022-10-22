@@ -23,10 +23,10 @@ EV_MODEL_FUN_DEF(ev_led_m,HELP)
                                         );
 
     //设置LED
-    ev_obj_fun(led_dev, LED_SET, 1);  
+    ev_do(led_dev, LED_SET, 1);  
 
     //反转LED
-    ev_obj_fun(led_dev, LED_TOGLE, 0);                                       
+    ev_do(led_dev, LED_TOGLE, 0);                                       
 */
 
     return 0;
@@ -40,7 +40,7 @@ EV_MODEL_FUN_DEF(ev_led_m,INIT)
     if(attr->gpio)
     {
         
-        _ev_obj_fun(attr->gpio, GPIO_INIT,EV_GPIO_MODE_OUT);  
+        _ev_do(attr->gpio, GPIO_INIT,EV_GPIO_MODE_OUT);  
         return 0;
     }
 
@@ -54,11 +54,11 @@ EV_MODEL_FUN_DEF(ev_led_m,LED_SET)
     {
         if(arg->state)
         {
-            _ev_obj_fun(attr->gpio, GPIO_SET,attr->en_val);
+            _ev_do(attr->gpio, GPIO_SET,attr->en_val);
         }
         else
         {
-            _ev_obj_fun(attr->gpio, GPIO_SET,!attr->en_val);
+            _ev_do(attr->gpio, GPIO_SET,!attr->en_val);
         }
     }
     return 0;
@@ -70,7 +70,7 @@ EV_MODEL_FUN_DEF(ev_led_m,LED_TOGLE)
     EV_MODEL_FUN_GET_ARG(ev_led_m,LED_TOGLE);
     if(attr->gpio)
     {
-         _ev_obj_fun(attr->gpio, GPIO_TOGLE);
+         _ev_do(attr->gpio, GPIO_TOGLE);
     }
     return 0;
 }

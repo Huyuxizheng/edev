@@ -7,56 +7,56 @@
 
 static void _ev_iic_imit_start(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 {
-    _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(1));
+    _ev_n_do(attr->sda,attr->scl,GPIO_SET,(1));
     ev_sleep_us(*(attr->t));
     
-    _ev_obj_fun(attr->sda,GPIO_SET,0);
+    _ev_do(attr->sda,GPIO_SET,0);
     ev_sleep_us(*(attr->t));
-    _ev_obj_fun(attr->scl,GPIO_SET,0);
+    _ev_do(attr->scl,GPIO_SET,0);
     ev_sleep_us(*(attr->t));
 } 
 
 static void _ev_iic_imit_stop(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 {
-    _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(0));
+    _ev_n_do(attr->sda,attr->scl,GPIO_SET,(0));
     ev_sleep_us(*(attr->t));
     
-    _ev_obj_fun(attr->scl,GPIO_SET,1);
+    _ev_do(attr->scl,GPIO_SET,1);
     ev_sleep_us(*(attr->t));
-    _ev_obj_fun(attr->sda,GPIO_SET,1);
+    _ev_do(attr->sda,GPIO_SET,1);
     ev_sleep_us(*(attr->t));
 } 
 
 static void _ev_iic_imit_send_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t ack)
 { 
-    _ev_obj_fun(attr->scl,GPIO_SET,0);
-    _ev_obj_fun(attr->sda,GPIO_SET,!ack);
+    _ev_do(attr->scl,GPIO_SET,0);
+    _ev_do(attr->sda,GPIO_SET,!ack);
 
     ev_sleep_us(*(attr->t));
-    _ev_obj_fun(attr->scl,GPIO_SET,1);
+    _ev_do(attr->scl,GPIO_SET,1);
     ev_sleep_us(*(attr->t));
 
-    _ev_obj_fun(attr->scl,GPIO_SET,0);
-    _ev_obj_fun(attr->sda,GPIO_SET,1);
+    _ev_do(attr->scl,GPIO_SET,0);
+    _ev_do(attr->sda,GPIO_SET,1);
 } 
 
 static uint8_t _ev_iic_imit_read_ack(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 { 
     uint8_t ack = 0;
-    //_ev_obj_fun(attr->sda,GPIO_SET,1);
+    //_ev_do(attr->sda,GPIO_SET,1);
 
-    _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
+    _ev_do(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
 
     ev_sleep_us(*(attr->t));
-    _ev_obj_fun(attr->scl,GPIO_SET,1);
+    _ev_do(attr->scl,GPIO_SET,1);
     ev_sleep_us(*(attr->t));
 
-    ack = _ev_obj_fun(attr->sda,GPIO_GET);
+    ack = _ev_do(attr->sda,GPIO_GET);
 
-    _ev_obj_fun(attr->scl,GPIO_SET,0);
+    _ev_do(attr->scl,GPIO_SET,0);
 
-    _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_OUT);
-    _ev_obj_fun(attr->sda,GPIO_SET,1);
+    _ev_do(attr->sda,GPIO_INIT,EV_GPIO_MODE_OUT);
+    _ev_do(attr->sda,GPIO_SET,1);
     return ack;
 } 
 
@@ -64,35 +64,35 @@ static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t
 { 
     for(uint8_t i = 0; i < 8; i++)
     {
-        _ev_obj_fun(attr->scl,GPIO_SET,0);
+        _ev_do(attr->scl,GPIO_SET,0);
         ev_sleep_us(*(attr->t));
         if(dat & 0x80) 
-            {_ev_obj_fun(attr->sda,GPIO_SET,1);}
+            {_ev_do(attr->sda,GPIO_SET,1);}
         else 
-        	{_ev_obj_fun(attr->sda,GPIO_SET,0);}
-        _ev_obj_fun(attr->scl,GPIO_SET,1);
+        	{_ev_do(attr->sda,GPIO_SET,0);}
+        _ev_do(attr->scl,GPIO_SET,1);
         dat <<= 1;				//从最高位开始传输数据
         ev_sleep_us(*(attr->t));
     }
-    _ev_obj_fun(attr->scl,GPIO_SET,0);
-    //_ev_obj_fun(attr->sda,GPIO_SET,1);
+    _ev_do(attr->scl,GPIO_SET,0);
+    //_ev_do(attr->sda,GPIO_SET,1);
 } 
 
 static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 { 
     uint8_t dat;
-    _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
+    _ev_do(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
     for(uint8_t i = 0; i < 8; i++)
     {
-        _ev_obj_fun(attr->scl,GPIO_SET,1);
+        _ev_do(attr->scl,GPIO_SET,1);
         ev_sleep_us(*(attr->t));
         dat <<= 1;
-        dat |= (!!_ev_obj_fun(attr->sda,GPIO_GET));
-        _ev_obj_fun(attr->scl,GPIO_SET,0);
+        dat |= (!!_ev_do(attr->sda,GPIO_GET));
+        _ev_do(attr->scl,GPIO_SET,0);
         ev_sleep_us(*(attr->t));
     }
-    _ev_obj_fun(attr->sda,GPIO_INIT,EV_GPIO_MODE_OUT);
-    _ev_obj_fun(attr->sda,GPIO_SET,1);
+    _ev_do(attr->sda,GPIO_INIT,EV_GPIO_MODE_OUT);
+    _ev_do(attr->sda,GPIO_SET,1);
     return dat;
 } 
 
@@ -117,8 +117,8 @@ EV_MODEL_FUN_DEF(ev_i2c_imit_m,I2C_INIT)
 
     if(attr->sda && attr->scl)
     {
-        _ev_objs_fun(attr->sda,attr->scl,GPIO_INIT,(EV_GPIO_MODE_OUT));
-        _ev_objs_fun(attr->sda,attr->scl,GPIO_SET,(1));
+        _ev_n_do(attr->sda,attr->scl,GPIO_INIT,(EV_GPIO_MODE_OUT));
+        _ev_n_do(attr->sda,attr->scl,GPIO_SET,(1));
         
         if(arg)
         if(arg->max_khz > 2)
@@ -226,7 +226,7 @@ EV_MODEL_FUN_DEF(ev_i2c_imit_m,UNINIT)
 {
     EV_MODEL_FUN_GET_ARG(ev_i2c_imit_m,INIT);
 
-    _ev_objs_fun(attr->sda,attr->scl,UNINIT,());
+    _ev_n_do(attr->sda,attr->scl,UNINIT,());
 
     return 0;
 }

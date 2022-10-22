@@ -9,7 +9,7 @@ EV_MODEL_FUN_DEF(ev_adp_m,RELAY)
 
     if(attr->obj && (*attr->obj))
     {
-        __ev_obj_fun((*attr->obj),arg->op,arg->arg);
+        __ev_do((*attr->obj),arg->op,arg->arg);
     }
     return 0;
 }
@@ -35,7 +35,7 @@ EV_MODEL_FUN_DEF(ev_adp_m,INIT)
     {
         if(attr->list[i])
         {
-            if(_ev_obj_fun(attr->list[i],INIT) == 0)
+            if(_ev_do(attr->list[i],INIT) == 0)
             {
                 (*attr->obj) = attr->list[i];
                 return 0;
@@ -52,7 +52,7 @@ EV_MODEL_FUN_DEF(ev_adp_m,UNINIT)
 
     if(attr->obj && (*attr->obj))
     {
-        _ev_obj_fun((*attr->obj),UNINIT);
+        _ev_do((*attr->obj),UNINIT);
         (*attr->obj) = 0;
     }
 

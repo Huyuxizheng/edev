@@ -27,8 +27,8 @@ EV_MODEL_FUN_DEF(ev_as5600_m,INIT)
     if(attr->i2c)
     {
         uint8_t dat[5] = {0};
-        ret |= _ev_obj_fun(attr->i2c,I2C_INIT,400);   
-        ret |= _ev_obj_fun(attr->i2c,I2C_MEM_READ,AS5600_RAW_ADDR,AS5600_RAW_ANGLE_REGISTER,1,dat,2);
+        ret |= _ev_do(attr->i2c,I2C_INIT,400);   
+        ret |= _ev_do(attr->i2c,I2C_MEM_READ,AS5600_RAW_ADDR,AS5600_RAW_ANGLE_REGISTER,1,dat,2);
     }
 
     return ret;
@@ -44,7 +44,7 @@ EV_MODEL_FUN_DEF(ev_as5600_m,HALL_ANG_GET)
     {
         uint8_t dat[5] = {0};
         uint16_t raw_ang = 0;
-        _ev_obj_fun(attr->i2c,I2C_MEM_READ,AS5600_RAW_ADDR,AS5600_RAW_ANGLE_REGISTER,1,dat,2);
+        _ev_do(attr->i2c,I2C_MEM_READ,AS5600_RAW_ADDR,AS5600_RAW_ANGLE_REGISTER,1,dat,2);
 
         raw_ang = ((dat[0]<<8)&0x0f00) | dat[1];
 
@@ -62,7 +62,7 @@ EV_MODEL_FUN_DEF(ev_as5600_m,UNINIT)
 
     if(attr->i2c)
     {
-        return _ev_obj_fun(attr->i2c,UNINIT);   
+        return _ev_do(attr->i2c,UNINIT);   
     }
 
     return 1;

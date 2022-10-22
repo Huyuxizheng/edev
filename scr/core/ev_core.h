@@ -161,6 +161,23 @@ EV_PP_IF( EV_PP_NOT(EV_PP_IS_EMPTY(EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_
 
 #define _ev_objs_funs_syn(obj_list,op,arg_list)    __ev_objs_funs_syn(_EV_OBJS_FUNS_SYN_TO_CALL,obj_list,op,arg_list) 
 
+
+//调用设备方法
+#define ev_obj_fun(obj, op, ...)                    _ev_obj_fun(&obj, op,__VA_ARGS__)
+#define ev_obj_funs(obj, op, ...)                   _ev_obj_funs(&obj, op, __VA_ARGS__) 
+#define ev_objs_fun(obj_list,op,...)                __ev_objs_fun(_EV_OBJS_FUN_TO_CALL_USER,obj_list,op,__VA_ARGS__) 
+#define ev_objs_funs(obj_list,op,arg_list)          __ev_objs_funs(_EV_OBJS_FUNS_TO_CALL_USER,obj_list,op,arg_list)
+#define ev_objs_funs_syn(obj_list,op,arg_list)      __ev_objs_funs_syn(__EV_OBJS_FUNS_SYN_TO_CALL_USER,obj_list,op,arg_list) 
+
+//内部库调用
+#define __ev_do(obj, op, arg)         __ev_obj_fun(obj, op, arg)
+#define _ev_do(obj, op, ...)         _ev_obj_fun(obj, op,__VA_ARGS__)
+#define _ev_do_n(obj, op, ...)       _ev_obj_funs(obj, op,__VA_ARGS__)
+#define _ev_n_do(obj, op, ...)       _ev_objs_fun(obj, op,__VA_ARGS__)
+#define _ev_n_do_n(obj, op, ...)     _ev_objs_funs(obj, op,__VA_ARGS__)
+#define _ev_n_do_n_s(obj, op, ...)   _ev_objs_funs_syn(obj, op,__VA_ARGS__)
+
+
 //基础选项
 
 //基础选项列表,每一个设备都需要有的选项

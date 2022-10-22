@@ -20,7 +20,7 @@ EV_MODEL_FUN_DEF(ev_hall_ang_m,INIT)
 
     if(attr->ic)
     {
-        return _ev_obj_fun(attr->ic,INIT);   
+        return _ev_do(attr->ic,INIT);   
     }
 
     return 1;
@@ -34,7 +34,7 @@ EV_MODEL_FUN_DEF(ev_hall_ang_m,HALL_ANG_GET)
 
     if(attr->ic)
     {
-        return _ev_obj_fun(attr->ic,HALL_ANG_GET,arg->angle);   
+        return _ev_do(attr->ic,HALL_ANG_GET,arg->angle);   
     }
 
     return 1;
@@ -47,7 +47,7 @@ EV_MODEL_FUN_DEF(ev_hall_ang_m,UNINIT)
 
     if(attr->ic)
     {
-        return _ev_obj_fun(attr->ic,UNINIT);   
+        return _ev_do(attr->ic,UNINIT);   
     }
 
     return 1;

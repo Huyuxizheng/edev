@@ -60,21 +60,21 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
 
     uint8_t dat[6] = {0};
 
-    _ev_obj_fun(attr->i2c,I2C_INIT,400);//400KHZ
-    _ev_objs_fun(attr->rst_io,attr->isr_io,GPIO_INIT,(EV_GPIO_MODE_OUT));
+    _ev_do(attr->i2c,I2C_INIT,400);//400KHZ
+    _ev_n_do(attr->rst_io,attr->isr_io,GPIO_INIT,(EV_GPIO_MODE_OUT));
 
-    _ev_obj_fun(attr->isr_io,GPIO_SET,0);
-    _ev_obj_fun(attr->rst_io,GPIO_SET,0);
+    _ev_do(attr->isr_io,GPIO_SET,0);
+    _ev_do(attr->rst_io,GPIO_SET,0);
     ev_sleep(5);
-    _ev_obj_fun(attr->isr_io,GPIO_SET,1);
+    _ev_do(attr->isr_io,GPIO_SET,1);
     ev_sleep(1);
-    _ev_obj_fun(attr->rst_io,GPIO_SET,1);
+    _ev_do(attr->rst_io,GPIO_SET,1);
     ev_sleep(5);
-    _ev_obj_fun(attr->isr_io,GPIO_INIT,EV_GPIO_MODE_ISR_UP);
+    _ev_do(attr->isr_io,GPIO_INIT,EV_GPIO_MODE_ISR_UP);
     ev_sleep(100);
 
 
-    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_PID_REG,2,dat,4);
+    _ev_do(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_PID_REG,2,dat,4);
 
     if(
         (
@@ -93,9 +93,9 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
 
 
     dat[0] = 0x02;
-    _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//软件复位
+    _ev_do(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//软件复位
 
-    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_CFGS_REG,2,dat,5);
+    _ev_do(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_CFGS_REG,2,dat,5);
 
     if(dat[0]<0X60)//默认版本比较低,需要更新flash配置
     {
@@ -103,14 +103,14 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,INIT)
         for(int i=0;i<sizeof(GT9147_CFG);i++)buf[0]+=GT9147_CFG[i];
         buf[0]=(~buf[0])+1;
 
-        _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CFGS_REG,2,GT9147_CFG,sizeof(GT9147_CFG));//发送寄存器配置
+        _ev_do(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CFGS_REG,2,GT9147_CFG,sizeof(GT9147_CFG));//发送寄存器配置
 
-        _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CHECK_REG,2,buf,2);
+        _ev_do(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CHECK_REG,2,buf,2);
     }
     ev_sleep(10);
 
     dat[0] = 0x00;
-    _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//复位结束
+    _ev_do(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_CTRL_REG,2,dat,1);//复位结束
 
     return 0;
 }
@@ -121,7 +121,7 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,TP_GET)
 
     uint8_t dat[6] = {0};
     
-    _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_GSTID_REG,2,dat,1);
+    _ev_do(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_GSTID_REG,2,dat,1);
 
     if((dat[0]&0X80) == 0)
     {
@@ -129,12 +129,12 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,TP_GET)
     }
 
     dat[1] = 0x00;
-    _ev_obj_fun(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_GSTID_REG,2,&(dat[1]),1);
+    _ev_do(attr->i2c,I2C_MEM_WRITE,GT9147_ADD,GT_GSTID_REG,2,&(dat[1]),1);
 
     if((dat[0]&0XF)&&((dat[0]&0XF)<6))
     {
         arg->out->tick  = ev_get_tick();
-        _ev_obj_fun(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_TP1_REG,2,dat,4);
+        _ev_do(attr->i2c,I2C_MEM_READ,GT9147_ADD,GT_TP1_REG,2,dat,4);
 
         arg->out->state = 1;
         arg->out->x = ((uint16_t)dat[1]<<8)|dat[0];
@@ -153,7 +153,7 @@ EV_MODEL_FUN_DEF(ev_tp_gt9147_m,UNINIT)
 {
     EV_MODEL_FUN_GET_ARG(ev_tp_gt9147_m,UNINIT);
 
-    _ev_objs_fun(attr->i2c,attr->rst_io,attr->isr_io,UNINIT,());
+    _ev_n_do(attr->i2c,attr->rst_io,attr->isr_io,UNINIT,());
 
 
     return 0;
