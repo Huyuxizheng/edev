@@ -9,6 +9,10 @@
 #include "./obj/tp/ev_tp.h"
 #include "./obj/tp/gt9147/ev_tp_gt9147.h"
 
+#include "./obj/hall_ang/ev_hall_ang.h"
+#include "./obj/hall_ang/as5600/ev_as5600.h"
+
+
 #include "./obj/drive/ev_gpio.h"
 #include "./obj/drive/ev_i2c_imit.h"
 
