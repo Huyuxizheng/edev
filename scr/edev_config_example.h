@@ -15,12 +15,16 @@
 #define ev_os_unlock(lock_p)
 #endif
 
-/*
-默认的延时函数，如果使用需要在ev_delay中配置主频和测试修正系数
+
+//默认延时函数配置 
+#define EV_DELAY_CLK_MHZ    48 //主频 兆HZ 不足1M写1M
+#define EV_DELAY_AUX_VAR    1//修正系数 一般不调
+#define EV_DELAY_ASM_NUM    10 //汇编所占周期O3优化,直接查看输出汇编代码确定
+
 extern void ev_default_delay_ns(uint32_t ns);
 extern void ev_default_delay_us(uint32_t us);
 extern void ev_default_delay_ms(uint32_t ms);
-*/
+
 
 #define ev_sleep_ns(ns)     
 #define ev_sleep_us(us)    

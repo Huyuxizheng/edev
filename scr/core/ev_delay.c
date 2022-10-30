@@ -1,12 +1,11 @@
 ﻿
 #include <stdint.h>
+#include "edev_config.h"
 
-//不精确
+#define CLK_MHZ     EV_DELAY_CLK_MHZ //主频 兆HZ 不足1M写1M
+#define AUX_VAR     EV_DELAY_AUX_VAR//修正系数 一般不调
 
-#define CLK_MHZ   48 //主频 兆HZ 不足1M写1M
-#define AUX_VAR  1//修正系数 一般不调
-
-#define ASM_NUM 10 //汇编所占周期O3优化,直接查看输出汇编代码确定
+#define ASM_NUM     EV_DELAY_ASM_NUM //汇编所占周期O3优化,直接查看输出汇编代码确定
 
 char nil = 0;//防止被优化
 
