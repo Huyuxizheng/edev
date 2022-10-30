@@ -15,8 +15,15 @@
 #define ev_os_unlock(lock_p)
 #endif
 
+/*
+默认的延时函数，如果使用需要在ev_delay中配置主频和测试修正系数
+extern void ev_default_delay_ns(uint32_t ns);
+extern void ev_default_delay_us(uint32_t us);
+extern void ev_default_delay_ms(uint32_t ms);
+*/
 
-#define ev_sleep_us(us) 
+#define ev_sleep_ns(ns)     
+#define ev_sleep_us(us)    
 #define ev_sleep(ms)        
 #define ev_get_tick()       0
 
