@@ -18,10 +18,10 @@ typedef uint8_t (*edev_obj_fun_t)(const ev_obj_t *self,void *arg);
 
 //设备类型
 typedef struct ev_model_t{
-    char                *name;
+    char                    *name;
 
-    uint16_t        total;      //方法总数
-    const edev_obj_fun_t  *list;       //方法清单
+    uint16_t                total;      //方法总数
+    const edev_obj_fun_t    *list;       //方法清单
 }ev_model_t;
 
 //定义list时的快捷方法
@@ -42,8 +42,6 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
 }EVO_T(OP)
 
 
-
-
 #define EV_MODEL_LIST_ADD_FUN(model,OP)    [EVO_E(OP)] = EV_MODEL_FUN(model,OP)
 #define _EV_MODEL_LIST_ADD_FUN(model,OP,N)    EV_MODEL_LIST_ADD_FUN(model,OP),
 #define _EV_MODEL_LIST_FILL0(...)   0,0
@@ -56,8 +54,6 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
     .total = EV_MODEL_TOTAL(model),\
     .list  = EV_MODEL_LIST(model),\
     };\
-
-
 
 
 //基本属性，放在头位置 成员名base
@@ -81,11 +77,7 @@ typedef struct ev_obj_t{
 
 #define _ev_obj_forge(_model, ...)  {.model = &_model,.attr = EVO_ATTR_DEF(_model, EVO_ATTR_BASE_INIT EVO_ATTR_INIT(_model) __VA_ARGS__)}
 
-#define ev_obj_add_lock   .base.lock = EV_TO_RAM(void*,0),
-
-
-
-
+#define ev_obj_add_lock             .base.lock = EV_TO_RAM(void*,0),
 
 
 //断言-错误返回1
@@ -103,63 +95,53 @@ if((op >= obj->model->total)&&(obj->model->list[EVO_E(RELAY)] == 0))\
 {ev_warning("%s:%s no fun op:%d\r\n",__fun__,obj->model->name,op);return 1;}
 
 
-
 //--------------------------------
-//选项edev Options -> evo
+//选项定义宏方法edev Options -> evo
+extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
+
 #define EVO_E(OP) EVO_##OP##_E
 #define EVO_T(OP) EVO_##OP##_ARG_T
-extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
-#define _ev_obj_fun(obj, op, ...) __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
+#define _ev_obj_fun(obj, op, ...)           __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
 
-
-#define _EV_OBJ_FUN_TO_CALL(...) _ev_obj_fun(__VA_ARGS__)
+#define _EV_OBJ_FUN_TO_CALL(...)            _ev_obj_fun(__VA_ARGS__)
 #define _EV_OBJ_FUNS_TO_CALL(CTX,VAR,IDX)   EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(EV_PP_REMOVE_PARENS(CTX) , EV_PP_REMOVE_PARENS(VAR))
 #define _EV_OBJ_FUNS_TO_CALL_0(...)    
 
-#define _EV_OBJ_FUNS_I(op,...)  EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_OBJ_FUNS_TO_CALL_0)(_EV_OBJ_FUNS_TO_CALL,op, __VA_ARGS__)
+#define _EV_OBJ_FUNS_I(op,...)              EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_OBJ_FUNS_TO_CALL_0)(_EV_OBJ_FUNS_TO_CALL,op, __VA_ARGS__)
+#define __ev_obj_funs(obj, op, ...)         _EV_OBJ_FUNS_I((obj,op),__VA_ARGS__)
+#define _ev_obj_funs(obj, op, ...)          __ev_obj_funs(obj, op, __VA_ARGS__)
 
-#define __ev_obj_funs(obj, op, ...)   _EV_OBJ_FUNS_I((obj,op),__VA_ARGS__)
+#define _EV_OBJS_FUN_TO_CALL(CTX,VAR,IDX)               EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(VAR,EV_PP_REMOVE_PARENS(CTX))
+#define _EV_OBJS_FUN_TO_CALL_USER(CTX,VAR,IDX)          EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(&##VAR,EV_PP_REMOVE_PARENS(CTX))
 
-#define _ev_obj_funs(obj, op, ...)    __ev_obj_funs(obj, op, __VA_ARGS__)
+#define _EV_OBJS_FUN_I(...)                             EV_PP_FOR_EACH_N(__VA_ARGS__)
 
-
-
-#define _EV_OBJS_FUN_TO_CALL(CTX,VAR,IDX)           EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(VAR,EV_PP_REMOVE_PARENS(CTX))
-#define _EV_OBJS_FUN_TO_CALL_USER(CTX,VAR,IDX)      EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(&##VAR,EV_PP_REMOVE_PARENS(CTX))
-
-#define _EV_OBJS_FUN_I(...)  EV_PP_FOR_EACH_N(__VA_ARGS__)
-
-#define __EV_OBJS_FUN(call,...)    _EV_OBJS_FUN_I( EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))), call,\
+#define __EV_OBJS_FUN(call,...)                         _EV_OBJS_FUN_I( EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))), call,\
 EV_PP_IF( EV_PP_NOT(EV_PP_IS_EMPTY(EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)),__VA_ARGS__)))) ,\
 (EV_PP_GET_N(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))),__VA_ARGS__),EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)),__VA_ARGS__))),\
 (EV_PP_GET_N(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__))),__VA_ARGS__))\
 ),__VA_ARGS__)
 
-#define __ev_objs_fun(call,...)    EV_PP_IF( EV_PP_BOOL(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)))),__EV_OBJS_FUN(call,__VA_ARGS__),)
+#define __ev_objs_fun(call,...)                         EV_PP_IF( EV_PP_BOOL(EV_PP_DEC(EV_PP_DEC(EV_PP_NARG(__VA_ARGS__)))),__EV_OBJS_FUN(call,__VA_ARGS__),)
+#define _ev_objs_fun(obj_list,op,...)                   __ev_objs_fun(_EV_OBJS_FUN_TO_CALL,obj_list,op,__VA_ARGS__) 
 
-#define _ev_objs_fun(obj_list,op,...)    __ev_objs_fun(_EV_OBJS_FUN_TO_CALL,obj_list,op,__VA_ARGS__) 
+#define __EV_OBJS_FUNS_TO_CALL(...)                     _ev_obj_funs(__VA_ARGS__)
+#define _EV_OBJS_FUNS_TO_CALL(CTX,VAR,IDX)              EV_PP_IF(IDX,;,)  __EV_OBJS_FUNS_TO_CALL(VAR,EV_PP_REMOVE_PARENS(CTX))
 
+#define __EV_OBJS_FUNS_TO_CALL_USER(...)                ev_obj_funs(__VA_ARGS__)
+#define _EV_OBJS_FUNS_TO_CALL_USER(CTX,VAR,IDX)         EV_PP_IF(IDX,;,) __EV_OBJS_FUNS_TO_CALL_USER(VAR,EV_PP_REMOVE_PARENS(CTX))
+#define __ev_objs_funs(call,obj_list,op,arg_list)       EV_PP_FOR_EACH_S1_N(EV_PP_NARG(EV_PP_REMOVE_PARENS(obj_list)),call,(op,EV_PP_REMOVE_PARENS(arg_list)),EV_PP_REMOVE_PARENS(obj_list))
 
+#define _ev_objs_funs(obj_list,op,arg_list)             __ev_objs_funs(_EV_OBJS_FUNS_TO_CALL,obj_list,op,arg_list) 
 
-#define __EV_OBJS_FUNS_TO_CALL(...)                   _ev_obj_funs(__VA_ARGS__)
-#define _EV_OBJS_FUNS_TO_CALL(CTX,VAR,IDX)                   EV_PP_IF(IDX,;,)  __EV_OBJS_FUNS_TO_CALL(VAR,EV_PP_REMOVE_PARENS(CTX))
+#define __EV_OBJS_FUNS_SYN_TO_CALL(...)                 _ev_objs_fun(__VA_ARGS__)
+#define _EV_OBJS_FUNS_SYN_TO_CALL(CTX,VAR,IDX)          EV_PP_IF(IDX,;,)  __EV_OBJS_FUNS_SYN_TO_CALL(EV_PP_REMOVE_PARENS(CTX),VAR)
 
-#define __EV_OBJS_FUNS_TO_CALL_USER(...)              ev_obj_funs(__VA_ARGS__)
-#define _EV_OBJS_FUNS_TO_CALL_USER(CTX,VAR,IDX)               EV_PP_IF(IDX,;,) __EV_OBJS_FUNS_TO_CALL_USER(VAR,EV_PP_REMOVE_PARENS(CTX))
-#define __ev_objs_funs(call,obj_list,op,arg_list)    EV_PP_FOR_EACH_S1_N(EV_PP_NARG(EV_PP_REMOVE_PARENS(obj_list)),call,(op,EV_PP_REMOVE_PARENS(arg_list)),EV_PP_REMOVE_PARENS(obj_list))
+#define __EV_OBJS_FUNS_SYN_TO_CALL_USER(...)            ev_objs_fun(__VA_ARGS__)
+#define _EV_OBJS_FUNS_SYN_TO_CALL_USER(CTX,VAR,IDX)     EV_PP_IF(IDX,;,) __EV_OBJS_FUNS_SYN_TO_CALL_USER(EV_PP_REMOVE_PARENS(CTX),VAR)
+#define __ev_objs_funs_syn(call,obj_list,op,arg_list)   EV_PP_FOR_EACH_S1_N(EV_PP_NARG(EV_PP_REMOVE_PARENS(arg_list)),call,(EV_PP_REMOVE_PARENS(obj_list),op),EV_PP_REMOVE_PARENS(arg_list))
 
-#define _ev_objs_funs(obj_list,op,arg_list)    __ev_objs_funs(_EV_OBJS_FUNS_TO_CALL,obj_list,op,arg_list) 
-
-
-
- #define __EV_OBJS_FUNS_SYN_TO_CALL(...)                   _ev_objs_fun(__VA_ARGS__)
-#define _EV_OBJS_FUNS_SYN_TO_CALL(CTX,VAR,IDX)                   EV_PP_IF(IDX,;,)  __EV_OBJS_FUNS_SYN_TO_CALL(EV_PP_REMOVE_PARENS(CTX),VAR)
-
-#define __EV_OBJS_FUNS_SYN_TO_CALL_USER(...)              ev_objs_fun(__VA_ARGS__)
-#define _EV_OBJS_FUNS_SYN_TO_CALL_USER(CTX,VAR,IDX)               EV_PP_IF(IDX,;,) __EV_OBJS_FUNS_SYN_TO_CALL_USER(EV_PP_REMOVE_PARENS(CTX),VAR)
-#define __ev_objs_funs_syn(call,obj_list,op,arg_list)    EV_PP_FOR_EACH_S1_N(EV_PP_NARG(EV_PP_REMOVE_PARENS(arg_list)),call,(EV_PP_REMOVE_PARENS(obj_list),op),EV_PP_REMOVE_PARENS(arg_list))
-
-#define _ev_objs_funs_syn(obj_list,op,arg_list)    __ev_objs_funs_syn(_EV_OBJS_FUNS_SYN_TO_CALL,obj_list,op,arg_list) 
+#define _ev_objs_funs_syn(obj_list,op,arg_list)         __ev_objs_funs_syn(_EV_OBJS_FUNS_SYN_TO_CALL,obj_list,op,arg_list) 
 
 
 //调用设备方法
