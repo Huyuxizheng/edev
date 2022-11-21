@@ -71,7 +71,7 @@ static uint8_t *search_free_block(uint8_t *mem_p,uint32_t mem_size,uint8_t* *fas
             }
             else
             {
-                ((block_h_t *)block_i)->size = end_p - block_i;
+                ((block_h_t *)block_i)->size = (uint32_t)(end_p - block_i);
                 *fast_p = mem_p;
             }
             return free_block+BLOCKH_LEN;

@@ -55,3 +55,4 @@ scr/.xmake/
 scr/xmake.lua
 .xmake/
 scr/edev_config.h
+scr/man.c
