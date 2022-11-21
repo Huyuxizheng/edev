@@ -9,13 +9,16 @@ enum{//方法列表
     EVO_E(MALLOC) = EVO_E(START),
     EVO_E(FREE),
     EVO_E(HEAP_PRINT),
+    EVO_E(HEAP_DUMP),
 };
 
-EV_FUN_DEF(MALLOC,void **p,uint32_t size);
+EV_FUN_DEF(MALLOC,void *p,uint32_t size);//(void **)void *p 此处p是指针的指针，为了避免警告使用void *
 
 EV_FUN_DEF(FREE,void *p);
 
 EV_FUN_DEF(HEAP_PRINT);
+
+EV_FUN_DEF(HEAP_DUMP);
 
 
 
@@ -32,7 +35,7 @@ typedef struct{//属性列表
 
 }EVO_ATTR_T(ev_heap1_m);
 
-#define ev_heap1_m_attr_init  .fast_p = EV_TO_RAM(uint8_t *,0)
+#define ev_heap1_m_attr_init  .fast_p = EV_TO_RAM(uint8_t *,0),
 
 
 

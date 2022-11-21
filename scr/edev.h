@@ -4,6 +4,9 @@
 #include "./edev_config.h"
 #include "./core/ev_core.h"
 
+#include "./obj/common/ev_adp.h"
+#include "./obj/common/ev_heap.h"
+
 #include "./obj/led/ev_led.h"
 
 #include "./obj/tp/ev_tp.h"
