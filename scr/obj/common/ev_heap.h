@@ -26,7 +26,7 @@ typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
 
     uint8_t             *mem_p;//内存指针
-    uint32_t            mem_len;//内存长度
+    uint32_t            mem_size;//内存长度
 
     uint8_t*            *fast_p;//用于快速搜引
 
