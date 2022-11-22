@@ -46,13 +46,23 @@ EV_MODEL_FUN_DEF(ev_heap1_m,UNINIT)
     return 1;
 }
 
-static uint8_t *search_free_block(uint8_t *mem_p,uint32_t mem_size,uint8_t* *fast_p,uint32_t size)
+static uint8_t *search_free_block(uint8_t *mem_p,uint32_t mem_size,uint32_t align,uint8_t* *fast_p,uint32_t size)
 {
     uint8_t *end_p = mem_p+mem_size-BLOCKH_LEN;
     uint8_t *free_block = 0;
     block_h_t temp = {0};
 
-    size += BLOCKH_LEN + BLOCKH_LEN;//自身头加新建头
+    
+    if(align > 1)
+    {
+        size += BLOCKH_LEN;
+        size = ((size + align - 1)/align) * align;
+        size += BLOCKH_LEN;
+    }
+    else
+    {
+        size += BLOCKH_LEN + BLOCKH_LEN;//自身头加新建头
+    }
 
     for(uint8_t *block_i = *fast_p;block_i < end_p; block_i += ((block_h_t *)block_i)->size)
     {
@@ -92,7 +102,7 @@ EV_MODEL_FUN_DEF(ev_heap1_m,MALLOC)
         {
             *(attr->fast_p) = attr->mem_p;
         }
-        *((void **)arg->p) = search_free_block(attr->mem_p,attr->mem_size,attr->fast_p,arg->size);
+        *((void **)arg->p) = search_free_block(attr->mem_p,attr->mem_size,attr->align,attr->fast_p,arg->size);
         if(*((void **)arg->p))
         {
             return 0;
@@ -150,7 +160,87 @@ EV_MODEL_FUN_DEF(ev_heap1_m,FREE)
 
 EV_MODEL_FUN_DEF(ev_heap1_m,HEAP_PRINT)
 {
-    EV_MODEL_FUN_GET_ARG(ev_heap1_m,HEAP_PRINT);
+    EV_MODEL_FUN_GET_ARG(ev_heap1_m,HEAP_PRINT);    
+    
+    uint8_t *mem_p = attr->mem_p;
+    uint32_t mem_size = attr->mem_size;
+
+    uint8_t *end_p = mem_p+mem_size-BLOCKH_LEN;
+
+    ev_info("---- heap1:%x info ---- \r\n",attr->mem_p,((block_h_t *)attr->mem_p)->size);
+
+    uint32_t free_cnt = 0;
+    uint32_t free_min = 0x7fff;
+    uint32_t free_max = 0;
+
+    uint32_t use_cnt = 0;
+    uint32_t use_min = 0x7fff;
+    uint32_t use_max = 0;
+
+    uint32_t debris = 0;
+    for(uint8_t *block_i = mem_p;block_i < end_p; block_i += ((block_h_t *)block_i)->size)
+    {
+        if(((block_h_t *)block_i)->f)
+        {
+            use_cnt++;
+            if(((block_h_t *)block_i)->size < use_min)
+            {
+                use_min = ((block_h_t *)block_i)->size;
+            }
+            if(((block_h_t *)block_i)->size > use_max)
+            {
+                use_max = ((block_h_t *)block_i)->size;
+            }
+        }
+        else
+        {
+            free_cnt++;
+            if(((block_h_t *)block_i)->size < free_min)
+            {
+                free_min = ((block_h_t *)block_i)->size;
+            }
+            if(((block_h_t *)block_i)->size > free_max)
+            {
+                free_max = ((block_h_t *)block_i)->size;
+            }
+        }
+    }
+
+    for(uint8_t *block_i = mem_p;block_i < end_p; block_i += ((block_h_t *)block_i)->size)
+    {
+        if(((block_h_t *)block_i)->f == 0)
+        {
+            if(((block_h_t *)block_i)->size < use_min)
+            {
+                debris++;
+            }
+        }
+
+    }
+
+    ev_info("[free  block]  num:%6d ",free_cnt);
+    if(free_cnt)
+    {
+        ev_info("min:%6dbyte  max:%6dbyte\r\n",free_min,free_max);
+    }
+    else
+    {
+        ev_info("\r\n",free_cnt);
+    }
+
+    ev_info("[use   block]  num:%6d ",use_cnt);
+    if(use_cnt)
+    {
+        ev_info("min:%6dbyte  max:%6dbyte\r\n",use_min,use_max);
+    }
+    else
+    {
+        ev_info("\r\n",use_cnt);
+    }
+
+
+    ev_info("[debris block]  num:%6d \r\n",debris);
+
     return 0;
 }
 

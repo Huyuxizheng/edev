@@ -31,6 +31,8 @@ typedef struct{//属性列表
     uint8_t             *mem_p;//内存指针
     uint32_t            mem_size;//内存长度
 
+    uint32_t            align;//字节对齐
+
     uint8_t*            *fast_p;//用于快速搜引
 
 }EVO_ATTR_T(ev_heap1_m);
