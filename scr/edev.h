@@ -19,6 +19,9 @@
 #include "./obj/drive/ev_gpio.h"
 #include "./obj/drive/ev_i2c_imit.h"
 
+#include "./obj/flash/ev_flash.h"
+
+
 //锻造版驱动
 #define ev_obj_forge(model, ...)        _ev_obj_forge(model, __VA_ARGS__)
 #define ev_obj_forge_p(model, ...)      EV_TO_ROM( ev_obj_t, _ev_obj_forge(model, __VA_ARGS__))
