@@ -2,6 +2,22 @@
 static void* ev_global_lock = 0;
 static uint8_t ev_absolute_global_lock_en = 0;
 
+static uint8_t ev_call_model_fun(const ev_obj_t *obj,const ev_model_t *model, uint16_t op, void *arg)
+{
+    if(model->list[op])
+    {
+        return model->list[op](obj, arg);
+    }
+    else if(model->list[EVO_E(RELAY)])
+    {
+        return model->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+    }
+    else if(model->parent)
+    {
+        return ev_call_model_fun( obj, model->parent, op, arg);
+    }
+    return 0;
+}
 
 uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
 {
@@ -9,7 +25,7 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
     ev_model_assert(obj)
     ev_op_assert(obj,op)
 
-    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || ((obj->model->parent) && (obj->model->parent->list[op])))
+    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || obj->model->parent)
     {
         #ifdef EV_CONFIG_OS_LOCK_EN
             if(!ev_absolute_global_lock_en)
@@ -23,13 +39,13 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 {
                     ret = obj->model->list[op](obj, arg);
                 }
-                else if((obj->model->parent) && (obj->model->parent->list[op]))
-                {
-                    ret = obj->model->parent->list[op](obj, arg);
-                }
                 else if(obj->model->list[EVO_E(RELAY)])
                 {
                     ret = obj->model->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+                }
+                else if(obj->model->parent)
+                {
+                    ret = ev_call_model_fun( obj, obj->model->parent, op, arg);
                 }
                 if(obj->attr->lock)
                 {
@@ -56,13 +72,13 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 {
                     ret = obj->model->list[op](obj, arg);
                 }
-                else if((obj->model->parent) && (obj->model->parent->list[op]))
-                {
-                    ret = obj->model->parent->list[op](obj, arg);
-                }
                 else if(obj->model->list[EVO_E(RELAY)])
                 {
                     ret = obj->model->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+                }
+                else if(obj->model->parent)
+                {
+                    ret = ev_call_model_fun(obj, obj->model->parent, op, arg);
                 }
                 if(obj->attr->lock)
                 {
@@ -80,13 +96,13 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
             {
                 ret = obj->model->list[op](obj, arg);
             }
-            else if((obj->model->parent) && (obj->model->parent->list[op]))
-            {
-                ret = obj->model->parent->list[op](obj, arg);
-            }
             else if(obj->model->list[EVO_E(RELAY)])
             {
                 ret = obj->model->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+            }
+            else if(obj->model->parent)
+            {
+                ret = ev_call_model_fun(obj, obj->model->parent, op, arg);
             }
             return ret;
         #endif
@@ -129,7 +145,7 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
     ev_op_assert(obj,op)
 
 #ifdef EV_CONFIG_OS_LOCK_EN
-    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || ((obj->model->parent) && (obj->model->parent->list[op])) )
+    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || obj->model->parent)
     {
         if(!ev_global_lock)
         {
@@ -144,13 +160,13 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
         {
             ret = obj->model->list[op](obj, arg);
         }
-        else if((obj->model->parent) && (obj->model->parent->list[op]))
-        {
-            ret = obj->model->parent->list[op](obj, arg);
-        }
         else if(obj->model->list[EVO_E(RELAY)])
         {
             ret = obj->model->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
+        }
+        else if(obj->model->parent)
+        {
+            ret = ev_call_model_fun( obj, obj->model->parent, op, arg);
         }
         if(ev_global_lock)
         {
