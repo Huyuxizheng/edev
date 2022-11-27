@@ -9,7 +9,7 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
     ev_model_assert(obj)
     ev_op_assert(obj,op)
 
-    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)])
+    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || ((obj->model->parent) && (obj->model->parent->list[op])))
     {
         #ifdef EV_CONFIG_OS_LOCK_EN
             if(!ev_absolute_global_lock_en)
@@ -22,6 +22,10 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 if(obj->model->list[op])
                 {
                     ret = obj->model->list[op](obj, arg);
+                }
+                else if((obj->model->parent) && (obj->model->parent->list[op]))
+                {
+                    ret = obj->model->parent->list[op](obj, arg);
                 }
                 else if(obj->model->list[EVO_E(RELAY)])
                 {
@@ -52,6 +56,10 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                 {
                     ret = obj->model->list[op](obj, arg);
                 }
+                else if((obj->model->parent) && (obj->model->parent->list[op]))
+                {
+                    ret = obj->model->parent->list[op](obj, arg);
+                }
                 else if(obj->model->list[EVO_E(RELAY)])
                 {
                     ret = obj->model->list[EVO_E(RELAY)](obj,(void *)&(const EVO_T(RELAY)){.op = op,.arg = arg});
@@ -71,6 +79,10 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
             if(obj->model->list[op])
             {
                 ret = obj->model->list[op](obj, arg);
+            }
+            else if((obj->model->parent) && (obj->model->parent->list[op]))
+            {
+                ret = obj->model->parent->list[op](obj, arg);
             }
             else if(obj->model->list[EVO_E(RELAY)])
             {
@@ -117,7 +129,7 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
     ev_op_assert(obj,op)
 
 #ifdef EV_CONFIG_OS_LOCK_EN
-    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)])
+    if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || ((obj->model->parent) && (obj->model->parent->list[op])) )
     {
         if(!ev_global_lock)
         {
@@ -131,6 +143,10 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
         if(obj->model->list[op])
         {
             ret = obj->model->list[op](obj, arg);
+        }
+        else if((obj->model->parent) && (obj->model->parent->list[op]))
+        {
+            ret = obj->model->parent->list[op](obj, arg);
         }
         else if(obj->model->list[EVO_E(RELAY)])
         {

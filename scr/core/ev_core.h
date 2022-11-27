@@ -22,6 +22,8 @@ typedef struct ev_model_t{
 
     uint16_t                total;      //方法总数
     const edev_obj_fun_t    *list;       //方法清单
+
+    const struct ev_model_t *parent;
 }ev_model_t;
 
 //定义list时的快捷方法
@@ -48,11 +50,11 @@ EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH(_EV_FUN_ARG_DEF,
 #define EV_MODEL_LIST_DEF(model,...) static edev_obj_fun_t const EV_MODEL_LIST(model)[] = {\
                 EV_PP_IF(EV_PP_NOT(EV_PP_IS_EMPTY(__VA_ARGS__)), EV_PP_FOR_EACH,_EV_MODEL_LIST_FILL0)(_EV_MODEL_LIST_ADD_FUN,model, __VA_ARGS__)}
 
-//为方便调试，不过度封装
-#define EV_MODEL_DEF(model) ( ev_model_t ){\
+#define EV_MODEL_DEF(model , ...) ( ev_model_t ){\
     .name = #model,\
     .total = EV_MODEL_TOTAL(model),\
     .list  = EV_MODEL_LIST(model),\
+    .parent = EV_PP_IF(EV_PP_NARG(__VA_ARGS__),(& EV_PP_GET_N_0(__VA_ARGS__)),0),\
     };\
 
 
