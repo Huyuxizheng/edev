@@ -35,7 +35,7 @@ EV_MODEL_FUN_DEF(ev_adp_m,INIT)
     {
         if(attr->list[i])
         {
-            if(_ev_do(attr->list[i],INIT) == 0)
+            if(__ev_do(attr->list[i],INIT,_arg) == 0)
             {
                 (*attr->obj) = attr->list[i];
                 return 0;
@@ -52,7 +52,7 @@ EV_MODEL_FUN_DEF(ev_adp_m,UNINIT)
 
     if(attr->obj && (*attr->obj))
     {
-        _ev_do((*attr->obj),UNINIT);
+        __ev_do(attr->list[i],UNINIT,_arg);
         (*attr->obj) = 0;
     }
 
