@@ -1,6 +1,7 @@
 ﻿#include "./core/ev_core.h"
 #include "./obj/flash/ev_flash.h"
 #include "./obj/flash/nor_flash/ev_w25qxx.h"
+#include "./obj/flash/nor_flash/ev_w25qxx_def.h"
 #include "edev_config.h"
 
 
