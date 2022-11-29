@@ -93,7 +93,7 @@ if(!obj->model){ev_warning("%s model null\r\n",__fun__);return 1;}
 if(!obj->attr){ev_warning("%s attr null\r\n",__fun__);return 1;}
 
 #define ev_op_assert(obj,op) \
-if((op >= obj->model->total)&&(obj->model->list[EVO_E(RELAY)] == 0))\
+if((op >= obj->model->total)&&(obj->model->list[EVO_E(RELAY)] == 0)&&(obj->model->parent == 0))\
 {ev_warning("%s:%s no fun op:%d\r\n",__fun__,obj->model->name,op);return 1;}
 
 

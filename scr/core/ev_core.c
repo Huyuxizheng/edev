@@ -4,7 +4,15 @@ static uint8_t ev_absolute_global_lock_en = 0;
 
 static uint8_t ev_call_model_fun(const ev_obj_t *obj,const ev_model_t *model, uint16_t op, void *arg)
 {
-    if(model->list[op])
+    if(model)
+    {
+        return 0;
+    }
+    if(op > model->total)
+    {
+        return ev_call_model_fun( obj, model->parent, op, arg);
+    }
+    else if(model->list[op])
     {
         return model->list[op](obj, arg);
     }
@@ -38,7 +46,11 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                     ev_os_lock(obj->attr->lock);
                 }
                 uint8_t ret = 0;
-                if(obj->model->list[op])
+                if(op > obj->model->total)
+                {
+                    ret = ev_call_model_fun(obj, obj->model->parent, op, arg);
+                }
+                else if(obj->model->list[op])
                 {
                     ret = obj->model->list[op](obj, arg);
                 }
@@ -71,7 +83,11 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
                     ev_os_lock(obj->attr->lock);
                 }
                 uint8_t ret = 0;
-                if(obj->model->list[op])
+                if(op > obj->model->total)
+                {
+                    ret = ev_call_model_fun(obj, obj->model->parent, op, arg);
+                }
+                else if(obj->model->list[op])
                 {
                     ret = obj->model->list[op](obj, arg);
                 }
@@ -95,7 +111,11 @@ uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
             }
         #else
             uint8_t ret = 0;
-            if(obj->model->list[op])
+            if(op > obj->model->total)
+            {
+                ret = ev_call_model_fun(obj, obj->model->parent, op, arg);
+            }
+            else if(obj->model->list[op])
             {
                 ret = obj->model->list[op](obj, arg);
             }
@@ -159,7 +179,11 @@ uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
             ev_os_lock(ev_global_lock);
         }
         uint8_t ret = 0;
-        if(obj->model->list[op])
+        if(op > obj->model->total)
+        {
+            ret = ev_call_model_fun(obj, obj->model->parent, op, arg);
+        }
+        else if(obj->model->list[op])
         {
             ret = obj->model->list[op](obj, arg);
         }
