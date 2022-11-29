@@ -21,10 +21,10 @@ enum{//独有方法列表
 
 
 enum{
-    EV_SPI_MODE_1,//CPOL 0,CPHA 0
-    EV_SPI_MODE_2,//CPOL 0,CPHA 1
-    EV_SPI_MODE_3,//CPOL 1,CPHA 0
-    EV_SPI_MODE_4,//CPOL 1,CPHA 1
+    EV_SPI_MODE_0,//CPOL 0,CPHA 0
+    EV_SPI_MODE_1,//CPOL 0,CPHA 1
+    EV_SPI_MODE_2,//CPOL 1,CPHA 0
+    EV_SPI_MODE_3,//CPOL 1,CPHA 1
 };
 typedef uint8_t ev_spi_mode_e;
 

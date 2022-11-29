@@ -44,7 +44,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_INIT_CS)
 EV_MODEL_FUN_DEF(ev_spi_m,SPI_WRITE)
 {
     EV_MODEL_FUN_GET_ARG(ev_spi_m,SPI_WRITE);
-    if(attr->write)
+    if(attr->write && arg->data && arg->size)
     {
         if(arg->cs_io)
         {
@@ -63,7 +63,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_WRITE)
 EV_MODEL_FUN_DEF(ev_spi_m,SPI_READ)
 {
     EV_MODEL_FUN_GET_ARG(ev_spi_m,SPI_READ);
-    if(attr->read)
+    if(attr->read && arg->data && arg->size)
     {        
         if(arg->cs_io)
         {
@@ -81,14 +81,16 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_READ)
 EV_MODEL_FUN_DEF(ev_spi_m,SPI_WRITE_THEN_WRITE)
 {
     EV_MODEL_FUN_GET_ARG(ev_spi_m,SPI_WRITE_THEN_WRITE);
-    if(attr->write)
+    if(attr->write && ((arg->data1 && arg->size1) || (arg->data2 && arg->size2)))
     {        
         if(arg->cs_io)
         {
             _ev_do(arg->cs_io,GPIO_SET,0);
         }
-        attr->write(attr->handle,arg->data1,arg->size1);
-        attr->write(attr->handle,arg->data2,arg->size2);
+        if((arg->data1 && arg->size1))
+        {attr->write(attr->handle,arg->data1,arg->size1);}
+        if((arg->data2 && arg->size2))
+        {attr->write(attr->handle,arg->data2,arg->size2);}
         if(arg->cs_io)
         {
             _ev_do(arg->cs_io,GPIO_SET,1);
@@ -101,13 +103,15 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_WRITE_THEN_WRITE)
 EV_MODEL_FUN_DEF(ev_spi_m,SPI_WRITE_THEN_READ)
 {
     EV_MODEL_FUN_GET_ARG(ev_spi_m,SPI_WRITE_THEN_READ);
-    if(attr->read)
+    if((attr->write && (arg->data1 && arg->size1)) || (attr->read && (arg->data2 && arg->size2)))
     {        if(arg->cs_io)
         {
             _ev_do(arg->cs_io,GPIO_SET,0);
         }
-        attr->write(attr->handle,arg->data1,arg->size1);
-        attr->read(attr->handle,arg->data2,arg->size2);
+        if(attr->write && (arg->data1 && arg->size1))
+        {attr->write(attr->handle,arg->data1,arg->size1);}
+        if(attr->read && (arg->data2 && arg->size2))
+        {attr->read(attr->handle,arg->data2,arg->size2);}
         if(arg->cs_io)
         {
             _ev_do(arg->cs_io,GPIO_SET,1);
