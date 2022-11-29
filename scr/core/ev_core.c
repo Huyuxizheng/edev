@@ -163,11 +163,12 @@ uint8_t ev_obj_fun_obj_security_en(const ev_obj_t *obj,uint8_t en)
 }
 uint8_t _ev_obj_fun_security(const ev_obj_t *obj, uint16_t op, void *arg)
 {
+#ifdef EV_CONFIG_OS_LOCK_EN
+
     ev_obj_assert(obj)
     ev_model_assert(obj)
     ev_op_assert(obj,op)
 
-#ifdef EV_CONFIG_OS_LOCK_EN
     if(obj->model->list[op] || obj->model->list[EVO_E(RELAY)] || obj->model->parent)
     {
         if(!ev_global_lock)
