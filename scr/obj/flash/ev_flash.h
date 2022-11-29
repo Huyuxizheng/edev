@@ -14,8 +14,8 @@ enum{
 
 
 typedef struct {
-    uint32_t read_gran;     //读取颗粒
-    uint32_t write_gran;    //写入颗粒
+    uint32_t read_gran;     //建议读取颗粒
+    uint32_t write_gran;    //建议写入颗粒
 
     union{                  //块/页 尺寸、擦除颗粒
 
