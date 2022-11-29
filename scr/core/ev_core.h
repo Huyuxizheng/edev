@@ -33,7 +33,7 @@ typedef struct ev_model_t{
 //方法定义
 #define EV_MODEL_FUN_DEF(model,OP)        static uint8_t EV_MODEL_FUN(model,OP)(const ev_obj_t *self,void *_arg)
 //获得参数到 arg变量
-#define EV_MODEL_FUN_GET_ARG(model,OP)    const EVO_T(OP) *arg = (EVO_T(OP) *)_arg;const EVO_ATTR_T(model) *attr = (const EVO_ATTR_T(model) *)self->attr;
+#define EV_MODEL_FUN_GET_ARG(model,OP)    EVO_T(OP) *arg = (EVO_T(OP) *)_arg;const EVO_ATTR_T(model) *attr = (const EVO_ATTR_T(model) *)(self->attr);
 
 
 //方法定义接口
@@ -100,10 +100,11 @@ if((op >= obj->model->total)&&(obj->model->list[EVO_E(RELAY)] == 0))\
 //--------------------------------
 //选项定义宏方法edev Options -> evo
 extern uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg);
-
+extern uint8_t __ev_parent_fun(const ev_obj_t *obj, uint16_t op, void *arg);
 #define EVO_E(OP) EVO_##OP##_E
 #define EVO_T(OP) EVO_##OP##_ARG_T
 #define _ev_obj_fun(obj, op, ...)           __ev_obj_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
+#define _ev_parent_fun(obj, op, ...)        __ev_parent_fun(obj, EVO_E(op),(void *)&(const EVO_T(op)){EV_PP_NANG_FILL0(__VA_ARGS__)})
 
 #define _EV_OBJ_FUN_TO_CALL(...)            _ev_obj_fun(__VA_ARGS__)
 #define _EV_OBJ_FUNS_TO_CALL(CTX,VAR,IDX)   EV_PP_IF(IDX,;,) _EV_OBJ_FUN_TO_CALL(EV_PP_REMOVE_PARENS(CTX) , EV_PP_REMOVE_PARENS(VAR))
@@ -154,12 +155,14 @@ EV_PP_IF( EV_PP_NOT(EV_PP_IS_EMPTY(EV_PP_REMOVE_PARENS(EV_PP_GET_N(EV_PP_DEC(EV_
 #define ev_objs_funs_syn(obj_list,op,arg_list)      __ev_objs_funs_syn(__EV_OBJS_FUNS_SYN_TO_CALL_USER,obj_list,op,arg_list) 
 
 //内部库调用
-#define __ev_do(obj, op, arg)         __ev_obj_fun(obj, op, arg)
-#define _ev_do(obj, op, ...)         _ev_obj_fun(obj, op,__VA_ARGS__)
-#define _ev_do_n(obj, op, ...)       _ev_obj_funs(obj, op,__VA_ARGS__)
-#define _ev_n_do(obj, op, ...)       _ev_objs_fun(obj, op,__VA_ARGS__)
-#define _ev_n_do_n(obj, op, ...)     _ev_objs_funs(obj, op,__VA_ARGS__)
-#define _ev_n_do_n_s(obj, op, ...)   _ev_objs_funs_syn(obj, op,__VA_ARGS__)
+#define __ev_parent_do(obj, op, arg)    __ev_parent_fun(obj, EVO_E(op), arg)
+#define _ev_parent_do(obj, op, ...)     _ev_parent_fun(obj, op, __VA_ARGS__)
+#define __ev_do(obj, op, arg)           __ev_obj_fun(obj, EVO_E(op), arg)
+#define _ev_do(obj, op, ...)            _ev_obj_fun(obj, op,__VA_ARGS__)
+#define _ev_do_n(obj, op, ...)          _ev_obj_funs(obj, op,__VA_ARGS__)
+#define _ev_n_do(obj, op, ...)          _ev_objs_fun(obj, op,__VA_ARGS__)
+#define _ev_n_do_n(obj, op, ...)        _ev_objs_funs(obj, op,__VA_ARGS__)
+#define _ev_n_do_n_s(obj, op, ...)      _ev_objs_funs_syn(obj, op,__VA_ARGS__)
 
 
 //基础选项

@@ -18,7 +18,10 @@ static uint8_t ev_call_model_fun(const ev_obj_t *obj,const ev_model_t *model, ui
     }
     return 0;
 }
-
+uint8_t __ev_parent_fun(const ev_obj_t *obj, uint16_t op, void *arg)
+{
+    return ev_call_model_fun( obj, obj->model->parent, op, arg);
+}
 uint8_t __ev_obj_fun(const ev_obj_t *obj, uint16_t op, void *arg)
 {
     ev_obj_assert(obj)
