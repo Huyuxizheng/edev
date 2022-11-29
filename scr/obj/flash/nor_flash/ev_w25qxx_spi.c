@@ -10,7 +10,6 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,HELP)
 {
     EV_MODEL_FUN_GET_ARG(ev_w25qxx_spi_m,HELP);
 
-
     return 0;
 }
 
@@ -82,7 +81,6 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,FLASH_WRITE)
         return 1;
     }
 
-    
     _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
 
     _ev_do(attr->spi,SPI_MEM_WRITE,
@@ -170,7 +168,6 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,FLASH_ERASE)
             offset += 1*4096;
         }
     }
-
 
     return 0;
 }

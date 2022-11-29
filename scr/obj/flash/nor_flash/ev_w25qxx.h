@@ -19,7 +19,7 @@ extern const ev_model_t ev_w25qxx_spi_m;
 
 
 typedef struct{//属性列表
-    EVO_ATTR_T(ev_w25qxx_spi_m) ;
+    EVO_ATTR_T(ev_w25qxx_spi_m);
 }EVO_ATTR_T(ev_w25q32_spi_m);
 #define ev_w25q32_spi_m_attr_init  ev_w25qxx_spi_m_attr_init
 

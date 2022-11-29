@@ -29,7 +29,7 @@ EV_MODEL_FUN_DEF(ev_w25q32_spi_m,FLASH_INFO)
     EV_MODEL_FUN_GET_ARG(ev_w25q32_spi_m,FLASH_INFO);
 
     __ev_parent_do(self,FLASH_INFO,arg);
-    arg->info->size = 4*1024;
+    arg->info->size = 4*1024*1024;
 
     return 0;
 }
@@ -38,19 +38,44 @@ EV_MODEL_FUN_DEF(ev_w25q32_spi_m,FLASH_WRITE)
 {
     EV_MODEL_FUN_GET_ARG(ev_w25q32_spi_m,FLASH_WRITE);
 
+    if(arg->offset > 4*1024*1024)
+    {
+        return 1;
+    }
+    if((arg->offset + arg->size) > 4*1024*1024)
+    {
+        return _ev_parent_do(self,FLASH_WRITE,arg->offset,arg->data,(4*1024*1024 - arg->offset));
+    }
+
     return __ev_parent_do(self,FLASH_WRITE,arg);
 }
 
 EV_MODEL_FUN_DEF(ev_w25q32_spi_m,FLASH_READ)
 {
     EV_MODEL_FUN_GET_ARG(ev_w25q32_spi_m,FLASH_READ);
-
+    if(arg->offset > 4*1024*1024)
+    {
+        return 1;
+    }
+    if((arg->offset + arg->size) > 4*1024*1024)
+    {
+        return _ev_parent_do(self,FLASH_READ,arg->offset,arg->data,(4*1024*1024 - arg->offset));
+    }
     return __ev_parent_do(self,FLASH_READ,arg);
 }
 
 EV_MODEL_FUN_DEF(ev_w25q32_spi_m,FLASH_ERASE)
 {
     EV_MODEL_FUN_GET_ARG(ev_w25q32_spi_m,FLASH_ERASE);
+
+    if(arg->offset > 4*1024*1024)
+    {
+        return 1;
+    }
+    if((arg->offset + (arg->num*4*1024)) > 4*1024*1024)
+    {
+        return _ev_parent_do(self,FLASH_ERASE,arg->offset,((4*1024*1024 - arg->offset)/(4*1024)));
+    }
 
     return __ev_parent_do(self,FLASH_ERASE,arg);
 }
