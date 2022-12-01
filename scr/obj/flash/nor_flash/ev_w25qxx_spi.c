@@ -83,10 +83,20 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,FLASH_WRITE)
 
     _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
 
-    _ev_do(attr->spi,SPI_MEM_WRITE,
-            attr->cs_io,CMD_PAGE_PROGRAM,1,
-            arg->offset,3,
-            0,arg->data,arg->size);
+    if(arg->offset < 0x00ffffff )
+    {//24位地址指令
+        _ev_do(attr->spi,SPI_MEM_WRITE,
+                attr->cs_io,CMD_PAGE_PROGRAM,1,
+                arg->offset,3,
+                0,arg->data,arg->size);
+    }
+    else
+    {//32位地址
+        _ev_do(attr->spi,SPI_MEM_WRITE,
+                attr->cs_io,CMD_PAGE_PROGRAM_4A,1,
+                arg->offset,4,
+                0,arg->data,arg->size);
+    }
 
     return 0;
 }
@@ -102,10 +112,22 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,FLASH_READ)
     {
         return 1;
     }
-    _ev_do(attr->spi,SPI_MEM_READ,
-            attr->cs_io,CMD_FAST_READ,1,
-            arg->offset,3,
-            1,arg->data,arg->size);
+    
+    if(arg->offset < 0x00ffffff )
+    {//24位地址指令
+        _ev_do(attr->spi,SPI_MEM_READ,
+                attr->cs_io,CMD_FAST_READ,1,
+                arg->offset,3,
+                1,arg->data,arg->size);
+    }
+    else
+    {//32位地址
+        _ev_do(attr->spi,SPI_MEM_READ,
+                attr->cs_io,CMD_FAST_READ_4A,1,
+                arg->offset,4,
+                1,arg->data,arg->size);
+    }
+
     return 0;
 }
 
@@ -122,52 +144,96 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,FLASH_ERASE)
         return 0;
     }
     uint32_t offset = arg->offset;
-    for(uint32_t i = arg->num;i > 0;)
-    {
-        if(wait_busy(attr->cs_io,attr->spi))
+    if(((offset >> 12 )+ arg->num) < 0x00fff )
+    {//24位地址指令
+        for(uint32_t i = arg->num;i > 0;)
         {
-            return 1;
-        }
+            if(wait_busy(attr->cs_io,attr->spi))
+            {
+                return 1;
+            }
 
-        _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
+            _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
 
-        if(i < 8)
-        {
-            _ev_do(attr->spi,SPI_MEM_WRITE,
-                    attr->cs_io,CMD_SECTOR_ERASE,1,
-                    offset,3,
-                    0,0,0);
-            i--;
-            offset += 1*4096;
-        }
-        else if( (i >= 16) && (((offset >> 12) &0x0f) == 0) )
-        {
-            _ev_do(attr->spi,SPI_MEM_WRITE,
-                    attr->cs_io,CMD_ERASE_16_SECTOR,1,
-                    offset,3,
-                    0,0,0);
-            i -= 16;
-            offset += 16*4096;
-        }
-        else if( (i >= 8) && (((offset >> 12) &0x07) == 0) )
-        {
-            _ev_do(attr->spi,SPI_MEM_WRITE,
-                    attr->cs_io,CMD_ERASE_8_SECTOR,1,
-                    offset,3,
-                    0,0,0);
-            i -= 8;
-            offset += 8*4096;
-        }
-        else
-        {
-            _ev_do(attr->spi,SPI_MEM_WRITE,
-                    attr->cs_io,CMD_SECTOR_ERASE,1,
-                    offset,3,
-                    0,0,0);
-            i--;
-            offset += 1*4096;
+            if(i < 8)
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_SECTOR_ERASE,1,
+                        offset,3,
+                        0,0,0);
+                i--;
+                offset += 1*4096;
+            }
+            else if( (i >= 16) && (((offset >> 12) &0x0f) == 0) )
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_ERASE_16_SECTOR,1,
+                        offset,3,
+                        0,0,0);
+                i -= 16;
+                offset += 16*4096;
+            }
+            else if( (i >= 8) && (((offset >> 12) &0x07) == 0) )
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_ERASE_8_SECTOR,1,
+                        offset,3,
+                        0,0,0);
+                i -= 8;
+                offset += 8*4096;
+            }
+            else
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_SECTOR_ERASE,1,
+                        offset,3,
+                        0,0,0);
+                i--;
+                offset += 1*4096;
+            }
         }
     }
+    else
+    {//32位地址
+        for(uint32_t i = arg->num;i > 0;)
+        {
+            if(wait_busy(attr->cs_io,attr->spi))
+            {
+                return 1;
+            }
+
+            _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
+
+            if(i < 16)
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_SECTOR_ERASE_4A,1,
+                        offset,4,
+                        0,0,0);
+                i--;
+                offset += 1*4096;
+            }
+            else if( (i >= 16) && (((offset >> 12) &0x0f) == 0) )
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_ERASE_16_SECTOR_4A,1,
+                        offset,4,
+                        0,0,0);
+                i -= 16;
+                offset += 16*4096;
+            }
+            else
+            {
+                _ev_do(attr->spi,SPI_MEM_WRITE,
+                        attr->cs_io,CMD_SECTOR_ERASE_4A,1,
+                        offset,4,
+                        0,0,0);
+                i--;
+                offset += 1*4096;
+            }
+        }
+    }
+
 
     return 0;
 }
