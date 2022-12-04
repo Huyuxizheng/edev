@@ -4,7 +4,7 @@ static uint8_t ev_absolute_global_lock_en = 0;
 
 static uint8_t ev_call_model_fun(const ev_obj_t *obj,const ev_model_t *model, uint16_t op, void *arg)
 {
-    if(model)
+    if(!model)
     {
         return 0;
     }

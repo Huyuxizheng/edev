@@ -276,7 +276,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_MEM_READ)
         size += arg->dummy;
     }
 
-    _ev_do(self,SPI_WRITE_THEN_WRITE,arg->cs_io,data,size,arg->data,arg->size);
+    _ev_do(self,SPI_WRITE_THEN_READ,arg->cs_io,data,size,arg->data,arg->size);
     
     return 0;
 }

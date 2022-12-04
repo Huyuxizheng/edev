@@ -17,9 +17,12 @@
 
 
 #include "./obj/drive/ev_gpio.h"
+#include "./obj/drive/ev_i2c.h"
 #include "./obj/drive/ev_i2c_imit.h"
+#include "./obj/drive/ev_spi.h"
 
 #include "./obj/flash/ev_flash.h"
+#include "./obj/flash/nor_flash/ev_w25qxx.h"
 
 
 //锻造版驱动
