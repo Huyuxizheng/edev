@@ -11,7 +11,7 @@ char nil = 0;//防止被优化
 
 void ev_default_delay_ns(uint32_t ns)
 {
-    uint32_t ns_temp = (ns * ((CLK_MHZ+ASM_NUM-1)/ASM_NUM)) * AUX_VAR /1000;
+    uint32_t ns_temp = ns * ((CLK_MHZ+ASM_NUM-1)/ASM_NUM * AUX_VAR )/1000;
     while(ns_temp > 0)
     {
         nil--;
@@ -21,12 +21,14 @@ void ev_default_delay_ns(uint32_t ns)
 
 void ev_default_delay_us(uint32_t us)
 {
-    uint32_t us_temp = (us * ((CLK_MHZ+ASM_NUM-1)/ASM_NUM)) * AUX_VAR;
+
+    uint32_t us_temp = us * ((CLK_MHZ+ASM_NUM-1)/ASM_NUM * AUX_VAR);
     while(us_temp > 0)
     {
         nil--;
         us_temp--;
     }
+
 }
 
 void ev_default_delay_ms(uint32_t ms)
