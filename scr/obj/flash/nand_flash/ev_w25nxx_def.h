@@ -14,7 +14,7 @@
 
 
 
-//读状态寄存器1，最低位为忙标志位
+//读状态寄存器3，最低位为忙标志位
 #define CMD_READ_STATUS_R1      0x05a0    //data
 #define CMD_READ_STATUS_R2      0x05b0    //data
 #define CMD_READ_STATUS_R3      0x05c0    //data

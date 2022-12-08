@@ -52,17 +52,17 @@ typedef struct {
     uint32_t ecc_oob_size;  //可用被ECC保护的oob大小
     uint32_t oob_size;      //可用oob大小
     uint32_t block_num;     //块数量
-} ev_nand_info_t;
+} ev_nand_ecc_info_t;
 
-EV_FUN_DEF(NAND_INFO,ev_nand_info_t *info);
+EV_FUN_DEF(NAND_ECC_INFO,ev_nand_ecc_info_t *info);
 
 
 EV_FUN_DEF(NAND_ECC_WRITE,uint32_t page_offset,const uint8_t *data,uint32_t size,const uint8_t *oob_data,uint32_t oob_size);
 
 EV_FUN_DEF(NAND_ECC_READ,uint32_t page_offset,uint8_t *data,uint32_t size,uint8_t *oob_data,uint32_t oob_size);
 
-//擦除指定数量块/扇区
-EV_FUN_DEF(NAND_ECC_ERASE,uint32_t block_num,uint32_t num);
+//擦除指定块
+EV_FUN_DEF(NAND_ECC_ERASE,uint32_t page_offset);
 
 EV_FUN_DEF(NAND_ECC_OOB_WRITE,uint32_t page_offset,const uint8_t *oob_data,uint32_t oob_size);
 
