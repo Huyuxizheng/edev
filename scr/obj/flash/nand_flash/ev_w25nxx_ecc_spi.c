@@ -1,14 +1,15 @@
 #include "./core/ev_core.h"
 #include "./obj/flash/ev_flash.h"
-#include "./obj/flash/nor_flash/ev_w25qxx.h"
-#include "./obj/flash/nor_flash/ev_w25qxx_def.h"
+#include "./obj/flash/ev_nand.h"
+#include "./obj/flash/nand_flash/ev_w25nxx.h"
+#include "./obj/flash/nand_flash/ev_w25nxx_def.h"
 #include "./obj/drive/ev_spi.h"
 #include "edev_config.h"
 
 
-EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,HELP)
+EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,HELP)
 {
-    EV_MODEL_FUN_GET_ARG(ev_w25qxx_spi_m,HELP);
+    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,HELP);
 
     return 0;
 }
@@ -53,9 +54,9 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,INIT)
         _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_DEVICE_ID,1,1,data,3);
         if(data[0] == 0xef)
         {
-            _ev_do(spi,SPI_CMD_READ,cs_io,CMD_READ_STATUS_R2,2,0,data,1);
+            _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_READ_STATUS_R2,2,0,data,1);
             data[0] |= 0x18; 
-            _ev_do(spi,SPI_CMD_WRITE,cs_io,CMD_WRITE_STATUS_R2,2,0,data,1);
+            _ev_do(attr->spi,SPI_CMD_WRITE,attr->cs_io,CMD_WRITE_STATUS_R2,2,0,data,1);
             return 0;
         }
     }
@@ -81,31 +82,37 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_WRITE)
     {
         return 1;
     }
-
     if(wait_busy(attr->cs_io,attr->spi))
     {
         return 1;
     }
-
-    uint8_t data[4] = {0};
+    uint16_t size = arg->size;
+    uint16_t oob_size = arg->oob_size;
+    if(size > 2048)
+    {
+        size = 2048;
+    }
+    if(oob_size > 16)
+    {
+        oob_size = 16;
+    }
 
     _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
 
     _ev_do(attr->spi,SPI_MEM_WRITE,
             attr->cs_io,CMD_LOAD_PROGRAM,1,
-            data,2,
-            0,arg->data,arg->size);
+            0,2,
+            0,arg->data,size);
 
     if(wait_busy(attr->cs_io,attr->spi))
     {
         return 1;
     }
-    data[0] = ((2048+2) >> 8) && 0xff;
-    data[1] = (2048+2) && 0xff;
+
     _ev_do(attr->spi,SPI_MEM_WRITE,
             attr->cs_io,CMD_RANDOM_LOAD_PROGRAM,1,
-            data,2,
-            0,arg->oob_data,arg->oob_size);
+            2048+2,2,
+            0,arg->oob_data,oob_size);
     if(wait_busy(attr->cs_io,attr->spi))
     {
         return 1;
@@ -116,6 +123,25 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_WRITE)
             attr->cs_io,CMD_PROGRAM_EXECUTE,1,
             attr->page_offset,3,
             0,0,0);
+    if(wait_busy(attr->cs_io,attr->spi))
+    {
+        return 1;
+    }
+
+    uint8_t ret = 0;
+    if(attr->buff)
+    {
+        uint8_t *buf = 0;
+        uint8_t buf_oob[16] = {0};
+        _ev_do(attr->buff,BUFF_TAKE,self);
+
+        _ev_do(attr->buff,BUFF_TAKE,&buf,2048);
+
+        ret = _ev_do(self,NAND_ECC_READ,buf,2048,buf_oob,16);
+
+        _ev_do(attr->buff,BUFF_GIVE,self);
+    }
+
 
     return 0;
 }
@@ -131,20 +157,45 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_READ)
     {
         return 1;
     }
-    
-    if(arg->offset < 0x00ffffff )
-    {//24位地址指令
-        _ev_do(attr->spi,SPI_MEM_READ,
-                attr->cs_io,CMD_FAST_READ,1,
-                arg->offset,3,
-                1,arg->data,arg->size);
+
+    uint16_t size = arg->size;
+    uint16_t oob_size = arg->oob_size;
+    if(size > 2048)
+    {
+        size = 2048;
     }
-    else
-    {//32位地址
-        _ev_do(attr->spi,SPI_MEM_READ,
-                attr->cs_io,CMD_FAST_READ_4A,1,
-                arg->offset,4,
-                1,arg->data,arg->size);
+    if(oob_size > 16)
+    {
+        oob_size = 16;
+    }
+
+    _ev_do(attr->spi,SPI_MEM_READ,
+            attr->cs_io,CMD_READ_PAGE,1,
+            attr->page_offset,3,
+            0,0,0);
+
+    if(wait_busy(attr->cs_io,attr->spi))
+    {
+        return 1;
+    }
+    uint8_t data[4] = {0};
+
+    _ev_do(attr->spi,SPI_MEM_READ,
+            attr->cs_io,CMD_FAST_READ,1,
+            0,2,
+            4,arg->data,size);
+
+    _ev_do(attr->spi,SPI_MEM_READ,
+            attr->cs_io,CMD_FAST_READ,1,
+            2048+2,2,
+            4,arg->oob_data,oob_size);
+
+    
+    _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_WRITE_STATUS_R3,2,0,data,1);
+
+    if(data[0] & 0x30)
+    {
+        return 1;
     }
 
     return 0;
