@@ -56,7 +56,7 @@ typedef struct {
 
 EV_FUN_DEF(NAND_ECC_INFO,ev_nand_ecc_info_t *info);
 
-
+//受ECC保护的数据和oob读写，受保护的数据只能一起写
 EV_FUN_DEF(NAND_ECC_WRITE,uint32_t page_offset,const uint8_t *data,uint32_t size,const uint8_t *oob_data,uint32_t oob_size);
 
 EV_FUN_DEF(NAND_ECC_READ,uint32_t page_offset,uint8_t *data,uint32_t size,uint8_t *oob_data,uint32_t oob_size);
@@ -64,6 +64,7 @@ EV_FUN_DEF(NAND_ECC_READ,uint32_t page_offset,uint8_t *data,uint32_t size,uint8_
 //擦除指定块
 EV_FUN_DEF(NAND_ECC_ERASE,uint32_t page_offset);
 
+//不受ECC保护的 OOB读写
 EV_FUN_DEF(NAND_ECC_OOB_WRITE,uint32_t page_offset,const uint8_t *oob_data,uint32_t oob_size);
 
 EV_FUN_DEF(NAND_ECC_OOB_READ,uint32_t page_offset,uint8_t *oob_data,uint32_t oob_size);
