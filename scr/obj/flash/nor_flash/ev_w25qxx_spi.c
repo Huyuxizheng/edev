@@ -39,10 +39,6 @@ EV_MODEL_FUN_DEF(ev_w25qxx_spi_m,INIT)
 
     if(attr->spi)
     {
-        if(attr->cs_io)
-        {
-            _ev_do(attr->cs_io,GPIO_INIT,EV_GPIO_MODE_OUT);
-        }
         if(_ev_do(attr->spi,SPI_INIT,EV_SPI_MODE_3,133,attr->cs_io) == 1)
         {
             return 1;

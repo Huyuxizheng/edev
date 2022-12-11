@@ -16,9 +16,9 @@ enum{//方法列表
 
 
 //当前的obj指针，sub自身的子对象obj（用于提供裸机中断的保护，方案一不支持）
-EV_FUN_DEF(BUFF_TAKE,void * self,uint8_t sub_num,void * sub);
+EV_FUN_DEF(BUFF_TAKE,const void * self,uint8_t sub_num,void * sub);
 
-EV_FUN_DEF(BUFF_GIVE,void * self);
+EV_FUN_DEF(BUFF_GIVE,const void * self);
 
 
 
@@ -29,7 +29,7 @@ typedef struct{//属性列表
     ev_obj_attr_base_t  base;//固定头
 
     ev_obj_t            *heap;//堆
-    void*               *master;//用于记录最顶层obj指针
+    const void*               *master;//用于记录最顶层obj指针
     void *              *buff_lock;
 }EVO_ATTR_T(ev_buff1_m);
 

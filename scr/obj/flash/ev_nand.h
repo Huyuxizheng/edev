@@ -33,7 +33,7 @@ EV_FUN_DEF(NAND_READ,uint32_t page_offset,uint8_t *data,uint32_t size,uint8_t *o
 EV_FUN_DEF(NAND_ERASE,uint32_t page_offset);
 
 //设置坏块
-EV_FUN_DEF(NAND_CHECK_BAD_BLOCK,uint32_t page_offse,);
+EV_FUN_DEF(NAND_CHECK_BAD_BLOCK,uint32_t page_offset);
 EV_FUN_DEF(NAND_SET_BAD_BLOCK,uint32_t page_offset);
 
 

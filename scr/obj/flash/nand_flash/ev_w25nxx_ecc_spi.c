@@ -4,6 +4,7 @@
 #include "./obj/flash/nand_flash/ev_w25nxx.h"
 #include "./obj/flash/nand_flash/ev_w25nxx_def.h"
 #include "./obj/drive/ev_spi.h"
+#include "./obj/common/ev_buff.h"
 #include "edev_config.h"
 
 
@@ -41,11 +42,6 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,INIT)
 
     if(attr->spi)
     {
-        
-        if(attr->cs_io)
-        {
-            _ev_do(attr->cs_io,GPIO_INIT,EV_GPIO_MODE_OUT);
-        }
         if(_ev_do(attr->spi,SPI_INIT,EV_SPI_MODE_3,104,attr->cs_io) == 1)
         {
             return 1;
@@ -75,8 +71,8 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_INFO)
 
     arg->info->page_gran = 2048;
     arg->info->block_size = 128*1024;
-    arg->info->ecc_oob_size = 16;
-    arg->info->oob_size = 14;
+    arg->info->oob_size = 16;
+    arg->info->noob_size = 14;
 
     return 0;
 }
@@ -89,7 +85,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
         return 1;
     }
 
-    if((!(arg->data && size)) && (!(arg->oob_data && oob_size)))
+    if((!(arg->data && arg->size)) && (!(arg->oob_data && arg->oob_size)))
     {//没有要写入的
         return 0;
     }
@@ -170,7 +166,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
     
     _ev_do(attr->spi,SPI_MEM_WRITE,
             attr->cs_io,CMD_PROGRAM_EXECUTE,1,
-            attr->page_offset,3,
+            arg->page_offset,3,
             0,0,0);
     if(wait_busy(attr->cs_io,attr->spi))
     {
@@ -185,9 +181,9 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
         uint8_t buf_oob[16] = {0};
         _ev_do(attr->buff,BUFF_TAKE,self);
 
-        _ev_do(attr->buff,BUFF_TAKE,&buf,2048);
+        _ev_do(attr->buff,MALLOC,&buf,2048);
 
-        ret = _ev_do(self,NAND_ECC_READ,buf,2048,buf_oob,16);
+        ret = _ev_do(self,NAND_READ,arg->page_offset,buf,2048,buf_oob,16);
 
         _ev_do(attr->buff,BUFF_GIVE,self);
 
@@ -202,7 +198,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
         uint8_t buf[2048] = {0};
         uint8_t buf_oob[16] = {0};
 
-        ret = _ev_do(self,NAND_ECC_READ,buf,2048,0,16);
+        ret = _ev_do(self,NAND_READ,arg->page_offset,buf,2048,0,16);
 
         if(ret)
         {
@@ -241,7 +237,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
     }
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_READ_PAGE,1,
-            attr->page_offset,3,
+            arg->page_offset,3,
             0,0,0);
 
     //读出数据
@@ -259,7 +255,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
 
     if(arg->oob_data && oob_size)
     {
-        uint8_t oob[52] = 0;
+        uint8_t oob[52] = {0};
         _ev_do(attr->spi,SPI_MEM_READ,
                 attr->cs_io,CMD_FAST_READ,1,
                 2048+4,2,
@@ -272,6 +268,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
         }
     }
 
+    uint8_t data[2] = {0};
     //检查硬件ECC标志位
     _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_WRITE_STATUS_R3,2,0,data,1);
 
@@ -313,7 +310,7 @@ static uint8_t erase_verify(const ev_obj_t *cs_io,const ev_obj_t *spi,uint32_t p
 
         for(int i = 0; i < (2048+64);i++)
         {
-            if(buf != 0xff)
+            if(buf[i] != 0xff)
             {
                 return 1;
             }
@@ -323,7 +320,7 @@ static uint8_t erase_verify(const ev_obj_t *cs_io,const ev_obj_t *spi,uint32_t p
 
 }
 
-static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const ev_obj_t *buff,uint32_t page_offset)
+static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const ev_obj_t *self,const ev_obj_t *buff,uint32_t page_offset)
 {
     
     uint8_t *buf = 0;
@@ -335,7 +332,7 @@ static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const
 
     _ev_do(buff,BUFF_TAKE,self);
 
-    _ev_do(buff,BUFF_TAKE,&buf,2048+64);
+    _ev_do(buff,MALLOC,&buf,2048+64);
 
     if(!buf)
     {
@@ -368,7 +365,7 @@ static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const
 
         for(int i = 0; i < (2048+64);i++)
         {
-            if(buf != 0xff)
+            if(buf[i] != 0xff)
             {
                 _ev_do(buff,BUFF_GIVE,self);
                 return 1;
@@ -398,11 +395,11 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ERASE)
     }
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_BLOCK_ERASE,1,
-            attr->page_offset,3,
+            arg->page_offset,3,
             0,0,0);
 
     //校验
-    return erase_verify_buff(attr->cs_io,attr->spi,attr->buff,(attr->page_offset&0xffffffc0))
+    return erase_verify_buff(attr->cs_io,attr->spi,self,attr->buff,(arg->page_offset&0xffffffc0));
 }
 
 EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_CHECK_BAD_BLOCK)
@@ -414,7 +411,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_CHECK_BAD_BLOCK)
         return 1;
     }
 
-    uint32_t page_offset = (attr->page_offset & 0xffffffc0);
+    uint32_t page_offset = (arg->page_offset & 0xffffffc0);
 
     uint8_t data[4] = {0};
 
@@ -454,7 +451,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_SET_BAD_BLOCK)
     {
         return 1;
     }
-    uint32_t page_offset = (attr->page_offset & 0xffffffc0);
+    uint32_t page_offset = (arg->page_offset & 0xffffffc0);
 
     uint8_t data[4] = {0};
 
@@ -495,7 +492,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
     {
         return 1;
     }
-    if(!(arg->oob_data && oob_size))
+    if(!(arg->oob_data && arg->oob_size))
     {
         return 0;
     }
@@ -514,7 +511,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
     }
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_READ_PAGE,1,
-            attr->page_offset,3,
+            arg->page_offset,3,
             0,0,0);
 
     //读出数据
@@ -548,7 +545,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
     }
 
 
-    if((!(arg->oob_data && oob_size))
+    if(!(arg->oob_data && arg->oob_size))
     {//没有要写入的
         return 0;
     }
@@ -597,7 +594,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
     
     _ev_do(attr->spi,SPI_MEM_WRITE,
             attr->cs_io,CMD_PROGRAM_EXECUTE,1,
-            attr->page_offset,3,
+            arg->page_offset,3,
             0,0,0);
     if(wait_busy(attr->cs_io,attr->spi))
     {
@@ -605,7 +602,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
     }
 
     uint8_t buf_oob[16] = {0};
-    _ev_do(self,NAND_ECC_NOOB_READ,attr->page_offset,buf_oob,14);
+    _ev_do(self,NAND_ECC_NOOB_READ,arg->page_offset,buf_oob,14);
     for(int i = 0; i < oob_size; i++)
     {
         if(buf_oob[i] != arg->oob_data[i])
@@ -625,10 +622,6 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,UNINIT)
     if(attr->spi)
     {
         _ev_do(attr->spi,UNINIT);
-    }
-    if(attr->cs_io)
-    {
-        _ev_do(attr->cs_io,UNINIT);
     }
 
     return 0;
