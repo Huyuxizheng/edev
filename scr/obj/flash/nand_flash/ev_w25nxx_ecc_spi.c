@@ -242,7 +242,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
         uint8_t buf[2048] = {0};
         uint8_t buf_oob[16] = {0};
 
-        ret = _ev_do(self,NAND_READ,arg->page_offset,buf,2048,0,16);
+        ret = _ev_do(self,NAND_READ,arg->page_offset,buf,2048,buf_oob,16);
 
         if(ret)
         {
