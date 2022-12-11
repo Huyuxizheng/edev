@@ -15,7 +15,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,HELP)
     return 0;
 }
 
-static uint8_t wait_busy(const ev_obj_t *cs_io,const ev_obj_t *spi)
+static uint8_t wait_busy_10us(const ev_obj_t *cs_io,const ev_obj_t *spi)
 {
     uint8_t flash_r3 = 0xff;
     uint32_t timeout = 0;
@@ -27,14 +27,53 @@ static uint8_t wait_busy(const ev_obj_t *cs_io,const ev_obj_t *spi)
             return 0;
         }
         timeout++;
-        if(timeout > 10000)
+        if(timeout > 1000000)
         {
             return 1;
         }
-        ev_sleep(1);
+        ev_sleep_us(10);
     }    
 }
 
+static uint8_t wait_busy_100us(const ev_obj_t *cs_io,const ev_obj_t *spi)
+{
+    uint8_t flash_r3 = 0xff;
+    uint32_t timeout = 0;
+    while (1)
+    {
+        _ev_do(spi,SPI_CMD_READ,cs_io,CMD_READ_STATUS_R3,2,0,&flash_r3,1);
+        if((flash_r3 & 0x01) == 0)
+        {
+            return 0;
+        }
+        timeout++;
+        if(timeout > 100000)
+        {
+            return 1;
+        }
+        ev_sleep_us(100);
+    }    
+}
+
+static uint8_t wait_busy_500us(const ev_obj_t *cs_io,const ev_obj_t *spi)
+{
+    uint8_t flash_r3 = 0xff;
+    uint32_t timeout = 0;
+    while (1)
+    {
+        _ev_do(spi,SPI_CMD_READ,cs_io,CMD_READ_STATUS_R3,2,0,&flash_r3,1);
+        if((flash_r3 & 0x01) == 0)
+        {
+            return 0;
+        }
+        timeout++;
+        if(timeout > 20000)
+        {
+            return 1;
+        }
+        ev_sleep_us(500);
+    }    
+}
 
 EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,INIT)
 {
@@ -46,7 +85,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,INIT)
         {
             return 1;
         }
-        if(wait_busy(attr->cs_io,attr->spi))
+        if(wait_busy_100us(attr->cs_io,attr->spi))
         {
             return 1;
         }
@@ -56,9 +95,14 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,INIT)
         _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_DEVICE_ID,1,1,data,3);
         if(data[0] == 0xef)
         {
+            _ev_do(attr->spi,SPI_CMD_WRITE,attr->cs_io,0xff,1,0,0,0);
             _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_READ_STATUS_R2,2,0,data,1);
             data[0] |= 0x18; 
             _ev_do(attr->spi,SPI_CMD_WRITE,attr->cs_io,CMD_WRITE_STATUS_R2,2,0,data,1);
+
+            data[0] = 0x00; 
+            _ev_do(attr->spi,SPI_CMD_WRITE,attr->cs_io,CMD_WRITE_STATUS_R1,2,0,data,1);
+
             return 0;
         }
     }
@@ -105,7 +149,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
     //写入数据到缓冲区
     if(arg->data && size)
     {
-        if(wait_busy(attr->cs_io,attr->spi))
+        if(wait_busy_10us(attr->cs_io,attr->spi))
         {
             return 1;
         }
@@ -135,7 +179,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
             }
         }
 
-        if(wait_busy(attr->cs_io,attr->spi))
+        if(wait_busy_10us(attr->cs_io,attr->spi))
         {
             return 1;
         }
@@ -158,7 +202,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
     }
         
     //写入数据
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -168,7 +212,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_WRITE)
             attr->cs_io,CMD_PROGRAM_EXECUTE,1,
             arg->page_offset,3,
             0,0,0);
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_100us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -231,7 +275,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
     }
 
     //读取数据到缓存
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -241,7 +285,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
             0,0,0);
 
     //读出数据
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -250,7 +294,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
         _ev_do(attr->spi,SPI_MEM_READ,
                 attr->cs_io,CMD_FAST_READ,1,
                 0,2,
-                4,arg->data,size);
+                1,arg->data,size);
     }
 
     if(arg->oob_data && oob_size)
@@ -259,7 +303,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
         _ev_do(attr->spi,SPI_MEM_READ,
                 attr->cs_io,CMD_FAST_READ,1,
                 2048+4,2,
-                4,oob,52);
+                1,oob,52);
                 
         
         for(int i = 0; i < oob_size; i++)
@@ -270,7 +314,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_READ)
 
     uint8_t data[2] = {0};
     //检查硬件ECC标志位
-    _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_WRITE_STATUS_R3,2,0,data,1);
+    _ev_do(attr->spi,SPI_CMD_READ,attr->cs_io,CMD_READ_STATUS_R3,2,0,data,1);
 
     if(data[0] & 0x30)
     {
@@ -288,7 +332,7 @@ static uint8_t erase_verify(const ev_obj_t *cs_io,const ev_obj_t *spi,uint32_t p
     for(int i = 0 ; i < 64 ; i++)
     {
         //读取数据到缓存
-        if(wait_busy(cs_io,spi))
+        if(wait_busy_10us(cs_io,spi))
         {
             return 1;
         }
@@ -298,7 +342,7 @@ static uint8_t erase_verify(const ev_obj_t *cs_io,const ev_obj_t *spi,uint32_t p
                 0,0,0);
 
         //读出数据
-        if(wait_busy(cs_io,spi))
+        if(wait_busy_10us(cs_io,spi))
         {
             return 1;
         }
@@ -306,7 +350,7 @@ static uint8_t erase_verify(const ev_obj_t *cs_io,const ev_obj_t *spi,uint32_t p
         _ev_do(spi,SPI_MEM_READ,
                 cs_io,CMD_FAST_READ,1,
                 0,2,
-                4,buf,2048+64);
+                1,buf,2048+64);
 
         for(int i = 0; i < (2048+64);i++)
         {
@@ -325,6 +369,11 @@ static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const
     
     uint8_t *buf = 0;
     
+    if(wait_busy_500us(cs_io,spi))
+    {
+        return 1;
+    }
+
     if(!buff)
     {
         return erase_verify(cs_io,spi,page_offset);
@@ -343,17 +392,13 @@ static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const
     for(int i = 0 ; i < 64 ; i++)
     {
         //读取数据到缓存
-        if(wait_busy(cs_io,spi))
-        {
-            return 1;
-        }
         _ev_do(spi,SPI_MEM_READ,
                 cs_io,CMD_READ_PAGE,1,
                 page_offset+1,3,
                 0,0,0);
 
         //读出数据
-        if(wait_busy(cs_io,spi))
+        if(wait_busy_10us(cs_io,spi))
         {
             return 1;
         }
@@ -361,7 +406,7 @@ static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const
         _ev_do(spi,SPI_MEM_READ,
                 cs_io,CMD_FAST_READ,1,
                 0,2,
-                4,buf,2048+64);
+                1,buf,2048+64);
 
         for(int i = 0; i < (2048+64);i++)
         {
@@ -389,7 +434,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ERASE)
     }
     
     //擦除块
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -416,7 +461,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_CHECK_BAD_BLOCK)
     uint8_t data[4] = {0};
 
     //读取数据到缓存
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -426,7 +471,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_CHECK_BAD_BLOCK)
             0,0,0);
 
     //读出数据
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -434,7 +479,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_CHECK_BAD_BLOCK)
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_FAST_READ,1,
             2048,2,
-            4,data,2);
+            1,data,2);
 
     if((data[0] != 0xff) || (data[1] != 0xff))
     {
@@ -456,7 +501,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_SET_BAD_BLOCK)
     uint8_t data[4] = {0};
 
     //读取数据到缓存
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -466,7 +511,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_SET_BAD_BLOCK)
             0,0,0);
 
     //读出数据
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -474,7 +519,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_SET_BAD_BLOCK)
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_FAST_READ,1,
             2048,2,
-            4,data,2);
+            1,data,2);
 
     if((data[0] != 0xff) || (data[1] != 0xff))
     {
@@ -505,7 +550,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
     }
 
     //读取数据到缓存
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -515,7 +560,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
             0,0,0);
 
     //读出数据
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -524,7 +569,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_FAST_READ,1,
             2048+4,2,
-            4,oob,52);
+            1,oob,52);
             
     
     for(int i = 0; i < oob_size; i++)
@@ -573,7 +618,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
             oob[i] = 0xff;
         }
     }
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -586,7 +631,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
             0,oob,50);
         
     //写入数据
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_10us(attr->cs_io,attr->spi))
     {
         return 1;
     }
@@ -596,7 +641,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
             attr->cs_io,CMD_PROGRAM_EXECUTE,1,
             arg->page_offset,3,
             0,0,0);
-    if(wait_busy(attr->cs_io,attr->spi))
+    if(wait_busy_100us(attr->cs_io,attr->spi))
     {
         return 1;
     }

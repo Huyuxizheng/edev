@@ -22,7 +22,9 @@
 #include "./obj/drive/ev_spi.h"
 
 #include "./obj/flash/ev_flash.h"
+#include "./obj/flash/ev_nand.h"
 #include "./obj/flash/nor_flash/ev_w25qxx.h"
+#include "./obj/flash/nand_flash/ev_w25nxx.h"
 
 
 //锻造版驱动

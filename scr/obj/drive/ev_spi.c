@@ -162,7 +162,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_CMD_WRITE)
             data[size++] = arg->cmd  & 0x0ff;
     }
 
-    if(arg->dummy && (arg->dummy < 4))
+    if(arg->dummy && (arg->dummy <= 4))
     {
         size += arg->dummy;
     }
@@ -192,7 +192,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_CMD_READ)
     }
 
 
-    if(arg->dummy && (arg->dummy < 4))
+    if(arg->dummy && (arg->dummy <= 4))
     {
         size += arg->dummy;
     }
@@ -231,7 +231,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_MEM_WRITE)
             data[size++] = arg->addr  & 0x0ff;
     }
 
-    if(arg->dummy && (arg->dummy < 4))
+    if(arg->dummy && (arg->dummy <= 4))
     {
         size += arg->dummy;
     }
@@ -271,7 +271,7 @@ EV_MODEL_FUN_DEF(ev_spi_m,SPI_MEM_READ)
     }
 
 
-    if(arg->dummy && (arg->dummy < 4))
+    if(arg->dummy && (arg->dummy <= 4))
     {
         size += arg->dummy;
     }
