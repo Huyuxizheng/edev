@@ -109,9 +109,9 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,INIT)
     return 1;
 }
 
-EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_INFO)
+EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_INFO)
 {
-    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,NAND_ECC_INFO);
+    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,NAND_INFO);
 
     arg->info->page_gran = 2048;
     arg->info->block_size = 128*1024;
@@ -438,6 +438,8 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ERASE)
     {
         return 1;
     }
+    _ev_do(attr->spi,SPI_CMD,attr->cs_io,CMD_WRITE_ENABLE,1);
+
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_BLOCK_ERASE,1,
             arg->page_offset,3,
@@ -529,9 +531,9 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_SET_BAD_BLOCK)
     return 0;
 }
 
-EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
+EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_NOOB_READ)
 {
-    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ);
+    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,NAND_NOOB_READ);
 
     if(!attr->spi)
     {
@@ -568,8 +570,8 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
     uint8_t oob[50] = {0};
     _ev_do(attr->spi,SPI_MEM_READ,
             attr->cs_io,CMD_FAST_READ,1,
-            2048+4,2,
-            1,oob,52);
+            2048+2,2,
+            1,oob,50);
             
     
     for(int i = 0; i < oob_size; i++)
@@ -580,9 +582,9 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_READ)
     return 0;
 }
 
-EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
+EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_NOOB_WRITE)
 {
-    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE);
+    EV_MODEL_FUN_GET_ARG(ev_w25nxx_ecc_spi_m,NAND_NOOB_WRITE);
 
     if(!attr->spi)
     {
@@ -647,7 +649,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,NAND_ECC_NOOB_WRITE)
     }
 
     uint8_t buf_oob[16] = {0};
-    _ev_do(self,NAND_ECC_NOOB_READ,arg->page_offset,buf_oob,14);
+    _ev_do(self,NAND_NOOB_READ,arg->page_offset,buf_oob,14);
     for(int i = 0; i < oob_size; i++)
     {
         if(buf_oob[i] != arg->oob_data[i])
@@ -671,7 +673,7 @@ EV_MODEL_FUN_DEF(ev_w25nxx_ecc_spi_m,UNINIT)
 
     return 0;
 }
-EV_MODEL_LIST_DEF(ev_w25nxx_ecc_spi_m,HELP,INIT,NAND_WRITE,NAND_READ,NAND_ERASE,NAND_ECC_INFO,NAND_CHECK_BAD_BLOCK,NAND_SET_BAD_BLOCK,NAND_ECC_NOOB_WRITE,NAND_ECC_NOOB_WRITE,UNINIT);
+EV_MODEL_LIST_DEF(ev_w25nxx_ecc_spi_m,HELP,INIT,NAND_WRITE,NAND_READ,NAND_ERASE,NAND_INFO,NAND_CHECK_BAD_BLOCK,NAND_SET_BAD_BLOCK,NAND_NOOB_WRITE,NAND_NOOB_READ,UNINIT);
 
 const ev_model_t ev_w25nxx_ecc_spi_m = EV_MODEL_DEF(ev_w25nxx_ecc_spi_m);
 
