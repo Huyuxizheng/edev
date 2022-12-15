@@ -1,7 +1,7 @@
 <!-- docs/_sidebar.md -->
 
-* [快速开始](zh-cn/start)
-* [指南](zh-cn/abstract)
+* [快速开始](zh-cn/start.md)
+* [指南](zh-cn/abstract.md)
 
-* [flash抽象](zh-cn/flash)
-* [霍尔角度传感器](zh-cn/hall_ang)
+* [flash](zh-cn/flash.md)
+* [霍尔角度传感器](zh-cn/hall_ang.md)

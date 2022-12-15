@@ -3,7 +3,7 @@
 ## w25qxx
 
 ```c
-
+#include "edev.h"
 //定义
 const ev_obj_t  flash_dev = 
 ev_obj_forge(
@@ -23,6 +23,7 @@ ev_obj_forge(
   ),
 );
 
+void main(void)
 {
     
     float dat[256] = {0};
@@ -41,3 +42,5 @@ ev_obj_forge(
 
 }
 ```
+
+## w25qxx
