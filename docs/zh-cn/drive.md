@@ -1,6 +1,7 @@
-## 外设简介
+## 简介
 外设模型是和硬件唯一相关的模型，实现方法提供了两类，一类为通用的实现，需要自行完善，一类是和芯片绑定的实现，可直接调用。
 ## gpio
+### 方法列表
 
 ## adc
 
@@ -172,14 +173,20 @@ const ev_obj_t i2c_dev = ev_forge(//制造对象
 #### ev_i2c_m
 * 模型名`ev_i2c_m`
 * 属性
-    * `void* handle` 可选的 I2C句柄
+    * `void* handle` 
+
+    可选的 I2C句柄
     * `uint8_t (*init)(void* handle,uint32_t max_khz)` 
+
     初始化函数指针
     * `uint8_t (*write)(void* handle,uint8_t addr,const uint8_t *dat,uint16_t len,uint8_t no_stop)`
+
     写入数据函数指针
     * `uint8_t (*read)(void* handle,uint8_t addr,uint8_t *dat,uint16_t len,uint8_t no_stop)`
+
     读出数据函数指针
     * `void (*uninit)(void* handle)`
+
     反初始化函数指针
 
 需要实现四个函数 `init` `write` `read` `uninit`
