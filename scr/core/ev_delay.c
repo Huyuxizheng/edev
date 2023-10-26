@@ -11,25 +11,26 @@
 
 char nil = 0;//防止被优化
 
+void __attribute__((naked)) ev_default_delay_atom(uint32_t i)
+{
+    __asm("    subs    r0, #1\n"
+          "    bne     ev_default_delay_atom\n"
+          "    bx      lr");
+}
+
 void ev_default_delay_ns(uint32_t ns)
 {
     uint32_t ns_temp = ns * ((CLK_MHZ+ASM_NUM-1)/ASM_NUM * AUX_VAR )/1000;
-    while(ns_temp > 0)
-    {
-        nil--;
-        ns_temp--;
-    }
+    ev_default_delay_atom(ns_temp);
 }
+
+
 
 void ev_default_delay_us(uint32_t us)
 {
 
     uint32_t us_temp = us * ((CLK_MHZ+ASM_NUM-1)/ASM_NUM * AUX_VAR);
-    while(us_temp > 0)
-    {
-        nil--;
-        us_temp--;
-    }
+    ev_default_delay_atom(us_temp);
 
 }
 
