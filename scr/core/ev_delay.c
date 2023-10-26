@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include "edev_config.h"
 
+#ifdef EV_DEFAULT_DELAY_EN
+
 #define CLK_MHZ     EV_DELAY_CLK_MHZ //主频 兆HZ 不足1M写1M
 #define AUX_VAR     EV_DELAY_AUX_VAR//修正系数 一般不调
 
@@ -41,3 +43,4 @@ void ev_default_delay_ms(uint32_t ms)
     }
 }
 
+#endif

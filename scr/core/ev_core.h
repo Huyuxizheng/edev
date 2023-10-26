@@ -7,6 +7,12 @@
 typedef struct ev_obj_t ev_obj_t;
 typedef struct ev_model_t ev_model_t;
 
+#ifdef __GNUC__
+#  define UNUSED(x) x __attribute__((__unused__))
+#else
+#  define UNUSED(x) x
+#endif
+
 #define EV_TO_RAM(type,...)  (type *)(type []){__VA_ARGS__}
 #define EV_TO_ROM(type,...)  (type *)(type const[]){__VA_ARGS__}
 
@@ -33,7 +39,7 @@ typedef struct ev_model_t{
 //方法定义
 #define EV_MODEL_FUN_DEF(model,OP)        static uint8_t EV_MODEL_FUN(model,OP)(const ev_obj_t *self,void *_arg)
 //获得参数到 arg变量
-#define EV_MODEL_FUN_GET_ARG(model,OP)    EVO_T(OP) *arg = (EVO_T(OP) *)_arg;const EVO_ATTR_T(model) *attr = (const EVO_ATTR_T(model) *)(self->attr);
+#define EV_MODEL_FUN_GET_ARG(model,OP)    EVO_T(OP) *UNUSED(arg) = (EVO_T(OP) *)_arg;const EVO_ATTR_T(model) *UNUSED(attr) = (const EVO_ATTR_T(model) *)(self->attr);
 
 
 //方法定义接口

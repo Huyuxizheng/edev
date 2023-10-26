@@ -361,7 +361,7 @@ static uint8_t erase_verify(const ev_obj_t *cs_io,const ev_obj_t *spi,uint32_t p
         }
 
     }
-
+    return 0;
 }
 
 static uint8_t erase_verify_buff(const ev_obj_t *cs_io,const ev_obj_t *spi,const ev_obj_t *self,const ev_obj_t *buff,uint32_t page_offset)

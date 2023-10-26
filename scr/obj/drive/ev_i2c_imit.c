@@ -80,7 +80,7 @@ static void _ev_iic_imit_send_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr,uint8_t
 
 static uint8_t _ev_iic_imit_read_byte(const EVO_ATTR_T(ev_i2c_imit_m) *attr)
 { 
-    uint8_t dat;
+    uint8_t dat = 0;
     _ev_do(attr->sda,GPIO_INIT,EV_GPIO_MODE_IN);
     for(uint8_t i = 0; i < 8; i++)
     {

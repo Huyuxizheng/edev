@@ -1,5 +1,8 @@
 ﻿#include "edev.h"
+
+#ifdef EV_CONFIG_OS_LOCK_EN
 static void* ev_global_lock = 0;
+#endif
 static uint8_t ev_absolute_global_lock_en = 0;
 
 static uint8_t ev_call_model_fun(const ev_obj_t *obj,const ev_model_t *model, uint16_t op, void *arg)

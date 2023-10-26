@@ -59,5 +59,5 @@ EV_MODEL_FUN_DEF(ev_adp_m,UNINIT)
     return 1;
 }
 
-EV_MODEL_LIST_DEF(ev_adp_m,RELAY,HELP,INIT);
+EV_MODEL_LIST_DEF(ev_adp_m,RELAY,HELP,INIT,UNINIT);
 const ev_model_t ev_adp_m = EV_MODEL_DEF(ev_adp_m);

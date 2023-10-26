@@ -116,7 +116,7 @@ static uint8_t delete_block(uint8_t *mem_p,uint32_t mem_size,uint8_t* *fast_p,ui
 {
     uint8_t *end_p = mem_p+mem_size-BLOCKH_LEN;
     uint8_t *last_block = 0;
-    block_h_t temp = {0};
+    //block_h_t temp = {0};
 
     p -= BLOCKH_LEN;
 
